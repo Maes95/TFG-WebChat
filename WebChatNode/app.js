@@ -7,13 +7,9 @@ var path = require('path')
 
 server.listen(8080);
 
-// To use css files
+// To use client files
 
-app.use(express.static(path.join(__dirname, 'assets')));
-
-app.get('/', function (req, res) {
-	res.sendfile(__dirname + '/index.html');
-});
+app.use(express.static(path.join(__dirname, '/client')));
 
 var messages = [];
 var chatters = [];

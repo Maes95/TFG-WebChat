@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>WebChatNode</title>
+	<link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+	<h1>WebChatNode</h1>
+
+	<ul id="chatters"></ul>
+	<div id="chat-console"></div>
+
+	<form id="chat-form">
+		<input type="text" name="chat-input" id="chat-input" placeholder="Type your message here ..." autofocus/>
+		<br/>
+		<input type="submit" value="send" />
+	</form>
+
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/client.js"></script>
+
+</body>
+
+</html>
