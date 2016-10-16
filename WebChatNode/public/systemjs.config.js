@@ -2,7 +2,14 @@
  * System configuration for Angular 2 samples
  * Adjust as necessary for your application needs.
  */
+var isPublic = typeof window != "undefined";
+
 (function(global) {
+
+  var paths = {
+    // paths serve as alias
+    'npm:': (isPublic) ? '/' : 'node_modules/'
+  };
 
   // map tells the System loader where to look for things
   var map = {
@@ -10,7 +17,8 @@
 
     '@angular':                   'node_modules/@angular',
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
-    'rxjs':                       'node_modules/rxjs'
+    'rxjs':                       'node_modules/rxjs',
+    "socket.io-client":           "node_modules/socket.io-client"
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
@@ -18,6 +26,7 @@
     'app':                        { main: 'main.js',  defaultExtension: 'js' },
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+    "socket.io-client":           { main: 'socket.io.js'}
   };
 
   var ngPackageNames = [
@@ -53,6 +62,7 @@
   packages['@angular/router'] = { main: 'index.js', defaultExtension: 'js' };
 
   var config = {
+    paths: paths,
     map: map,
     packages: packages
   };

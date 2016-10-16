@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "npm start"
+    "start": "npm start",
+    "postinstall": "typings install"
   },
   "dependencies": {
     "@angular/common": "2.0.0-rc.5",
@@ -14,14 +15,21 @@
     "@angular/router-deprecated": "2.0.0-rc.2",
     "@angular/upgrade": "2.0.0-rc.5",
 
+    "typings": "^1.3.2",
+    "socket.io": "~1.4.8",
+    "socket.io-client": "~1.4.8",
+    "cors":"2.8.1",
+
     "systemjs": "0.19.27",
     "core-js": "^2.4.0",
     "reflect-metadata": "^0.1.3",
     "rxjs": "5.0.0-beta.6",
-    "zone.js": "^0.6.12",
-
-    "ng2-semantic-ui-directives": "^1.0.5",
     "zone.js": "^0.6.12"
   },
-  "repository": {}
+  "devDependencies": {
+    "typings": "^1.3.2",
+    "socket.io": "~1.4.8",
+    "socket.io-client": "~1.4.8",
+    "cors":"2.8.1"
+  }
 }

@@ -1,2 +1,14 @@
-
 <h2>WEBCHAT Home Page</h2>
+
+<ul id="chatters"></ul>
+<div id="chat-console">
+  <div *ngFor="let message of messages">
+    {{message.text}}
+  </div>
+</div>
+
+<form id="chat-form" (ngSubmit)="sendMessage()">
+  <input type="text" [(ngModel)]="current_message"  placeholder="Type your message here ..." name="message"/>
+  <br/>
+  <input type="submit" value="send"/>
+</form>

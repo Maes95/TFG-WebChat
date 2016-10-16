@@ -46,6 +46,8 @@ var chatters = [];
 
 io.sockets.on( 'connection', function ( client ) {
 
+  console.log("Cliente conectado")
+
 	client.on( 'join', function( name ) {
 
 		client.name = name;
@@ -67,6 +69,8 @@ io.sockets.on( 'connection', function ( client ) {
 
 
 	client.on( 'messages', function( message ) {
+
+    console.log(message);
 
 		saveMessage( client.name, message );
 		client.broadcast.emit( 'messages', client.name + ' : ' + message );
