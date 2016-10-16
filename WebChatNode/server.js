@@ -1,15 +1,45 @@
-var express = require('express');
+var express = require('express'),
+    path = require('path'),
+    http = require('http');
+
+
+// routes
+var router = express.Router();
+
+// app
 var app = express();
-var http = require('http');
+
+// view engine setup
+app.set('view engine', 'jade');
+app.use(express.static(path.join(__dirname, 'public')));
+
+// pathing
+app.use('/node_modules',  express.static(__dirname + '/node_modules'));
+
+// route middleware that will happen on every request
+
+// routing
+router.get('/*',function(req, res){
+
+	res.render('index');
+
+});
+
+
+// initiate
+app.use('/',  router);
+
+// 404 and redirect
+app.use(function(req, res, next) {
+  res.redirect("/")
+});
+
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
-var path = require('path')
-
 server.listen(8080);
 
-// To use client files
 
-app.use(express.static(path.join(__dirname, '/client')));
+// SOCKET.IO
 
 var messages = [];
 var chatters = [];
