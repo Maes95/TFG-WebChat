@@ -1,9 +1,13 @@
 <h2>WEBCHAT Home Page</h2>
 
-<ul id="chatters"></ul>
+<ul id="chatters">
+  <li *ngFor="let chatter of chatters">
+    {{ chatter }}
+  </li>
+</ul>
 <div id="chat-console">
   <div *ngFor="let message of messages">
-    {{message.text}}
+    {{message}}
   </div>
 </div>
 

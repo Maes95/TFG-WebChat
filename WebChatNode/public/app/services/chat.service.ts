@@ -5,7 +5,11 @@ import * as io from 'socket.io-client';
 
 export class ChatService {
   private url = 'http://localhost:8080';
-  private socket: any;
+  socket: SocketIOClient.Socket;
+
+  constructor(){
+    this.socket = io.connect(this.url);
+  }
 
   whoim(my_name: string){
     this.socket.emit('join', my_name);
@@ -17,11 +21,19 @@ export class ChatService {
 
   getMessages() {
     let observable = new Observable<any>((observer: any) => {
-      this.socket = io.connect(this.url);
 
       this.socket.on('messages', (data:any) => {
-        observer.next(data);
+        observer.next({ type: 'messages', data: data});
       });
+
+      this.socket.on('new chatter', (data:any) => {
+        observer.next({ type: 'new chatter', data: data});
+      });
+
+      this.socket.on('remove chatter', (data:any) => {
+        observer.next({ type: 'remove chatter', data: data});
+      });
+
       return () => {
         this.socket.disconnect();
       };

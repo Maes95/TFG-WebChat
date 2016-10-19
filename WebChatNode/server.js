@@ -2,23 +2,15 @@ var express = require('express'),
     path = require('path'),
     http = require('http');
 
-
-// routes
 var router = express.Router();
-
-// app
 var app = express();
 
-// view engine setup
+// To serve public folder
 app.set('view engine', 'jade');
 app.use(express.static(path.join(__dirname, 'public')));
-
-// pathing
 app.use('/node_modules',  express.static(__dirname + '/node_modules'));
 
-// route middleware that will happen on every request
-
-// routing
+// Render Angular2 index template
 router.get('/*',function(req, res){
 
 	res.render('index');
@@ -46,8 +38,6 @@ var chatters = [];
 
 io.sockets.on( 'connection', function ( client ) {
 
-  console.log("Cliente conectado")
-
 	client.on( 'join', function( name ) {
 
 		client.name = name;
@@ -62,7 +52,7 @@ io.sockets.on( 'connection', function ( client ) {
 		});
 
 		messages.forEach( function( message ) {
-			client.emit( 'messages',message.name + ' : ' + message.text );
+			client.emit( 'messages', {name: message.name, text: message.text} );
 		});
 
 	});
@@ -73,7 +63,7 @@ io.sockets.on( 'connection', function ( client ) {
     console.log(message);
 
 		saveMessage( client.name, message );
-		client.broadcast.emit( 'messages', client.name + ' : ' + message );
+		client.broadcast.emit( 'messages', {name: client.name, text: message});
 
 	});
 
