@@ -2,7 +2,6 @@ package com.globex.app;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
-// import io.vertx.example.util.Runner;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
@@ -14,13 +13,12 @@ import java.time.Instant;
 import java.util.Date;
 
 /**
- * A {@link io.vertx.core.Verticle} which implements a simple, realtime,
+ * A verticle which implements a simple, realtime,
  * multiuser chat. Anyone can connect to the chat application on port
- * 8000 and type messages. The messages will be rebroadcast to all
- * connected users via the @{link EventBus} Websocket bridge.
- *
- * @author <a href="https://github.com/InfoSec812">Deven Phillips</a>
+ * 8080 and type messages. The messages will be rebroadcast to all
+ * connected users via the Websocket bridge.
  */
+ 
 public class ChatManager extends AbstractVerticle {
 
   // Convenience method so you can run it in your IDE
