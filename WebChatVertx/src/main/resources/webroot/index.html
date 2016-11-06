@@ -45,8 +45,28 @@
 </head>
 <body>
 <script>
-  var eb = new EventBus("http://localhost:8080/eventbus/");
+  // GET DATA FROM CLIENT
+  var chat = prompt("Chat name", "chat");
+	if(chat == null || chat === ''){
+		chat = "chat";
+	}
+
+	var user = prompt("User name", "user");
+	if(user == null || user === ''){
+		user = "user";
+	}
+
+  // OPEN CONECTION
+  var eb = new EventBus("/eventbus/");
   eb.onopen = function () {
+
+    var message = {
+			chat : chat,
+			user : user
+		};
+
+    eb.publish("connect", message);
+
     eb.registerHandler("chat.to.client", function (err, msg) {
       $('#chat').append(msg.body + "\n");
     });
