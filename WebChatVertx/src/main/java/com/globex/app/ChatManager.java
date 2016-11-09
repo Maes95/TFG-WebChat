@@ -37,10 +37,10 @@ public class ChatManager extends AbstractVerticle {
     // Allow events for the designated addresses in/out of the event bus bridge
     BridgeOptions opts = new BridgeOptions()
       // CLIENT TO SERVER
-      .addInboundPermitted(new PermittedOptions().setAddress("chat.to.server"))
+      .addInboundPermitted(new PermittedOptions().setAddress("new.message"))
       .addInboundPermitted(new PermittedOptions().setAddress("connect"))
       // SERVER TO CLIENT
-      .addOutboundPermitted(new PermittedOptions().setAddress("chat.to.client"));
+      .addOutboundPermitted(new PermittedOptions().setAddress("message"));
 
     // Create the event bus bridge and add it to the router.
     SockJSHandler ebHandler = SockJSHandler.create(vertx).bridge(opts);
@@ -55,16 +55,16 @@ public class ChatManager extends AbstractVerticle {
     EventBus eb = vertx.eventBus();
 
     // Register to listen for messages coming IN to the server
-    eb.consumer("chat.to.server").handler(message -> {
+    eb.consumer("new.message").handler(message -> {
       logger(message);
       // Create a timestamp string
       String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(Date.from(Instant.now()));
       // Send the message back out to all clients with the timestamp prepended.
-      eb.publish("chat.to.client", timestamp + ": " + message.body());
+      eb.publish("message", timestamp + ": " + message.body());
     });
 
     eb.consumer("connect").handler(message -> {
-      
+
       JsonObject newMessage = (JsonObject) message.body();
       String chat = newMessage.getString("chat");
       String user_name = newMessage.getString("user");
