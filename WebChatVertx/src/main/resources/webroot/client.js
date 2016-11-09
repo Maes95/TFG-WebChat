@@ -1,4 +1,4 @@
-// $('#chatters');
+// $('#chatters'); <i class="users icon"></i>
 var my_name;
 var my_chat;
 
