@@ -37,10 +37,12 @@ public class ChatManager extends AbstractVerticle {
     // Allow events for the designated addresses in/out of the event bus bridge
     BridgeOptions opts = new BridgeOptions()
       // CLIENT TO SERVER
-      .addInboundPermitted(new PermittedOptions().setAddress("new.message"))
-      .addInboundPermitted(new PermittedOptions().setAddress("connect"))
-      // SERVER TO CLIENT
-      .addOutboundPermitted(new PermittedOptions().setAddress("message"));
+      // .addInboundPermitted(new PermittedOptions().setAddress("new.message"))
+      // .addInboundPermitted(new PermittedOptions().setAddress("connect"))
+      .addInboundPermitted(new PermittedOptions().setAddressRegex("(.)*"))
+      // SERVER TO CLIENT (ALL)
+      // .addOutboundPermitted(new PermittedOptions().setAddress("message"))
+      .addOutboundPermitted(new PermittedOptions().setAddressRegex("(.)*"));
 
     // Create the event bus bridge and add it to the router.
     SockJSHandler ebHandler = SockJSHandler.create(vertx).bridge(opts);
@@ -64,11 +66,26 @@ public class ChatManager extends AbstractVerticle {
     });
 
     eb.consumer("connect").handler(message -> {
-
+        
       JsonObject newMessage = (JsonObject) message.body();
-      String chat = newMessage.getString("chat");
+      String chat_name = newMessage.getString("chat");
       String user_name = newMessage.getString("user");
-      logger("NEW USER CONNECTED: "+user_name+" to chat "+chat);
+      logger("NEW USER CONNECTED: "+user_name+" to chat "+chat_name);
+        
+      User newUser = new User(user_name, chat_name);
+        
+      vertx.deployVerticle(newUser, res -> {
+        if (res.succeeded()) {
+          logger("SUCCEDED");
+//          eb.consumer("connect").handler(_message -> {
+//          
+//          });
+        } else {
+          logger(res.cause());
+        }
+      });
+
+      
 
     });
 
