@@ -1,4 +1,4 @@
-// $('#chatters');
+// $('#chatters'); <i class="users icon"></i>
 var my_name;
 var my_chat;
 
@@ -17,29 +17,42 @@ if(my_name == null || my_name === ''){
 var eb = new EventBus("/eventbus/");
 eb.onopen = function () {
 
-  var message = {
-    chat : my_chat,
-    user : my_name
-  };
+  eb.send("connect", my_name, function(err, res){
+    if(err){
+      console.error(err);
+    }else{
+      if(res.body){
+        // Register to listen for messages coming from my chatroom
+        eb.registerHandler(my_chat, function(err, message){
+          err ? console.error(err) : insertMessage(message.body);
+        });
+      }else{
+        alert("User Name already exist");
+        eb.close();
+      }
+    }
+  });
 
-  eb.publish("connect", message);
-
-  eb.registerHandler("message", insertMessage);
 };
 
 
 function sendMessage(event) {
   if (event.keyCode == 13 || event.which == 13) {
-    var message = $('#chat-input').val();
-    if (message.length > 0) {
+    var message = {
+      user: my_name,
+      text: $('#chat-input').val(),
+      chat: my_chat
+    };
+    if (message.text.length > 0) {
       eb.publish("new.message", message);
       $('#chat-input').val("");
     }
   }
 }
 
-function insertMessage(error, message) {
+function insertMessage(message) {
   var new_message = document.createElement('span');
-  new_message.innerHTML = message.body + '<br/>';
+  var text = message.user + " ("+message.timestamp+"): " + message.text;
+  new_message.innerHTML = text + '<br/>';
   $('#chat-console').append(new_message);
 }
