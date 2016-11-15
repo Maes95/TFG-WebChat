@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>WebChatNode</title>
+	<link rel="stylesheet" href="./style.css">
+	<link rel="stylesheet" href="http://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css">
+</head>
+
+<body>
+
+	<div class="main">
+		<h1>WebChatNode</h1>
+		<ul id="chatters"></ul>
+		<div class="ui comments" id="chat-console"></div>
+		<form id="chat-form">
+			<div class="ui action input fluid">
+				<input type="text" id="chat-input" placeholder="Type your message here ..." autofocus/>
+				<input id="chat-submit" class="ui button primary" type="submit" value="Send" />
+			</div>
+		</form>
+	</div>
+
+
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/client.js"></script>
+
+</body>
+
+</html>
