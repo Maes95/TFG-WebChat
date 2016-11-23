@@ -1,18 +1,26 @@
-package com.globex.app;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
 import io.vertx.core.Vertx;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ChatTestClass {
+@RunWith(VertxUnitRunner.class)
+public class ChatTest {
+    
+    final static int port = 9000;
 
     AtomicInteger msg = new AtomicInteger(0);
     AtomicLong times = new AtomicLong(0);
@@ -30,41 +38,43 @@ public class ChatTestClass {
     int extra =180000;
     String chatName = "chat" + Double.toString(Math.random());
     
-    static Vertx vertx;
+    Vertx vertx;
     
-    public static void main(String[] args) {
-        vertx = Vertx.vertx();
-        ChatTestClass example = new ChatTestClass();
-        for(int i = 0; i < 10; i++){
-            example.test();
-        }
-//        example.test9();
+    @Before
+    public void before(TestContext context) {
+      vertx = Vertx.vertx();
+    }
+
+    @After
+    public void after(TestContext context) {
+      vertx.close(context.asyncAssertSuccess());
     }
 
 
-    public void test() {
+    public void test(TestContext context) {
         //System.out.println(chatName);
+        Async async = context.async();
         start = 0;
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        testClients(users, messages, time, extra + 1000);
+        testClients(users, messages, time, extra + 1000, context);
         //testClientsMax(10, 4000, 10000);
     }
 
-    public void testClients(int users, long messages, long time, int extra) {
+    public void testClients(int users, long messages, long time, int extra, TestContext context) {
         //listenerClientHalfTime("LUser"+Double.toString((Math.random()*100)), time + extra, totalMessages*2);
         //listenerClient("/////////////////////////////////////////////User" + Double.toString(Math.random()), time + extra, messages * users);
         for (int i = 0; i < users; i++) {
             //senderClient("user" + Double.toString(i + (Math.random() * 100)), (time / (totalMessages / users)), time);
             //senderClient("user" + Double.toString(i + Math.random()), time/messages, time);
-            newclient2("User" + Double.toString(Math.random()), time + extra, messages * users * users, messages, time);
+            newclient2("User" + Double.toString(Math.random()), time + extra, messages * users * users, messages, time, context);
         }
     }
 
-    public void newclient2(final String name, final long totalTime, final long totalMessages, final long messages, final long sendTime) {
+    public void newclient2(final String name, final long totalTime, final long totalMessages, final long messages, final long sendTime, TestContext context) {
         final Boolean[] recievedMessages = new Boolean[(int) messages*users];
         for (int e = 0; e < recievedMessages.length; e++){
             recievedMessages[e] = false;
@@ -72,7 +82,7 @@ public class ChatTestClass {
         final AtomicInteger numberOfMessages = new AtomicInteger(0);
         final AtomicBoolean auxDone = new AtomicBoolean(false);
 
-        vertx.createHttpClient().websocket(8080, "localhost", "/chat", websocket -> {
+        vertx.createHttpClient().websocket(port, "localhost", "/chat", websocket -> {
 
                 websocket.handler(data -> {
                     JsonNode message = null;
@@ -100,7 +110,7 @@ public class ChatTestClass {
                             }
                         }
                         websocket.close();
-                        System.out.println("ok es: "+ok);
+                        context.assertTrue(ok);
                         done.addAndGet(1);
                         if (done.get()==users){
                             System.out.println(msg.get() + "/" + totalMessages + "/" + Integer.toString(sentMessages.get()));
@@ -112,11 +122,13 @@ public class ChatTestClass {
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
                             }
-                            writer.append(Long.toString(time) + "\n");
+                            writer.append("Tiempo:  "+Long.toString(System.currentTimeMillis() - start) + "\n");
+                            writer.append("Tiempo medio:  "+Long.toString(time) + "\n");
                             writer.close();
                             System.out.println("Tiempo:  " + (System.currentTimeMillis() - start));
-                            System.out.println("Tiempo medio: "+ times.get()/totalMessages);
+                            System.out.println("Tiempo medio: "+ time);
                             System.out.println("Complete");
+                            context.asyncAssertSuccess();
                         }
                     }
                 });
@@ -161,13 +173,70 @@ public class ChatTestClass {
                     websocket.close();
                     done.addAndGet(1);
                     if (done.get()==users){
-                        System.out.println("Falló");
+                        context.fail();
+                        context.asyncAssertFailure();
                     }
                 });
 
         });
     }
+    
+    @Test
+    public void test1(TestContext context) {
+        test(context);
+    }
 
+    @Test
+    public void test2(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test3(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test4(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test5(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test6(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test7(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test8(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test01(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test02(TestContext context) {
+        test(context);
+    }
+
+    @Test
+    public void test0(TestContext context) {
+        test(context);
+    }
+
+    @Test
     @SuppressWarnings("CallToPrintStackTrace")
     public void test9() {
         try {

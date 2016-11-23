@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <title>WebChatVertx</title>
+    <!-- External Javascript -->
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/sockjs/1/sockjs.min.js"></script>
+    <!-- External Styles -->
+    <link rel="stylesheet" href="http://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css">
+
+    <!-- Local Javascript -->
+    <script src="./vertx-eventbus.js"></script>
+    <script src="./client.js"></script>
+    <!-- Local Styles -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="main">
+        <h1>WebChatVertx</h1>
+        <ul id="chatters"></ul>
+        <div id="chat-console"></div>
+        <div id="chat-form">
+          <div class="ui action input fluid">
+            <input type="text" id="chat-input" placeholder="Type your message here ..." autofocus onkeydown="sendMessage(event)" />
+            <button class="ui button primary" onclick="sendMessage({keyCode: 13})">Send</button>
+          </div>
+        </div>
+    </div>
+</body>
+
+</html>
