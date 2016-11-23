@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class ChatManager2 extends AbstractVerticle {
+    
+  final static int port = 9000;
   
   //Add because I need the chat to send through the bus and normal messages haven't chat tag
   private final HashMap<String, String> users = new HashMap<>(); 
@@ -61,7 +63,7 @@ public class ChatManager2 extends AbstractVerticle {
     })
     .requestHandler((HttpServerRequest req) -> {
         if (req.uri().equals("/")) req.response().sendFile("webroot2/index.html"); // Serve the html
-    }).listen(8080);
+    }).listen(port);
 
   }
   
