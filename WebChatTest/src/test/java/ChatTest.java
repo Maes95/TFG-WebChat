@@ -35,7 +35,7 @@ public class ChatTest {
     int users = 50;
     int messages = 500;
     int time = 5000;
-    int extra =180000;
+    int extra = 180000;
     String chatName = "chat" + Double.toString(Math.random());
     
     Vertx vertx;
@@ -122,8 +122,9 @@ public class ChatTest {
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
                             }
-                            writer.append("Tiempo:  "+Long.toString(System.currentTimeMillis() - start) + "\n");
-                            writer.append("Tiempo medio:  "+Long.toString(time) + "\n");
+//                            writer.append("Tiempo:  "+Long.toString(System.currentTimeMillis() - start) + "\n");
+//                            writer.append("Tiempo medio:  "+Long.toString(time) + "\n");
+                            writer.append(Long.toString(time) + "\n");
                             writer.close();
                             System.out.println("Tiempo:  " + (System.currentTimeMillis() - start));
                             System.out.println("Tiempo medio: "+ time);
@@ -227,70 +228,48 @@ public class ChatTest {
     }
 
     @Test
-    public void test02(TestContext context) {
-        test(context);
-    }
-
-    @Test
     public void test0(TestContext context) {
         test(context);
     }
-
-    @Test
-    @SuppressWarnings("CallToPrintStackTrace")
-    public void test9() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        long result = 0;
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader("results.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-            line = br.readLine();
-
-            while (line != null) {
-                System.out.print(result + " + " + line);
-                result += Long.parseLong(line);
-                System.out.println(" = " + result);
-                line = br.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println(result / 10);
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter("results.txt", "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        writer.close();
-        PrintWriter writer2 = null;
-        try {
-            writer2 = new PrintWriter(new FileOutputStream(new File("results2.txt"), true));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        writer2.append(Integer.toString(users) + " " + Long.toString(result / 10) + "\n");
-        writer2.close();
-        System.out.println("COMPLETE!");
-    }
+    
+//    final static int numTest = 2;
+//
+//    @Test
+//    @SuppressWarnings("CallToPrintStackTrace")
+//    public void test9() throws FileNotFoundException {
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        long result = 0;
+//        BufferedReader br = new BufferedReader(new FileReader("results.txt"));
+//        try {
+//            StringBuilder sb = new StringBuilder();
+//            String line = br.readLine();
+//
+//            while (line != null) {
+//                System.out.print(result + " + " + line);
+//                result += Long.parseLong(line);
+//                System.out.println(" = " + result);
+//                line = br.readLine();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                br.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        try (PrintWriter writer2 = new PrintWriter(new FileOutputStream(new File("results2.txt"), true))) {
+//            System.out.println(result / numTest);
+//            writer2.append(Integer.toString(users) + " " + Long.toString(result / numTest) + "\n");
+//        }
+//        System.out.println("COMPLETE!");
+//    }
 
 }
