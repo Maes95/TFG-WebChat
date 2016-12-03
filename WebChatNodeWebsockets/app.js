@@ -23,7 +23,7 @@ wss.on('connection', (ws) => {
 			wss.clients.forEach((client) => reSend(client, message) );
 		}else{
 			// Mensaje de inicio
-			newUser(message, ws);
+			// newUser(message, ws);
 		}
 	});
   ws.on('close', () => console.log('Client disconnected'));
