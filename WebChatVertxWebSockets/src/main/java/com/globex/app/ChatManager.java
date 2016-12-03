@@ -14,31 +14,31 @@ import java.io.IOException;
 
 import java.util.HashMap;
 
-public class ChatManager2 extends AbstractVerticle {
-    
+public class ChatManager extends AbstractVerticle {
+
   final static int port = 9000;
-  
+
   //Add because I need the chat to send through the bus and normal messages haven't chat tag
-  private final HashMap<String, String> users = new HashMap<>(); 
+  private final HashMap<String, String> users = new HashMap<>();
   //Add because the most easy way to obtain the deploymentID is when I deploy the verticle
-  private final HashMap<String, String> depID = new HashMap<>(); 
+  private final HashMap<String, String> depID = new HashMap<>();
 
   // Convenience method so you can run it in your IDE
   public static void main(String[] args) {
-    Runner.runExample(ChatManager2.class);
+    Runner.runExample(ChatManager.class);
   }
 
   @Override
   @SuppressWarnings("empty-statement")
   public void start() throws Exception {
-    
+
     HttpServer server = vertx.createHttpServer();
-    
+
     server.websocketHandler( (ServerWebSocket ws) -> {
         if (ws.path().equals("/chat")) {
             ws.handler((Buffer data) -> {
                 JsonNode message = parseJSON(data);
-                
+
                 if (!message.has("message")){ //Is the log in message (don't have message)
                     //If don't exists this username or a chat with the same name...
                     if ((!users.containsKey(message.get("user").asText())) &&((!message.get("user").asText().equals(message.get("chat").asText())))&&(!message.get("user").asText().contains("?"))){
@@ -48,8 +48,8 @@ public class ChatManager2 extends AbstractVerticle {
                         ws.writeFinalTextFrame(newMessageDuplicatedUser());
                         ws.close();
                     }
-                    
-                }else{   
+
+                }else{
                     //Is a normal message. It sends to the eventBus with the chat like label
                     JsonObject msg = new JsonObject();
                     msg.put("user", message.get("user").asText());
@@ -62,12 +62,12 @@ public class ChatManager2 extends AbstractVerticle {
         }
     })
     .requestHandler((HttpServerRequest req) -> {
-        if (req.uri().equals("/")) req.response().sendFile("webroot2/index.html"); // Serve the html
+        if (req.uri().equals("/")) req.response().sendFile("webroot/index.html"); // Serve the html
     }).listen(port);
 
   }
-  
-  
+
+
   //Create a new message to send through the websocket from the recived through the bus
   private String newMessage(JsonObject message){
         ObjectNode msg = mapper.createObjectNode();
@@ -77,7 +77,7 @@ public class ChatManager2 extends AbstractVerticle {
         msg.put("message", message.getString("message"));
         return msg.toString();
   }
-  
+
   public void newUser(JsonNode message, ServerWebSocket ws){
     String name = message.get("user").asText();
     String chat = message.get("chat").asText();
@@ -86,25 +86,25 @@ public class ChatManager2 extends AbstractVerticle {
         if (res.succeeded()) {
           //Save the deploymentID to later remove the verticle
           depID.put(name, res.result());
-          users.put(name, chat); 
+          users.put(name, chat);
           //A new handler to send the user messages through the websocket
           vertx.eventBus().consumer(name).handler( msg -> {
               JsonObject _msg = (JsonObject) msg.body();
-              try{ 
+              try{
                  //Try to send the message
                  ws.writeFinalTextFrame(newMessage(_msg));
-              }catch(IllegalStateException e){ 
+              }catch(IllegalStateException e){
                  //The user is offline, so I delete it.
                  deleteUser(_msg.getString("sender"));
               }
           });
         } else {
-          System.err.println("Error at deploy User");                              
+          System.err.println("Error at deploy User");
         }
     });
   }
-  
-  
+
+
   //Create the duplicatedUser message
   private String newMessageDuplicatedUser(){
         ObjectNode msg = mapper.createObjectNode();
@@ -112,10 +112,10 @@ public class ChatManager2 extends AbstractVerticle {
         msg.put("message", "Ya existe un usuario con ese nombre");
         return msg.toString();
   }
-  
-  
+
+
   //Remove the verticle and unregister the handler
-  private void deleteUser (String user){ 
+  private void deleteUser (String user){
         vertx.undeploy(depID.get(user), res -> {
             if (res.succeeded()) {
                 System.out.println("Undeployed ok");
@@ -127,7 +127,7 @@ public class ChatManager2 extends AbstractVerticle {
         depID.remove(user);
         vertx.eventBus().consumer(user).unregister();
   }
-  
+
   private JsonNode parseJSON(Buffer data){
     JsonNode message= null;
     try {

@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @RunWith(VertxUnitRunner.class)
 public class ChatTest {
     
+    int users = 70;
+    
     final static int port = 9000;
 
     AtomicInteger msg = new AtomicInteger(0);
@@ -32,7 +34,6 @@ public class ChatTest {
     //String ip = "chatbalancer-1698952741.eu-west-1.elb.amazonaws.com";
     boolean akka = true;
     boolean haproxy = false;
-    int users = 50;
     int messages = 500;
     int time = 5000;
     int extra = 180000;

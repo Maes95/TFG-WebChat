@@ -29,10 +29,6 @@ wss.on('connection', (ws) => {
   ws.on('close', () => console.log('Client disconnected'));
 });
 
-function newUser(message, ws){
-
-}
-
 function reSend(client, data){
 	data.name = data.user;
 	client.send(JSON.stringify(data));
