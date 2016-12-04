@@ -16,20 +16,16 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
 
 	ws.on('message', (data) => {
-		var message = JSON.parse(data)
-		// console.log(data);
+		var message = JSON.parse(data);
 		if(message['message']){
-			// Mensaje estandar
-			wss.clients.forEach((client) => reSend(client, message) );
+			// Normal message
+			wss.clients.forEach((client) =>
+        data.name = data.user;
+        client.send(JSON.stringify(data));
+      );
 		}else{
-			// Mensaje de inicio
-			// newUser(message, ws);
+			// First message (first connection)
 		}
 	});
   ws.on('close', () => console.log('Client disconnected'));
 });
-
-function reSend(client, data){
-	data.name = data.user;
-	client.send(JSON.stringify(data));
-}
