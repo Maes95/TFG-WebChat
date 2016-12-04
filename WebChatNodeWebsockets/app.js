@@ -11,6 +11,9 @@ app.use(express.static(path.join(__dirname, '/client')));
 
 const wss = new SocketServer({ server });
 
+// Dictionary where key is the user_name and the value is the chat_name
+var users = new Map();
+
 wss.on('connection', (ws) => {
 
   console.log('Client connected');
@@ -19,13 +22,28 @@ wss.on('connection', (ws) => {
 		var message = JSON.parse(data);
 		if(message['message']){
 			// Normal message
-			wss.clients.forEach((client) =>
-        data.name = data.user;
-        client.send(JSON.stringify(data));
-      );
+      message.name = message.user;
+			wss.clients
+      .filter( (client) => client.chat == users.get(message.user) )
+      .forEach( (client) => {
+        client.send(JSON.stringify(message));
+      });
 		}else{
 			// First message (first connection)
+      if(users.has(message.user)){
+        ws.send(JSON.stringify({ type: 'system', message: 'User already exist' }));
+        ws.close();
+      }else{
+        users.set(message.user, message.chat);
+        ws.chat = message.chat;
+        ws.user = message.user;
+      }
 		}
 	});
-  ws.on('close', () => console.log('Client disconnected'));
+
+  ws.on('close', () => {
+    users.delete(ws.user);
+    console.log('Client disconnected')
+  });
+
 });
