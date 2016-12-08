@@ -54,7 +54,7 @@ public class ChatManager extends AbstractVerticle {
                     JsonObject msg = new JsonObject();
                     msg.put("user", message.get("user").asText());
                     msg.put("message", message.get("message").asText());
-                    String chatName = users.get(message.get("user").asText();
+                    String chatName = users.get(message.get("user").asText());
                     vertx.eventBus().publish(chatName, msg);
                 }
             });
