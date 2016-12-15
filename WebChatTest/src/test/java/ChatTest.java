@@ -6,40 +6,64 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.ext.unit.junit.VertxUnitRunnerWithParametersFactory;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(VertxUnitRunner.class)
+@RunWith(Parameterized.class)
+@Parameterized.UseParametersRunnerFactory(VertxUnitRunnerWithParametersFactory.class)
 public class ChatTest {
     
-    int users = 70;
+    private static final long REPEAT_LIMIT = 10;
+    private static final int NUM_MESSAGES = 500;
+    private static final int TIME = 5000;
+    private static final int EXTRA = 180000;
+    private final static int PORT = 9000;
     
-    final static int port = 9000;
-
-    AtomicInteger msg = new AtomicInteger(0);
-    AtomicLong times = new AtomicLong(0);
-    //AtomicInteger msg2 = new AtomicInteger(0);
-    AtomicInteger done = new AtomicInteger(0);
-    long start = 0;
-    AtomicInteger sentMessages = new AtomicInteger(0);
-    String ip = "192.168.1.129";
-    //String ip = "chatbalancer-1698952741.eu-west-1.elb.amazonaws.com";
-    boolean akka = true;
-    boolean haproxy = false;
-    int messages = 500;
-    int time = 5000;
-    int extra = 180000;
-    String chatName = "chat" + Double.toString(Math.random());
+    private static long total_avg_time = 0;
     
     Vertx vertx;
+    int users;
+    int usersPerChat;
+    int numChats;
+    int totalMessagePerChat;
+    
+    AtomicLong times = new AtomicLong(0);
+    AtomicInteger done = new AtomicInteger(0);
+    AtomicInteger sentMessages = new AtomicInteger(0);
+    
+    long start = 0;
+     
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {   
+                 // N users / 1 chat room
+                 { 10, 1 }, { 20, 1 }, { 30, 1 },
+                 { 40, 1 }, { 50, 1 }, { 60, 1 }, { 70, 1 }, 
+                 // N users / 2 chat rooms
+                 { 20, 2 }, { 25, 2 }, { 30, 2 }, { 35, 2 },
+                 // N users / 4 chat rooms
+                 { 10, 4 }, { 12, 4 }, { 15, 4 }, { 17, 4 }, 
+        });
+    }
+   
+    public ChatTest(int usersPerChat, int numChats){
+        this.usersPerChat = usersPerChat;
+        this.numChats = numChats;
+        this.users = usersPerChat * numChats;
+        this.totalMessagePerChat = (NUM_MESSAGES*users) / numChats;
+    }
+    
     
     @Before
     public void before(TestContext context) {
@@ -50,10 +74,70 @@ public class ChatTest {
     public void after(TestContext context) {
       vertx.close(context.asyncAssertSuccess());
     }
+    
+    @Test
+    public void test0(TestContext context) {
+        System.out.println("-------------------------------------------------------");
+        System.out.println("Nº Chats: "+numChats);
+        System.out.print("Nº Users per chat: "+usersPerChat);
+        test(context, 1);
+    }
+    
+    @Test
+    public void test1(TestContext context) {
+        test(context, 2);
+    }
+    
+    @Test
+    public void test2(TestContext context) {
+        test(context, 3);
+    }
 
+    @Test
+    public void test3(TestContext context) {
+        test(context, 4);
+    }
 
-    public void test(TestContext context) {
-        //System.out.println(chatName);
+    @Test
+    public void test4(TestContext context) {
+        test(context, 5);
+    }
+
+    @Test
+    public void test5(TestContext context) {
+        test(context, 6);
+    }
+
+    @Test
+    public void test6(TestContext context) {
+        test(context, 7);
+    }
+
+    @Test
+    public void test7(TestContext context) {
+        test(context, 8);
+    }
+
+    @Test
+    public void test8(TestContext context) {
+        test(context, 9);
+    }
+
+    @Test
+    public void test9(TestContext context) {
+        test(context, 10);
+    }
+    
+    @Test
+    public void testZ(TestContext context) {
+        System.out.println("\nAverage time: "+total_avg_time/REPEAT_LIMIT);
+        total_avg_time = 0;
+        context.assertTrue(true);
+    }
+    
+    public void test(TestContext context, int attempt) {
+        System.out.println("");
+        System.out.print("Attempt "+attempt+": ");
         Async async = context.async();
         start = 0;
         try {
@@ -61,29 +145,18 @@ public class ChatTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        testClients(users, messages, time, extra + 1000, context);
-        //testClientsMax(10, 4000, 10000);
-    }
-
-    public void testClients(int users, long messages, long time, int extra, TestContext context) {
-        //listenerClientHalfTime("LUser"+Double.toString((Math.random()*100)), time + extra, totalMessages*2);
-        //listenerClient("/////////////////////////////////////////////User" + Double.toString(Math.random()), time + extra, messages * users);
+        
         for (int i = 0; i < users; i++) {
-            //senderClient("user" + Double.toString(i + (Math.random() * 100)), (time / (totalMessages / users)), time);
-            //senderClient("user" + Double.toString(i + Math.random()), time/messages, time);
-            newclient2("User" + Double.toString(Math.random()), time + extra, messages * users * users, messages, time, context);
+            String chatName = "chat_"+(i%numChats);
+            newclient("User" + Double.toString(Math.random()), TIME + EXTRA, NUM_MESSAGES * usersPerChat * usersPerChat, NUM_MESSAGES, TIME, async,chatName);
         }
     }
 
-    public void newclient2(final String name, final long totalTime, final long totalMessages, final long messages, final long sendTime, TestContext context) {
-        final Boolean[] recievedMessages = new Boolean[(int) messages*users];
-        for (int e = 0; e < recievedMessages.length; e++){
-            recievedMessages[e] = false;
-        }
-        final AtomicInteger numberOfMessages = new AtomicInteger(0);
-        final AtomicBoolean auxDone = new AtomicBoolean(false);
 
-        vertx.createHttpClient().websocket(port, "localhost", "/chat", websocket -> {
+    public void newclient(final String name, final long totalTime, final long totalMessages, final long messages, final long sendTime, Async async, String chatName) {
+        final AtomicInteger numberOfMessages = new AtomicInteger(0);
+
+        vertx.createHttpClient().websocket(PORT, "localhost", "/chat", websocket -> {
 
                 websocket.handler(data -> {
                     JsonNode message = null;
@@ -94,53 +167,36 @@ public class ChatTest {
                         e.printStackTrace();
                     }
                     String respuesta = message.get("message").asText();
-                    recievedMessages[Integer.parseInt(respuesta.substring(0,respuesta.indexOf("/")))] = true;
-                    times.addAndGet(System.currentTimeMillis()-Long.parseLong(respuesta.substring(respuesta.indexOf("/") + 1)));
-                    msg.addAndGet(1);
-                    //msg2.addAndGet(1);
+                    Long _time = System.currentTimeMillis()-Long.parseLong(respuesta.substring(respuesta.indexOf("/") + 1));
+                    times.addAndGet(_time);
                     numberOfMessages.addAndGet(1);
-                    if (numberOfMessages.get()== messages*users){
-                        Boolean ok = true;
-                        //System.out.println("GLOBAL MESSAGES:"+msg.get());
-                        //System.out.println("GLOBAL MESSAGES2:"+msg2.get());
-                        //System.out.println("NUMBER OF MESSAGES:"+numberOfMessages.get());
-                        for (int i = 0; i < recievedMessages.length; i++) {
-                            if (recievedMessages[i] == false) {
-                                System.out.println("Falta: " + Integer.toString(i));
-                                ok = false;
-                            }
-                        }
+                    // When THIS user recive all messages from his chat 
+                    if (numberOfMessages.get()== totalMessagePerChat){
                         websocket.close();
-                        context.assertTrue(ok);
                         done.addAndGet(1);
+                        // When ALL users recive all messages
                         if (done.get()==users){
-                            System.out.println(msg.get() + "/" + totalMessages + "/" + Integer.toString(sentMessages.get()));
-                            //long time = System.currentTimeMillis() - start;
-                            long time = times.get()/totalMessages;
-                            PrintWriter writer = null;
-                            try {
-                                writer = new PrintWriter(new FileOutputStream(new File("results.txt"), true));
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-//                            writer.append("Tiempo:  "+Long.toString(System.currentTimeMillis() - start) + "\n");
-//                            writer.append("Tiempo medio:  "+Long.toString(time) + "\n");
-                            writer.append(Long.toString(time) + "\n");
-                            writer.close();
-                            System.out.println("Tiempo:  " + (System.currentTimeMillis() - start));
-                            System.out.println("Tiempo medio: "+ time);
-                            System.out.println("Complete");
-                            context.asyncAssertSuccess();
+                            long avg_time = times.get()/totalMessages;
+                            System.out.print(avg_time);
+//                            System.out.println("Nº Chats: "+numChats);
+//                            System.out.println("Nº Users per chat: "+usersPerChat);
+//                            System.out.println("Sent messages: "+Integer.toString(sentMessages.get()));
+//                            System.out.println("Total time: "+ times.get());
+//                            System.out.println("Average time: "+ avg_time);
+                            total_avg_time += avg_time;
+                            async.complete();
                         }
                     }
                 });
                 
+                // CONNECTION MESSAGE
                 JsonObject json = new JsonObject();
                 json.put("chat", chatName);
                 json.put("user", name);
                 websocket.writeFinalTextFrame(json.toString());
 
-                //SENDER ADDED
+                //SENDER 
+                
                 vertx.setTimer(2000, (Long arg0) -> {
                     if (start == 0) {
                         start = System.currentTimeMillis();
@@ -161,116 +217,20 @@ public class ChatTest {
                         }
                     });
                 });
-                ////////////////////////////////////////////////////////
+                
+                // TIME-OUT
 
                 vertx.setTimer(totalTime, (Long arg0) -> {
-                    //System.out.println(msg.get() + "/"+msg2+"/" + totalMessages + "/" + Integer.toString(sentMessages.get()));
+                    System.out.println("TIME OUT");
                     System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
-                    System.out.println("GLOBAL MESSAGES:"+msg.get());
-                    for (int i = 0; i < recievedMessages.length; i++) {
-                        if (recievedMessages[i] == false) {
-                            //System.out.println("Falta: " + Integer.toString(i));
-                        }
-                    }
                     websocket.close();
                     done.addAndGet(1);
                     if (done.get()==users){
-                        context.fail();
-                        context.asyncAssertFailure();
+                        async.complete();
                     }
                 });
 
         });
     }
-    
-    @Test
-    public void test1(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test2(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test3(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test4(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test5(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test6(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test7(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test8(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test01(TestContext context) {
-        test(context);
-    }
-
-    @Test
-    public void test0(TestContext context) {
-        test(context);
-    }
-    
-//    final static int numTest = 2;
-//
-//    @Test
-//    @SuppressWarnings("CallToPrintStackTrace")
-//    public void test9() throws FileNotFoundException {
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        long result = 0;
-//        BufferedReader br = new BufferedReader(new FileReader("results.txt"));
-//        try {
-//            StringBuilder sb = new StringBuilder();
-//            String line = br.readLine();
-//
-//            while (line != null) {
-//                System.out.print(result + " + " + line);
-//                result += Long.parseLong(line);
-//                System.out.println(" = " + result);
-//                line = br.readLine();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                br.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        try (PrintWriter writer2 = new PrintWriter(new FileOutputStream(new File("results2.txt"), true))) {
-//            System.out.println(result / numTest);
-//            writer2.append(Integer.toString(users) + " " + Long.toString(result / numTest) + "\n");
-//        }
-//        System.out.println("COMPLETE!");
-//    }
 
 }
