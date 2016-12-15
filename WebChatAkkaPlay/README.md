@@ -2,9 +2,11 @@
 
 This is a distributed WebChat with playFramework and akka.
 
-## SetUp
+# Prerequisites
 
-* Because SBT can't resolve some dependences, you need to start a server with activator to resolve this dependences before importing the project in your ide like a SBT project.
+* Java 8
+
+## SetUp
 
 ```
 git clone https://github.com/Maes95/TFG-WebChat.git
