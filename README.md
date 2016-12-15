@@ -9,7 +9,7 @@ The proyects which participates in this comparison are:
 
 ## How test web servers
 
-Clone de proyect
+Clone the proyect
 ```sh
 $ git clone https://github.com/Maes95/TFG-WebChat.git
 ```
