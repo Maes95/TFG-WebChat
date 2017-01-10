@@ -9,11 +9,11 @@ This is a distributed WebChat with Vertx 3.
 
 ## SetUp
 
-```
-git clone https://github.com/Maes95/TFG-WebChat.git
-cd TFG-WebChat/WebChatVertxWebSockets
-mvn install
-./ run.sh
+```sh
+$ git clone https://github.com/Maes95/TFG-WebChat.git
+$ cd TFG-WebChat/WebChatVertxWebSockets
+$ mvn install
+$ ./ run.sh
 ```
 
 
