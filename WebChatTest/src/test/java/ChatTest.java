@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.globex.app.ChatTestResultsServer;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
@@ -8,6 +9,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunnerWithParametersFactory;
 import java.io.IOException;
+import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +26,7 @@ import org.junit.runners.Parameterized.Parameters;
 @Parameterized.UseParametersRunnerFactory(VertxUnitRunnerWithParametersFactory.class)
 public class ChatTest {
     
-    private static final long REPEAT_LIMIT = 10;
+    public static final long REPEAT_LIMIT = 10;
     private static final int NUM_MESSAGES = 500;
     private static final int TIME = 5000;
     private static final int EXTRA = 180000;
@@ -43,13 +45,17 @@ public class ChatTest {
     AtomicInteger sentMessages = new AtomicInteger(0);
     
     long start = 0;
+    
+    public static ArrayList<Result> results = new ArrayList<>();
+    
+    private static final Result currentResult = new Result();
      
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {   
                  // N users / 1 chat room
                  { 10, 1 }, { 20, 1 }, { 30, 1 },
-                 { 40, 1 }, { 50, 1 }, { 60, 1 }, { 70, 1 }, 
+                 { 40, 1 }, { 50, 1 }, { 60, 1 }, 
                  // N users / 2 chat rooms
                  { 20, 2 }, { 25, 2 }, { 30, 2 }, { 35, 2 },
                  // N users / 4 chat rooms
@@ -80,6 +86,8 @@ public class ChatTest {
         System.out.println("-------------------------------------------------------");
         System.out.println("Nº Chats: "+numChats);
         System.out.print("Nº Users per chat: "+usersPerChat);
+        ChatTest.currentResult.setUp(numChats, usersPerChat);
+        ChatTestResultsServer.setUp();
         test(context, 1);
     }
     
@@ -131,6 +139,7 @@ public class ChatTest {
     @Test
     public void testZ(TestContext context) {
         System.out.println("\nAverage time: "+total_avg_time/REPEAT_LIMIT);
+        ChatTestResultsServer.sendResult(ChatTest.currentResult.toJson());
         total_avg_time = 0;
         context.assertTrue(true);
     }
@@ -177,12 +186,8 @@ public class ChatTest {
                         // When ALL users recive all messages
                         if (done.get()==users){
                             long avg_time = times.get()/totalMessages;
+                            ChatTest.currentResult.addTime(avg_time);
                             System.out.print(avg_time);
-//                            System.out.println("Nº Chats: "+numChats);
-//                            System.out.println("Nº Users per chat: "+usersPerChat);
-//                            System.out.println("Sent messages: "+Integer.toString(sentMessages.get()));
-//                            System.out.println("Total time: "+ times.get());
-//                            System.out.println("Average time: "+ avg_time);
                             total_avg_time += avg_time;
                             async.complete();
                         }
@@ -201,15 +206,16 @@ public class ChatTest {
                     if (start == 0) {
                         start = System.currentTimeMillis();
                     }
+                    JsonObject json2 = new JsonObject();
+                    json2.put("user", name);
+                    json2.put("message", Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis());
                     final long timerID = vertx.setPeriodic(sendTime / messages, new Handler<Long>() {
                         int i = 0;
                         
                         @Override
                         public void handle(Long arg0) {
                             if (i < messages) {
-                                JsonObject json2 = new JsonObject();
-                                json2.put("user", name);
-                                json2.put("message", Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis());
+                                
                                 websocket.writeFinalTextFrame(json2.toString());
                                 i++;
                             }
@@ -220,15 +226,15 @@ public class ChatTest {
                 
                 // TIME-OUT
 
-                vertx.setTimer(totalTime, (Long arg0) -> {
-                    System.out.println("TIME OUT");
-                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
-                    websocket.close();
-                    done.addAndGet(1);
-                    if (done.get()==users){
-                        async.complete();
-                    }
-                });
+//                vertx.setTimer(totalTime, (Long arg0) -> {
+//                    System.out.println("TIME OUT");
+//                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
+//                    websocket.close();
+//                    done.addAndGet(1);
+//                    if (done.get()==users){
+//                        async.complete();
+//                    }
+//                });
 
         });
     }

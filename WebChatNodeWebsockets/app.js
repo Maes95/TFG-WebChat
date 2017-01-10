@@ -23,10 +23,11 @@ wss.on('connection', (ws) => {
 		if(message['message']){
 			// Normal message
       message.name = message.user;
+      var stringMessage = JSON.stringify(message)
 			wss.clients
-      .filter( (client) => client.chat == users.get(message.user) )
+      .filter( (client) => client.chat == users.get(message.user))
       .forEach( (client) => {
-        client.send(JSON.stringify(message));
+        client.send(stringMessage);
       });
 		}else{
 			// First message (first connection)
