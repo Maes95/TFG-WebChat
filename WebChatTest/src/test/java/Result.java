@@ -11,6 +11,7 @@ public class Result {
     
     private int chatSize;
     private int numUsers;
+    private String app;
     private ArrayList<Long> times;
     
     public Result(){}
@@ -27,6 +28,7 @@ public class Result {
         }
         avg_time = avg_time / ChatTest.REPEAT_LIMIT;
         response.put("avgTime", avg_time);
+        response.put("app", this.app);
         response.put("times", timesList);
         return response;
     }
@@ -35,10 +37,11 @@ public class Result {
         this.times.add(time);
     }    
 
-    public void setUp(int chatSize, int numUsers) {        
+    public void setUp(int chatSize, int numUsers, String app) {        
         this.times = new ArrayList<>();
         this.chatSize = chatSize;
         this.numUsers = numUsers;
+        this.app = app;
     }
 
 }

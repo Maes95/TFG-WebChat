@@ -5,20 +5,95 @@
     <!-- External Javascript -->
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/sockjs/1/sockjs.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	
     <!-- External Styles -->
     <link rel="stylesheet" href="http://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css">
-
+	
     <!-- Local Javascript -->
     <script src="./vertx-eventbus.js"></script>
     <script src="./client.js"></script>
+	<script src="./angular-chart.js"></script>
+	
     <!-- Local Styles -->
     <link rel="stylesheet" href="./style.css">
+	
 </head>
 
 <body>
-    <div class="main">
+	<div ng-app="client" ng-controller="resultsController" class="main">
+		<div class="ui one column grid">
+		  <div ng-repeat="item in graphics" class="column">
+			  
+			<div class="ui top attached segment">
+			  <h2 class="ui header">{{ item.title }}</h2>
+			</div>
+			  
+			<div class="ui two column grid attached segment">
+				<!-- GRAPHIC -->
+				<div class="column">
+					<canvas id="line" class="chart chart-line" 
+							chart-data="item.data"
+							chart-labels="item.labels" 
+							chart-series="item.series" 
+							chart-click="onClick" 
+							chart-colors="colors"
+							chart-options="options"
+							chart-dataset-override="datasetOverride">
+					</canvas>
+				</div>
+				<!-- DATA -->
+				<div class="column">
+					<div class="ui pointing secondary menu">
+					  <a ng-repeat="app in apps" 
+						 ng-click="_tabApp(app.index)"
+						 ng-class="{active : tabApp == app.index}" 
+						 ng-style="tabApp == app.index && {'color': colors[$index], 'border-color': colors[$index]} || {}"
+						 class="item">{{ app.name }}</a>
+					</div>
+					<div ng-repeat="app in apps" class="ui tab" ng-class="{active : tabApp == app.index}">
+					  <div class="ui top attached tabular menu">
+						<a ng-repeat="label in item.labels" 
+						   ng-click="_tabLabel(item.chatSize, $index)"
+						   ng-class="{active : item.tab == $index}" 
+						class="item">
+							{{ label }}
+							<span ng-show="item.tab == $index">&nbsp;usuarios</span>
+						</a>
+					  </div>
+					  <div ng-repeat="label in item.labels" ng-class="{active : item.tab == $index}" class="ui bottom attached tab segment">
+						  <div ng-repeat="result in app.results | filter:{numUsers: label, chatSize: item.chatSize}">
+						  	  
+							<h3 class="ui header">Resultados de los intentos</h3>
+							<table class="ui celled small table">
+							  <tbody>
+								<tr>
+								  <td class="collapsing">Nº intento</td>
+								  <td ng-repeat="time in result.times track by $index">{{ $index + 1 }}</td>
+								</tr>
+								<tr>
+								  <td class="collapsing">Tiempo (ms)</td>
+								  <td ng-repeat="time in result.times track by $index">{{ time }}</td>
+								</tr>
+							  </tbody>
+							</table>
+							  
+							<h3 class="ui header">
+								Uso de la memoria
+								<div class="sub header">Proximamente</div>  
+							</h3>
+							 
+							
+						  </div>
+					  </div>
+					</div>
+				</div>
+			</div>
 
-    </div>
+		  </div>
+		</div>
+	</div>
 </body>
 
 </html>

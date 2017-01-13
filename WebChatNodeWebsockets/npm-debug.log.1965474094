@@ -1,0 +1,27 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start' ]
+2 info using npm@3.6.0
+3 info using node@v5.6.0
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle WebChatNode@0.1.0~prestart: WebChatNode@0.1.0
+6 silly lifecycle WebChatNode@0.1.0~prestart: no script for prestart, continuing
+7 info lifecycle WebChatNode@0.1.0~start: WebChatNode@0.1.0
+8 verbose lifecycle WebChatNode@0.1.0~start: unsafe-perm in lifecycle true
+9 verbose lifecycle WebChatNode@0.1.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/home/michel/Escritorio/TFG-WebChat/WebChatNodeWebsockets/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/michel/.rvm/bin:/home/michel/.rvm/bin
+10 verbose lifecycle WebChatNode@0.1.0~start: CWD: /home/michel/Escritorio/TFG-WebChat/WebChatNodeWebsockets
+11 silly lifecycle WebChatNode@0.1.0~start: Args: [ '-c', 'node app.js' ]
+12 verbose stack Error: write EPIPE
+12 verbose stack     at exports._errnoException (util.js:856:11)
+12 verbose stack     at WriteWrap.afterWrite (net.js:763:14)
+13 verbose cwd /home/michel/Escritorio/TFG-WebChat/WebChatNodeWebsockets
+14 error Linux 3.16.0-38-generic
+15 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
+16 error node v5.6.0
+17 error npm  v3.6.0
+18 error code EPIPE
+19 error errno EPIPE
+20 error syscall write
+21 error write EPIPE
+22 error If you need help, you may report this error at:
+22 error     <https://github.com/npm/npm/issues>
+23 verbose exit [ 1, true ]
