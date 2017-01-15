@@ -112,9 +112,7 @@ public final class ChatTest {
              System.out.println(app);
              process = new ProcessBuilder("./run.sh").directory(new File(path+folderName)).start();
              Thread.sleep(2000);
-         } catch (IOException ex) {
-             Logger.getLogger(ChatTest.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (InterruptedException ex) {
+         } catch (IOException | InterruptedException ex) {
              Logger.getLogger(ChatTest.class.getName()).log(Level.SEVERE, null, ex);
          }
      }
