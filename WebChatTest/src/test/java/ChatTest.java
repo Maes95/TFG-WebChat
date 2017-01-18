@@ -58,7 +58,7 @@ public final class ChatTest {
          return Arrays.asList(new Object[][] {
                   // N users / 1 chat room
                   // { 10, 1, "SpringTomcat" }, { 20, 1, "SpringTomcat" }, { 30, 1, "SpringTomcat" },
-                  { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
+                  // { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
                   // N users / 2 chat rooms
                   // { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
                   // N users / 4 chat rooms
@@ -66,7 +66,7 @@ public final class ChatTest {
 
                   // N users / 1 chat room
                   // { 10, 1, "Node" }, { 20, 1, "Node" }, { 30, 1, "Node" },
-                  { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" },
+                  // { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" },
                   // N users / 2 chat rooms
                   // { 20, 2, "Node" }, { 25, 2, "Node" }, { 30, 2, "Node" }, { 35, 2, "Node" },
                   // N users / 4 chat rooms
@@ -74,7 +74,7 @@ public final class ChatTest {
 
                   // // N users / 1 chat room
                   // { 10, 1, "Vertx" }, { 20, 1, "Vertx" }, { 30, 1, "Vertx" },
-                  // { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
+                  { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
                   // // N users / 2 chat rooms
                   // { 20, 2, "Vertx" }, { 25, 2, "Vertx" }, { 30, 2, "Vertx" }, { 35, 2, "Vertx" },
                   // // N users / 4 chat rooms
@@ -255,7 +255,8 @@ public final class ChatTest {
                 JsonObject json = new JsonObject();
                 json.put("chat", chatName);
                 json.put("name", name);
-                websocket.writeFinalTextFrame(json.toString());
+
+                websocket.writeFinalTextFrame("{\"chat\":\""+chatName+"\",\"name\":\""+name+"\"}");
 
                 //SENDER
 
