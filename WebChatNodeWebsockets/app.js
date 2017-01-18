@@ -22,28 +22,28 @@ wss.on('connection', (ws) => {
 		var message = JSON.parse(data);
 		if(message['message']){
 			// Normal message
-      message.name = message.user;
+      message.name = message['name'];
       var stringMessage = JSON.stringify(message)
 			wss.clients
-      .filter( (client) => client.chat == users.get(message.user))
+      .filter( (client) => client.chat == users.get(message['name']))
       .forEach( (client) => {
         client.send(stringMessage);
       });
 		}else{
 			// First message (first connection)
-      if(users.has(message.user)){
+      if(users.has(message['name'])){
         ws.send(JSON.stringify({ type: 'system', message: 'User already exist' }));
         ws.close();
       }else{
-        users.set(message.user, message.chat);
+        users.set(message['name'], message.chat);
         ws.chat = message.chat;
-        ws.user = message.user;
+        ws['name'] = message['name'];
       }
 		}
 	});
 
   ws.on('close', () => {
-    users.delete(ws.user);
+    users.delete(ws['name']);
     console.log('Client disconnected')
   });
 
