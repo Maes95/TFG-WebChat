@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -12,32 +13,41 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.json.JSONObject;
+
 @ServerEndpoint("/chat")
 public class ChatManager {
 	
-	private static Map<String, Session> users = Collections.synchronizedMap(new HashMap<>());
+	private static Map<String, User> users = Collections.synchronizedMap(new HashMap<>());
+	private static final String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
+	
+	private User user;
 	
 	@OnOpen
     public void open(Session session) {
-		synchronized (users) {
-			users.put(session.getId(),session);
-		}
+		this.user = new User(session);
+		System.out.println("New user");
 	}
 
 	@OnMessage
 	public void handleMessage(Session session, String message) throws IOException {
-		// Broadcast message
-		synchronized (users) {
-			for(Session s: users.values()){
-				s.getBasicRemote().sendText(message);
+
+		if(this.user.isValid()){
+			// Broadcast message
+			synchronized (users) {
+				users.values().forEach( user -> user.send(message, this.user.getChat()) );
 			}
+		}else{
+			// Connect message
+			newUser(message);
 		}
+
 	}
 	
 	@OnClose
     public void close(Session session){
 		synchronized (users) {
-			users.remove(session.getId());
+			users.remove(this.user.getName());
 		}
 		try {
 			session.close();
@@ -49,8 +59,22 @@ public class ChatManager {
 	
 	@OnError
 	public void onError(Session session, Throwable thr) {
-		System.err.println("BROKEN PIPE");
+		System.out.println("Cliente "+session.getId()+" desconectado");
+		thr.printStackTrace();
 	}
 		
+	private void newUser(String message){
+		JSONObject jsonMessage = new JSONObject(message);
+		String chatName = jsonMessage.getString("chat");
+		String name = jsonMessage.getString("name");
+		if(users.containsKey(name)){
+			this.user.send(DUPLICATE_MSG);
+		}else{
+			this.user.setUp(name, chatName);
+			synchronized (users) {
+				users.put(name, this.user);
+			}
+		}
+	}
 }
 

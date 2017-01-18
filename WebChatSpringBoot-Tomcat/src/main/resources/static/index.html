@@ -47,40 +47,26 @@
 			if(chat == null || chat === ''){
 				chat = "chat";
 			}
-			var user = prompt("User name", "user");
-			if(user == null || user === ''){
-				user = "user";
+			var name = prompt("User name", "name");
+			if(name == null || name === ''){
+				name = "name";
 			}
-			//create a new WebSocket object.
-		//	var wsUri = "ws://"+document.location.host+"/chat";
+
 			var wsUri = "ws://localhost:9000/chat";
 			websocket = new WebSocket(wsUri);
 		 	websocket.onopen = function(ev) { // connection is open
 				$('#message_box')
 						.append(
 								"<div class=\"system_msg\">Connected!</div>"); //notify user
-				//prepare json data
-				var msg = {
-					chat : chat,
-					user : user
-				};
-				//convert and send data to server
-				websocket.send(JSON.stringify(msg));
+				websocket.send(JSON.stringify({ chat : chat, name : name }));
 			}
-			$('#send-btn').click(function() { //use clicks message send button
-				var mymessage = $('#message').val(); //get message text
-				//var myname = $('#name').val(); //get user name
-				if (mymessage == "") { //emtpy message?
+			$('#send-btn').click(function() { 
+				var mymessage = $('#message').val(); 
+				if (mymessage == "") { 
 					alert("Enter Some message Please!");
 					return;
 				}
-				//prepare json data
-				var msg = {
-					message : mymessage,
-					user : user
-				};
-				//convert and send data to server
-				websocket.send(JSON.stringify(msg));
+				websocket.send(JSON.stringify({ message : mymessage, name : name }));
 			});
 			//#### Message received from server?
 			websocket.onmessage = function(ev) {
@@ -88,7 +74,7 @@
 				var type = msg.type; //message type
 				var umsg = msg.message; //message text
 				var uname = msg.name; //user name
-				var ucolor = msg.color; //color
+
 				if (type == 'system') {
 					$('#message_box').append(
 							"<div class=\"system_msg\">" + umsg
@@ -96,7 +82,7 @@
 				} else {
 					$('#message_box')
 					.append(
-							"<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"
+							"<div><span class=\"user_name\" >"
 									+ uname
 									+ "</span> : <span class=\"user_message\">"
 									+ umsg
