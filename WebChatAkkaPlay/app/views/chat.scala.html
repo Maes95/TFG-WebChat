@@ -57,9 +57,9 @@
 			if(chat == null || chat === ''){
 				chat = "chat";
 			}
-			var user = prompt("User name", "user");
+			var user = prompt("User name", "name");
 			if(user == null || user === ''){
-				user = "user";
+				user = "name";
 			}
 			//connection(user, chat, "ws://@ip/chat")
 			var dir= "ws://"+String(ips[0])+":9000/chat";
@@ -80,7 +80,7 @@
 				//prepare json data
 				var msg = {
 					chat : chat,
-					user : user
+					name : user
 				};
 				//convert and send data to server
 				websocket.send(JSON.stringify(msg));
@@ -146,7 +146,7 @@
 				//prepare json data
 				var msg = {
 					message : mymessage,
-					user : user
+					name : user
 				};
 				//convert and send data to server
 

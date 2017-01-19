@@ -51,13 +51,13 @@ public class User extends UntypedActor {
             }
             //Initial message. Send the chat name to ChatManager
             if (!json.has("message")){
-                username = json.get("user").asText();
+                username = json.get("name").asText();
                 GetChat getChat = new GetChat(json.get("chat").asText());
                 chatManager.tell(getChat, getSelf());
             }
             //Normal message. Send message to chat
             else{
-                Message msg = new Message(json.get("user").asText(),json.get("message").asText(),color);
+                Message msg = new Message(json.get("name").asText(),json.get("message").asText(),color);
                 //To avoid the first messages to be sent before the chat actorRef is received
                 if (chat!= null){
                     chat.tell(msg, getSelf());
@@ -111,4 +111,3 @@ public class User extends UntypedActor {
         return color;
     }
 }
-
