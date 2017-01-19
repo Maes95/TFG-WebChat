@@ -2,7 +2,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globex.app.ChatTestResultsServer;
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.Async;
@@ -74,7 +73,7 @@ public final class ChatTest {
 
                   // // N users / 1 chat room
                   // { 10, 1, "Vertx" }, { 20, 1, "Vertx" }, { 30, 1, "Vertx" },
-                  { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
+                  // { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
                   // // N users / 2 chat rooms
                   // { 20, 2, "Vertx" }, { 25, 2, "Vertx" }, { 30, 2, "Vertx" }, { 35, 2, "Vertx" },
                   // // N users / 4 chat rooms
@@ -121,7 +120,7 @@ public final class ChatTest {
          try {
              System.out.println(app);
              process = new ProcessBuilder("./run.sh").directory(new File(path+folderName)).start();
-             Thread.sleep(10000);
+             Thread.sleep(1000);
          } catch (IOException | InterruptedException ex) {
              Logger.getLogger(ChatTest.class.getName()).log(Level.SEVERE, null, ex);
          }
@@ -252,9 +251,6 @@ public final class ChatTest {
                 });
 
                 // CONNECTION MESSAGE
-                JsonObject json = new JsonObject();
-                json.put("chat", chatName);
-                json.put("name", name);
 
                 websocket.writeFinalTextFrame("{\"chat\":\""+chatName+"\",\"name\":\""+name+"\"}");
 
@@ -270,10 +266,7 @@ public final class ChatTest {
                         @Override
                         public void handle(Long arg0) {
                             if (i < messages) {
-                                JsonObject json2 = new JsonObject();
-                                json2.put("name", name);
-                                json2.put("message", Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis());
-                                websocket.writeFinalTextFrame(json2.toString());
+                                websocket.writeFinalTextFrame("{\"name\":\""+name+"\",\"message\":\""+Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis()+"\"}");
                                 i++;
                             }
 

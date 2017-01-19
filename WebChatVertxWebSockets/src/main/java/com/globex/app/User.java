@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.globex.app;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.http.ServerWebSocket;
 
 /**
  *
@@ -15,26 +10,27 @@ import io.vertx.core.json.JsonObject;
 
 public class User extends AbstractVerticle{
 	
-	String name;
-	String chat;
+	private final String name;
+	private final String chat;
+        private final ServerWebSocket wss;
 	
-	public User(String name, String chat) {
+	public User(String name, String chat, ServerWebSocket wss) {
             this.name = name;
             this.chat = chat;
+            this.wss = wss;
 	}
 	
         @Override
 	public void start(){
+            // Listen for messages from his chat
             vertx.eventBus().consumer(chat).handler( data -> {
-                
-                JsonObject message = (JsonObject) data.body();
-                JsonObject respuesta = new JsonObject();
-                respuesta.put("name", message.getString("user"));
-                respuesta.put("color", message.getString("color"));
-                respuesta.put("message", message.getString("message"));
-                respuesta.put("sender", name);
-
-                vertx.eventBus().send(name, respuesta);
+                try{
+                    // Try to send the message
+                    this.wss.writeFinalTextFrame(data.body().toString());
+                }catch(IllegalStateException e){
+                    // The user is offline, so I delete it.
+                    vertx.eventBus().publish("delete.user", name);
+                } 
             });
 	}
 }
