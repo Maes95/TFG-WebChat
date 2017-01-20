@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
@@ -51,35 +52,83 @@ public final class ChatTest {
     public static ArrayList<Result> results = new ArrayList<>();
 
     private static final Result currentResult = new Result();
+    
+//                    { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
+//                { 40, 1, "SpringJetty" }, { 50, 1, "SpringJetty" }, { 60, 1, "SpringJetty" },
+//                { 40, 1, "SpringUndertow" }, { 50, 1, "SpringUndertow" }, { 60, 1, "SpringUndertow" },
+//                { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
+//                { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" }
 
-     @Parameters
-     public static Collection<Object[]> data() {
-         return Arrays.asList(new Object[][] {
-                  // N users / 1 chat room
-                  // { 10, 1, "SpringTomcat" }, { 20, 1, "SpringTomcat" }, { 30, 1, "SpringTomcat" },
-                  // { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
-                  // N users / 2 chat rooms
-                  // { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
-                  // N users / 4 chat rooms
-                  // { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
+    @Parameters
+    public static Collection<Object[]> data() {
+        // Names of aplications which participate in the test
+        String[] _apps = {"Node", "Vertx", "SpringTomcat", "SpringJetty", "SpringUndertow"};
+        // Number of chat romms 
+        int[] _numChats = { 1, 2, 4 };
+        // Number of users in chat 
+        int[][] _numUsersChat = {
+            // In 1 chat
+            { 10, 20, 30, 40, 50, 60 },
+            // In 2 chats
+            { 20, 25, 30, 35 },
+            // In 3 chats
+            {},
+            // in 4 chats
+            { 10, 12, 15, 17 }
+        };
+        List<Object[]> params = new ArrayList<>();
+        for (String app_name : _apps) {
+            for(int _numC: _numChats){
+                for(int _numU: _numUsersChat[_numC - 1]){
+                    Object[] o = {_numU, _numC, app_name};
+                    params.add(o);
+                }
 
-                  // N users / 1 chat room
-                  // { 10, 1, "Node" }, { 20, 1, "Node" }, { 30, 1, "Node" },
-                  // { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" },
-                  // N users / 2 chat rooms
-                  // { 20, 2, "Node" }, { 25, 2, "Node" }, { 30, 2, "Node" }, { 35, 2, "Node" },
-                  // N users / 4 chat rooms
-                  // { 10, 4, "Node" }, { 12, 4, "Node" }, { 15, 4, "Node" }, { 17, 4, "Node" },
-
-                  // // N users / 1 chat room
-                  // { 10, 1, "Vertx" }, { 20, 1, "Vertx" }, { 30, 1, "Vertx" },
-                  // { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
-                  // // N users / 2 chat rooms
-                  // { 20, 2, "Vertx" }, { 25, 2, "Vertx" }, { 30, 2, "Vertx" }, { 35, 2, "Vertx" },
-                  // // N users / 4 chat rooms
-                  // { 10, 4, "Vertx" }, { 12, 4, "Vertx" }, { 15, 4, "Vertx" }, { 17, 4, "Vertx" },
-         });
-     }
+            }
+        }
+        return params;
+//       return Arrays.asList(new Object[][] {
+//               // N users / 1 chat room
+//               { 10, 1, "SpringTomcat" }, { 20, 1, "" }, { 30, 1, "SpringTomcat" },
+//               { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
+//               // N users / 2 chat rooms
+//               { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
+//               // N users / 4 chat rooms
+//               { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
+//
+//               // N users / 1 chat room
+//               { 10, 1, "SpringJetty" }, { 20, 1, "SpringTomcat" }, { 30, 1, "SpringTomcat" },
+//               { 40, 1, "SpringJetty" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
+//               // N users / 2 chat rooms
+//               { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
+//               // N users / 4 chat rooms
+//               { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
+//
+//               // N users / 1 chat room
+//               { 10, 1, "SpringTomcat" }, { 20, 1, "SpringTomcat" }, { 30, 1, "SpringTomcat" },
+//               { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
+//               // N users / 2 chat rooms
+//               { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
+//               // N users / 4 chat rooms
+//               { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
+//
+//               // N users / 1 chat room
+//               { 10, 1, "Node" }, { 20, 1, "Node" }, { 30, 1, "Node" },
+//               { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" },
+//               // N users / 2 chat rooms
+//               { 20, 2, "Node" }, { 25, 2, "Node" }, { 30, 2, "Node" }, { 35, 2, "Node" },
+//               // N users / 4 chat rooms
+//               { 10, 4, "Node" }, { 12, 4, "Node" }, { 15, 4, "Node" }, { 17, 4, "Node" },
+//
+//               // N users / 1 chat room
+//               { 10, 1, "Vertx" }, { 20, 1, "Vertx" }, { 30, 1, "Vertx" },
+//               { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
+//               // N users / 2 chat rooms
+//               { 20, 2, "Vertx" }, { 25, 2, "Vertx" }, { 30, 2, "Vertx" }, { 35, 2, "Vertx" },
+//               // N users / 4 chat rooms
+//               { 10, 4, "Vertx" }, { 12, 4, "Vertx" }, { 15, 4, "Vertx" }, { 17, 4, "Vertx" },
+//        });
+    }
 
      public static Process process = null;
      public static String app = null;
@@ -103,14 +152,18 @@ public final class ChatTest {
      public void newServer(){
          System.out.println("New server");
          switch(app){
-             case "Node": runServerSH("WebChatNodeWebsockets");
-                 break;
-             case "Akka": runServerSH("WebChatAkkaPlay");
-                 break;
-             case "Vertx": runServerSH("WebChatVertxWebSockets");
-                 break;
-             case "SpringTomcat": runServerSH("WebChatSpringBoot-Tomcat");
-                 break;
+            case "Node": runServerSH("WebChatNodeWebsockets");
+                break;
+            case "Akka": runServerSH("WebChatAkkaPlay");
+                break;
+            case "Vertx": runServerSH("WebChatVertxWebSockets");
+                break;
+            case "SpringTomcat": runServerSH("WebChatSpringBoot-Tomcat");
+                break;
+            case "SpringJetty": runServerSH("WebChatSpringBoot-Jetty");
+                break;
+            case "SpringUndertow": runServerSH("WebChatSpringBoot-Undertow");
+                break;
          }
      }
 
@@ -120,7 +173,7 @@ public final class ChatTest {
          try {
              System.out.println(app);
              process = new ProcessBuilder("./run.sh").directory(new File(path+folderName)).start();
-             Thread.sleep(1000);
+             Thread.sleep(5000);
          } catch (IOException | InterruptedException ex) {
              Logger.getLogger(ChatTest.class.getName()).log(Level.SEVERE, null, ex);
          }
