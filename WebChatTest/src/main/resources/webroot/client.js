@@ -1,7 +1,7 @@
 var app = angular.module("client", ['chart.js']);
 
 app.controller("resultsController", function($scope) {
-	
+
 	// OPEN CONECTION
 	var eb = new EventBus("/eventbus/");
 	eb.onopen = function () {
@@ -10,11 +10,11 @@ app.controller("resultsController", function($scope) {
 		addResult(message.body);
 	  });
 	};
-	
+
 	var n = 0;
-	$scope.apps = {};	
+	$scope.apps = {};
 	$scope.graphics = {};
-	
+
 	function addResult(result){
 		var chatSizeName = result.chatSize.toString();
 		// IF GRAFIC WITH N CHAT ROOMS EXISTS
@@ -31,7 +31,7 @@ app.controller("resultsController", function($scope) {
 		$scope.apps[result.app].results.push(result);
                 $scope.$apply();
 	}
-	
+
 	function newApp(app_name){
 		$scope.apps[app_name] = {
 			name: app_name,
@@ -44,7 +44,7 @@ app.controller("resultsController", function($scope) {
 			$scope.graphics[key].series.push(app_name);
 		}
 	}
-	
+
 	function newGraphic(chatSizeName){
 		$scope.graphics[chatSizeName] = {
 		  chatSize: Number(chatSizeName),
@@ -59,36 +59,35 @@ app.controller("resultsController", function($scope) {
 			$scope.graphics[chatSizeName].data.push([]);
 		}
 	}
-	
+
 	function newLabel(label, graphicName){
 		$scope.graphics[graphicName].labels.push(label);
 	}
-	
+
 	$scope.tabApp = 0;
-	$scope._tabApp = function(index){ 
+	$scope._tabApp = function(index){
 		$scope.tabApp = index; 
-		$('body').css('background-color', $scope.colors[index])
 	}
-	
+
 	$scope.tabLabel = 0;
 	$scope._tabLabel = function(name, index){ $scope.graphics[name].tab = index; }
-	
+
 	// CHART CONFIGURATION
-	
+
 	$scope.onClick = function (points, evt) {
 		console.log(points, evt);
 	};
-	
+
 	$scope.colors = [
 	  '#46BFBD', // GREEN
 	  '#6435C9', // VIOLET
-      '#ff6384',  // RED 
+      '#ff6384',  // RED
       '#FDB45C',  // ORANGE
       '#45b7cd'   // BLUE
     ];
-	
+
 	$scope.datasetOverride = [{lineTension: 0}];
-	
+
 	$scope.options = {
 		lineTension: 100,
         scales: {
@@ -113,9 +112,9 @@ app.controller("resultsController", function($scope) {
             }]
         }
 	};
-	
+
 	// ONLY FOR TESTING WITH NO BACKEND
-//	
+//
 //	var fake_results = [
 //		{"times":[2507,2505,2505,2505,2505,2505,2505,2505,2505,2505],"numUsers":10,"avgTime":2505,"chatSize":"1", app: "Node"},
 //		{"times":[2506,2507,2506,2507,2507,2507,2507,2507,2507,2516],"numUsers":20,"avgTime":2507,"chatSize":"1", app: "Node"},
@@ -131,7 +130,7 @@ app.controller("resultsController", function($scope) {
 //		{"times":[11554,11723,11177,11255,11316,11602,11799,11370,11229,11524],"numUsers":12,"avgTime":11454,"chatSize":"4", app: "Node"},
 //		{"times":[17137,17337,17480,17616,17205,17477,18075,16753,16956,17074],"numUsers":15,"avgTime":17311,"chatSize":"4", app: "Node"},
 //		{"times":[22301,21806,21095,20877,21624,21824,21707,21922,21624,20473],"numUsers":17,"avgTime":21525,"chatSize":"4", app: "Node"},
-//		
+//
 //		{"times":[2507,2505,2505,2505,2505,2505,2505,2505,2505,2505],"numUsers":10,"avgTime":1505,"chatSize":"1", app: "Akka"},
 //		{"times":[2506,2507,2506,2507,2507,2507,2507,2507,2507,2516],"numUsers":20,"avgTime":1507,"chatSize":"1", app: "Akka"},
 //		{"times":[4041,3966,4011,3974,3921,4169,4708,4127,4333,4111],"numUsers":30,"avgTime":3136,"chatSize":"1", app: "Akka"},
@@ -147,16 +146,14 @@ app.controller("resultsController", function($scope) {
 //		{"times":[17137,17337,17480,17616,17205,17477,18075,16753,16956,17074],"numUsers":15,"avgTime":7311,"chatSize":"4", app: "Akka"},
 //		{"times":[22301,21806,21095,20877,21624,21824,21707,21922,21624,20473],"numUsers":17,"avgTime":11525,"chatSize":"4", app: "Akka"}
 //	]
-//	
+//
 //	var i = 0;
-//	var interval = setInterval(function(){ 
+//	var interval = setInterval(function(){
 //		addResult(fake_results[i]);
 //		i++;
 //		if(i == fake_results.length){
 //			clearInterval(interval);
 //		};
 //	}, 1000);
-	
+
 });
-
-

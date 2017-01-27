@@ -52,17 +52,12 @@ public final class ChatTest {
     public static ArrayList<Result> results = new ArrayList<>();
 
     private static final Result currentResult = new Result();
-    
-//                    { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
-//                { 40, 1, "SpringJetty" }, { 50, 1, "SpringJetty" }, { 60, 1, "SpringJetty" },
-//                { 40, 1, "SpringUndertow" }, { 50, 1, "SpringUndertow" }, { 60, 1, "SpringUndertow" },
-//                { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
-//                { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" }
 
     @Parameters
     public static Collection<Object[]> data() {
         // Names of aplications which participate in the test
-        String[] _apps = {"Node", "Vertx", "SpringTomcat", "SpringJetty", "SpringUndertow"};
+        // String[] _apps = {"Node", "Vertx", "SpringTomcat", "SpringJetty", "SpringUndertow"};
+        String[] _apps = {"NodeCluster", "Node"};
         // Number of chat romms 
         int[] _numChats = { 1, 2, 4 };
         // Number of users in chat 
@@ -87,47 +82,6 @@ public final class ChatTest {
             }
         }
         return params;
-//       return Arrays.asList(new Object[][] {
-//               // N users / 1 chat room
-//               { 10, 1, "SpringTomcat" }, { 20, 1, "" }, { 30, 1, "SpringTomcat" },
-//               { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
-//               // N users / 2 chat rooms
-//               { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
-//               // N users / 4 chat rooms
-//               { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
-//
-//               // N users / 1 chat room
-//               { 10, 1, "SpringJetty" }, { 20, 1, "SpringTomcat" }, { 30, 1, "SpringTomcat" },
-//               { 40, 1, "SpringJetty" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
-//               // N users / 2 chat rooms
-//               { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
-//               // N users / 4 chat rooms
-//               { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
-//
-//               // N users / 1 chat room
-//               { 10, 1, "SpringTomcat" }, { 20, 1, "SpringTomcat" }, { 30, 1, "SpringTomcat" },
-//               { 40, 1, "SpringTomcat" }, { 50, 1, "SpringTomcat" }, { 60, 1, "SpringTomcat" },
-//               // N users / 2 chat rooms
-//               { 20, 2, "SpringTomcat" }, { 25, 2, "SpringTomcat" }, { 30, 2, "SpringTomcat" }, { 35, 2, "SpringTomcat" },
-//               // N users / 4 chat rooms
-//               { 10, 4, "SpringTomcat" }, { 12, 4, "SpringTomcat" }, { 15, 4, "SpringTomcat" }, { 17, 4, "SpringTomcat" },
-//
-//               // N users / 1 chat room
-//               { 10, 1, "Node" }, { 20, 1, "Node" }, { 30, 1, "Node" },
-//               { 40, 1, "Node" }, { 50, 1, "Node" }, { 60, 1, "Node" },
-//               // N users / 2 chat rooms
-//               { 20, 2, "Node" }, { 25, 2, "Node" }, { 30, 2, "Node" }, { 35, 2, "Node" },
-//               // N users / 4 chat rooms
-//               { 10, 4, "Node" }, { 12, 4, "Node" }, { 15, 4, "Node" }, { 17, 4, "Node" },
-//
-//               // N users / 1 chat room
-//               { 10, 1, "Vertx" }, { 20, 1, "Vertx" }, { 30, 1, "Vertx" },
-//               { 40, 1, "Vertx" }, { 50, 1, "Vertx" }, { 60, 1, "Vertx" },
-//               // N users / 2 chat rooms
-//               { 20, 2, "Vertx" }, { 25, 2, "Vertx" }, { 30, 2, "Vertx" }, { 35, 2, "Vertx" },
-//               // N users / 4 chat rooms
-//               { 10, 4, "Vertx" }, { 12, 4, "Vertx" }, { 15, 4, "Vertx" }, { 17, 4, "Vertx" },
-//        });
     }
 
      public static Process process = null;
@@ -154,6 +108,8 @@ public final class ChatTest {
          switch(app){
             case "Node": runServerSH("WebChatNodeWebsockets");
                 break;
+            case "NodeCluster": runServerSH("NodeJSCluster-WebChat");
+               break;
             case "Akka": runServerSH("WebChatAkkaPlay");
                 break;
             case "Vertx": runServerSH("WebChatVertxWebSockets");

@@ -1,0 +1,12 @@
+{
+  "name": "WebChatNode",
+  "description": "Simple WebChat build with Node.js, Express.js and Sockets.io",
+  "version": "0.1.0",
+  "dependencies": {
+    "express": "~4.13.1",
+    "ws": "1.1.0"
+  },
+  "scripts": {
+    "start": "node master.js"
+  }
+}
