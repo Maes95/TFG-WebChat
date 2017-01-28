@@ -49,7 +49,6 @@
 
 		.chat_window {
 	    position: absolute;
-	    max-width: 800px;
 	    border-radius: 10px;
 	    background-color: #fff;
 	    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
@@ -111,7 +110,9 @@
 		  float: left;
 		}
 		.messages .message.left .text_wrapper {
-		  background-color: #ffe6cb;
+		  /*background-color: #ffe6cb;*/
+			background-color: rgba(0,0,0,0.05);
+			padding-top: 10px;
 		  /*margin-left: 20px;*/
 		}
 		.messages .message.left .text_wrapper::after, .messages .message.left .text_wrapper::before {
@@ -119,7 +120,7 @@
 		  border-right-color: #ffe6cb;
 		}
 		.messages .message.left .text {
-		  color: #c48843;
+		  /*color: #c48843;*/
 		}
 		.messages .message.right .avatar {
 		  background-color: #fdbf68;
@@ -236,6 +237,12 @@
 		  text-align: center;
 		  padding-bottom: 1em;
 		}
+
+		.user_name {
+	    color: rgba(0,0,0,0.6);
+	    text-transform: capitalize;
+	    font-style: italic;
+		}
 	</style>
 </head>
 
@@ -263,6 +270,7 @@
 		<li class="message">
 			<!-- <div class="avatar"></div> -->
 			<div class="text_wrapper">
+				<span class="user_name"></span>
 				<div class="text"></div>
 			</div>
 		</li>
@@ -273,7 +281,16 @@
 	<!-- JAVASCRIPT -->
 
 	<script language="javascript" type="text/javascript">
+		var colors = [
+		  '#46BFBD',  // GREEN
+		  '#6435C9',  // VIOLET
+			'#ff6384',  // RED
+			'#FDB45C',  // ORANGE
+			'#45b7cd'   // BLUE
+		];
 		$(document).ready(function() {
+
+			var users = [];
 
 			var chat = prompt("Chat name", "Room 1");
 			if(chat == null || chat === ''){
@@ -304,11 +321,17 @@
 			websocket.onmessage = function(ev) {
 				var msg = JSON.parse(ev.data);
 
+				var color = getColor(msg.name);
+
 				if (msg.type == 'system') {
 					newSystemMessage(msg.message);
 				} else {
 					var $message = $('.message_template .message').clone();
           $message.addClass(msg.name == name ? 'right' : 'left').find('.text').html(msg.message);
+					if(msg.name != name){
+						$message.find('.user_name').html(msg.name);
+						$message.find('.user_name').css("color", color)
+					}
           $('.messages').append($message);
 				}
 				setTimeout(function () {
@@ -329,6 +352,16 @@
 				$('.messages')
 						.append(
 								"<div class=\"system_msg\">"+text+"</div>");
+			}
+
+			function getColor(_name){
+				if(_name == name) return;
+				var index = users.indexOf(_name);
+				if(index == -1){
+					users.push(_name);
+					index = users.indexOf(_name);
+				}
+				return colors[index % colors.length]
 			}
 
 		});

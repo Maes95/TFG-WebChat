@@ -58,9 +58,9 @@ public final class ChatTest {
         // Names of aplications which participate in the test
         // String[] _apps = {"Node", "Vertx", "SpringTomcat", "SpringJetty", "SpringUndertow"};
         String[] _apps = {"NodeCluster", "Node"};
-        // Number of chat romms 
+        // Number of chat romms
         int[] _numChats = { 1, 2, 4 };
-        // Number of users in chat 
+        // Number of users in chat
         int[][] _numUsersChat = {
             // In 1 chat
             { 10, 20, 30, 40, 50, 60 },
