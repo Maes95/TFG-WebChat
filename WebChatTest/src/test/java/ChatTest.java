@@ -57,7 +57,7 @@ public final class ChatTest {
     public static Collection<Object[]> data() {
         // Names of aplications which participate in the test
         // String[] _apps = {"Node", "Vertx", "SpringTomcat", "SpringJetty", "SpringUndertow"};
-        String[] _apps = {"NodeCluster", "Node"};
+        String[] _apps = {"Akka","NodeCluster"};
         // Number of chat romms
         int[] _numChats = { 1, 2, 4 };
         // Number of users in chat
