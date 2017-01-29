@@ -27,3 +27,7 @@ table td.collapsing{
 	font-weight: bold;
 	font-size: 0.9em !important;
 }
+
+.export-button{
+  float: right;
+}

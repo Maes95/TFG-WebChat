@@ -1,6 +1,8 @@
 angular.module("client").service('FakeResults', function() {
 
     // ONLY FOR TESTING WITH NO BACKEND
+    
+    DELAY = 500;
 
     var fake_results = [
       {"times":[2507,2505,2505,2505,2505,2505,2505,2505,2505,2505],"numUsers":10,"avgTime":2505,"chatSize":"1", app: "Node"},
@@ -42,7 +44,7 @@ angular.module("client").service('FakeResults', function() {
         if(i == fake_results.length){
           clearInterval(interval);
         };
-      }, 1000);
+      }, DELAY);
     }
 
 });

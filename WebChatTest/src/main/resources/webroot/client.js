@@ -1,4 +1,4 @@
-angular.module("client", ['chart.js']).controller("resultsController", function($scope, FakeResults) {
+angular.module("client", ['chart.js']).controller("resultsController", function($scope, $window, FakeResults) {
 
 	var n = 0;
 	$scope.apps = {};
@@ -79,12 +79,6 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	$scope.datasetOverride = [];
 
 	$scope.options = {
-
-		elements:{
-			line: {
-				lineTension: 0,
-			}
-		},
     scales: {
 			yAxes: [{
 					ticks: {
@@ -107,6 +101,27 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	      }]
     }
 	};
+
+	var css = "<link href='https://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css' rel='stylesheet'></link>";
+	$scope.exportToPDF = function(item){
+		$scope.currentItem = item;
+		$scope.chart_img = $('#'+$scope.currentItem.chatSize +'-size')[0].toDataURL("image/png");
+		setTimeout(function () {
+			var title = $scope.currentItem.title;
+			var printWindow = window.open("", "", "width=1000, height=800");
+			printWindow.document.write('<html><head><title>'+title+'</title>'+css+'</head><body onload="window.print()">' + document.getElementById('toPrint').innerHTML + '</body></html>');
+			printWindow.document.close();
+		}, 1000);
+
+	}
+
+	$scope.saveImg = function(item){
+		var link = document.createElement('a');
+		link.href = $('#'+item.chatSize +'-size')[0].toDataURL("image/png");
+		link.download = item.title+'.png';
+		document.body.appendChild(link);
+		link.click();
+	}
 
 	if(location.host){
 		// SERVER UP, OPEN CONNECTION
