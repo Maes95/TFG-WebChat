@@ -7,134 +7,97 @@ import io.vertx.core.Vertx;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunnerWithParametersFactory;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 @Parameterized.UseParametersRunnerFactory(VertxUnitRunnerWithParametersFactory.class)
 public final class ChatTest {
-
+    
+    // CONSTANTS
+    
     public static final long REPEAT_LIMIT = 10;
-    private static final int NUM_MESSAGES = 500;
-    private static final int TIME = 5000;
-    private static final int EXTRA = 180000;
-    private final static int PORT = 9000;
+    public static final int NUM_MESSAGES = 500;
+    public static final int TIME = 5000;
+    public static final int EXTRA = 180000;
+    public static final int PORT = 9000;
+    
+    
+    // STATIC CONTEXT 
 
+    private static WebChatAplication current_application = null;
     private static long total_avg_time = 0;
-
-    Vertx vertx;
-    int users;
-    int usersPerChat;
-    int numChats;
-    int totalMessagePerChat;
-
-    AtomicLong times = new AtomicLong(0);
-    AtomicInteger done = new AtomicInteger(0);
-    AtomicInteger sentMessages = new AtomicInteger(0);
-
-    long start = 0;
-
-    public static ArrayList<Result> results = new ArrayList<>();
-
     private static final Result currentResult = new Result();
+    
+    static{
+        // Set up results server
+        ChatTestResultsServer.setUp();
+    }
+    
+    // CLASS ATRIBUTTES
+    
+    private Vertx vertx;
+    private final int users;
+    private final int usersPerChat;
+    private final int numChats;
+    private final int totalMessagePerChat;
+    private final AtomicLong times = new AtomicLong(0);
+    private final AtomicInteger done = new AtomicInteger(0);
+    private final AtomicInteger sentMessages = new AtomicInteger(0);
+
+    private long start = 0;
 
     @Parameters
     public static Collection<Object[]> data() {
-        // Names of aplications which participate in the test
-        // String[] _apps = {"Node", "Vertx", "SpringTomcat", "SpringJetty", "SpringUndertow"};
-        String[] _apps = {"Akka","NodeCluster"};
-        // Number of chat romms
-        int[] _numChats = { 1, 2, 4 };
-        // Number of users in chat
-        int[][] _numUsersChat = {
-            // In 1 chat
-            { 10, 20, 30, 40, 50, 60 },
-            // In 2 chats
-            { 20, 25, 30, 35 },
-            // In 3 chats
-            {},
-            // in 4 chats
-            { 10, 12, 15, 17 }
-        };
-        List<Object[]> params = new ArrayList<>();
-        for (String app_name : _apps) {
-            for(int _numC: _numChats){
-                for(int _numU: _numUsersChat[_numC - 1]){
-                    Object[] o = {_numU, _numC, app_name};
-                    params.add(o);
-                }
+        
+        JSONObject properties = JSONFile.parse(System.getProperty("user.dir")+"/src/main/resources/config.json");
 
-            }
-        }
+        List<Object[]> params = new ArrayList<>();
+        
+        // Names of aplications which participate in the test
+        ((JSONArray) properties.get("apps")).forEach((_app) -> {
+            // Number of chat romms
+            ((JSONArray) properties.get("chats")).forEach((chat) -> {
+                JSONObject _chat = (JSONObject) chat;
+                int _numChats = _chat.getInt("numChats");
+                // Number of users in chat
+                ((JSONArray) _chat.get("users")).forEach((_numUsers) -> {
+                    Object[] o = { _numUsers, _numChats, _app };
+                    params.add(o);
+                });
+            });
+        });
+        
         return params;
     }
 
-     public static Process process = null;
-     public static String app = null;
 
-
-     public ChatTest(int usersPerChat, int numChats, String newApp){
-         if(app != null && !newApp.equals(app)){
-             process.destroy();
-             process = null;
-         }
-         app = newApp;
-         if(process == null){
-             this.newServer();
-         }
+    public ChatTest(int usersPerChat, int numChats, String newApp){
+        if(current_application != null && !newApp.equals(current_application.getAppName())){
+            current_application.destroy();
+            current_application = null;
+        }
+        if(current_application == null){
+            current_application = new WebChatAplication(newApp);
+            current_application.run();
+        }
         this.usersPerChat = usersPerChat;
         this.numChats = numChats;
         this.users = usersPerChat * numChats;
         this.totalMessagePerChat = (NUM_MESSAGES*users) / numChats;
     }
-
-     public void newServer(){
-         System.out.println("New server");
-         switch(app){
-            case "Node": runServerSH("WebChatNodeWebsockets");
-                break;
-            case "NodeCluster": runServerSH("NodeJSCluster-WebChat");
-               break;
-            case "Akka": runServerSH("WebChatAkkaPlay");
-                break;
-            case "Vertx": runServerSH("WebChatVertxWebSockets");
-                break;
-            case "SpringTomcat": runServerSH("WebChatSpringBoot-Tomcat");
-                break;
-            case "SpringJetty": runServerSH("WebChatSpringBoot-Jetty");
-                break;
-            case "SpringUndertow": runServerSH("WebChatSpringBoot-Undertow");
-                break;
-         }
-     }
-
-     private static final String path = System.getProperty("user.dir").substring(0,System.getProperty("user.dir").length() - 11);
-
-     public void runServerSH(String folderName){
-         try {
-             System.out.println(app);
-             process = new ProcessBuilder("./run.sh").directory(new File(path+folderName)).start();
-             Thread.sleep(5000);
-         } catch (IOException | InterruptedException ex) {
-             Logger.getLogger(ChatTest.class.getName()).log(Level.SEVERE, null, ex);
-         }
-     }
-
 
     @Before
     public void before(TestContext context) {
@@ -150,9 +113,9 @@ public final class ChatTest {
     public void test0(TestContext context) {
         System.out.println("-------------------------------------------------------");
         System.out.println("Nº Chats: "+numChats);
-        System.out.print("Nº Users per chat: "+usersPerChat);
-        ChatTest.currentResult.setUp(numChats, usersPerChat, app);
-        ChatTestResultsServer.setUp();
+        System.out.println("Nº Users per chat: "+usersPerChat);
+        System.out.println("-------------------------------------------------------");
+        ChatTest.currentResult.setUp(numChats, usersPerChat, current_application.getAppName());
         test(context, 1);
     }
 
@@ -203,7 +166,7 @@ public final class ChatTest {
 
     @Test
     public void testZ(TestContext context) {
-        System.out.println("\nAverage time: "+total_avg_time/REPEAT_LIMIT);
+        System.out.println("Average time: "+total_avg_time/REPEAT_LIMIT);
         ChatTestResultsServer.sendResult(ChatTest.currentResult.toJson());
         total_avg_time = 0;
         context.assertTrue(true);
@@ -211,7 +174,6 @@ public final class ChatTest {
 
     public void test(TestContext context, int attempt) {
         System.out.println("");
-        System.out.print("Attempt "+attempt+": ");
         Async async = context.async();
         start = 0;
         try {
@@ -221,13 +183,23 @@ public final class ChatTest {
         }
 
         for (int i = 0; i < users; i++) {
-            String chatName = "chat_"+(i%numChats);
-            newclient("User" + Double.toString(Math.random()), TIME + EXTRA, NUM_MESSAGES * usersPerChat * usersPerChat, NUM_MESSAGES, TIME, async,chatName);
+            newclient(
+                    // User name
+                    "User" + Double.toString(Math.random()), 
+                    // Chat name
+                    "chat_"+(i%numChats), 
+                    // Total messages
+                    NUM_MESSAGES * usersPerChat * usersPerChat, 
+                    // Async context to finish test
+                    async,
+                    // Nº of attempt
+                    attempt
+            );
         }
     }
 
 
-    public void newclient(final String name, final long totalTime, final long totalMessages, final long messages, final long sendTime, Async async, String chatName) {
+    public void newclient(final String name, String chatName, final long totalMessages, Async async, int attempt) {
         final AtomicInteger numberOfMessages = new AtomicInteger(0);
 
         vertx.createHttpClient().websocket(PORT, "localhost", "/chat", websocket -> {
@@ -252,8 +224,12 @@ public final class ChatTest {
                         if (done.get()==users){
                             long avg_time = times.get()/totalMessages;
                             ChatTest.currentResult.addTime(avg_time);
-                            System.out.print(avg_time);
+                            System.out.println("Attempt "+attempt+":");
+                            System.out.println(" -> TIME: "+avg_time+" ms");
                             total_avg_time += avg_time;
+                            /////////////////////////////////////////////////
+                            current_application.showMetrics();
+                            /////////////////////////////////////////////////
                             async.complete();
                         }
                     }
@@ -269,13 +245,15 @@ public final class ChatTest {
                     if (start == 0) {
                         start = System.currentTimeMillis();
                     }
-                    final long timerID = vertx.setPeriodic(sendTime / messages, new Handler<Long>() {
+                    final long timerID = vertx.setPeriodic(TIME / NUM_MESSAGES, new Handler<Long>() {
                         int i = 0;
 
                         @Override
                         public void handle(Long arg0) {
-                            if (i < messages) {
-                                websocket.writeFinalTextFrame("{\"name\":\""+name+"\",\"message\":\""+Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis()+"\"}");
+                            if (i < NUM_MESSAGES) {
+                                websocket.writeFinalTextFrame(
+                                        "{\"name\":\""+name+"\","
+                                        +"\"message\":\""+Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis()+"\"}");
                                 i++;
                             }
 
@@ -285,15 +263,15 @@ public final class ChatTest {
 
                 // TIME-OUT
 
-//                vertx.setTimer(totalTime, (Long arg0) -> {
-//                    System.out.println("TIME OUT");
-//                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
-//                    websocket.close();
-//                    done.addAndGet(1);
-//                    if (done.get()==users){
-//                        async.complete();
-//                    }
-//                });
+                vertx.setTimer(TIME + EXTRA, (Long arg0) -> {
+                    System.out.println("TIME OUT");
+                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
+                    websocket.close();
+                    done.addAndGet(1);
+                    if (done.get()==users){
+                        async.complete();
+                    }
+                });
 
         });
     }
