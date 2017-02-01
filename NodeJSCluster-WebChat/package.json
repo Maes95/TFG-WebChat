@@ -1,6 +1,6 @@
 {
-  "name": "WebChatNode",
-  "description": "Simple WebChat build with Node.js, Express.js and Sockets.io",
+  "name": "NodeJSCluster-WebChat",
+  "description": "Simple WebChat build with Node.js, Express.js and cluster",
   "version": "0.1.0",
   "dependencies": {
     "express": "~4.13.1",

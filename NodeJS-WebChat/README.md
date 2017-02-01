@@ -1,4 +1,4 @@
-# WebChatNode
+# NodeJS-WebChat
 
 This is a distributed WebChat with Node.js.
 
@@ -9,11 +9,7 @@ This is a distributed WebChat with Node.js.
 
 ## SetUp
 
-```
-git clone https://github.com/Maes95/TFG-WebChat.git
-cd TFG-WebChat/WebChatNodeWebSockets
+```sh
+cd TFG-WebChat/NodeJS-WebChat
 npm install
-npm start
 ```
-
-Open http://localhost:9000/ in your browser to see client (open this page in other browser to check chat interaction)
