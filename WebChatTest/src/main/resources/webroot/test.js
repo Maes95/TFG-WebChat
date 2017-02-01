@@ -1,8 +1,8 @@
 angular.module("client").service('FakeResults', function() {
 
     // ONLY FOR TESTING WITH NO BACKEND
-    
-    DELAY = 500;
+
+    DELAY = 2000;
 
     var fake_results = [
       {"times":[2507,2505,2505,2505,2505,2505,2505,2505,2505,2505],"numUsers":10,"avgTime":2505,"chatSize":"1", app: "Node"},
@@ -20,7 +20,7 @@ angular.module("client").service('FakeResults', function() {
       {"times":[17137,17337,17480,17616,17205,17477,18075,16753,16956,17074],"numUsers":15,"avgTime":17311,"chatSize":"4", app: "Node"},
       {"times":[22301,21806,21095,20877,21624,21824,21707,21922,21624,20473],"numUsers":17,"avgTime":21525,"chatSize":"4", app: "Node"},
 
-      {"times":[2507,2505,2505,2505,2505,2505,2505,2505,2505,2505],"numUsers":10,"avgTime":1505,"chatSize":"1", app: "Akka"},
+      {"times":[1507,2505,2505,2505,2505,2505,2505,2505,2505,2505],"numUsers":10,"avgTime":1505,"chatSize":"1", app: "Akka"},
       {"times":[2506,2507,2506,2507,2507,2507,2507,2507,2507,2516],"numUsers":20,"avgTime":1507,"chatSize":"1", app: "Akka"},
       {"times":[4041,3966,4011,3974,3921,4169,4708,4127,4333,4111],"numUsers":30,"avgTime":3136,"chatSize":"1", app: "Akka"},
       {"times":[6853,7779,7278,7701,7542,6874,6816,6807,7132,7611],"numUsers":40,"avgTime":4239,"chatSize":"1", app: "Akka"},

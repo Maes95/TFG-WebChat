@@ -10,6 +10,7 @@
 
     <!-- External Styles -->
     <link rel="stylesheet" href="http://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
     <!-- Local Javascript -->
     <script src="./vertx-eventbus.js"></script>
@@ -25,6 +26,15 @@
 <body>
 	<div ng-app="client" ng-controller="resultsController" class="main">
 
+    <div class="loader">
+      <div class="inner one"></div>
+      <div class="inner two"></div>
+      <div class="inner three"></div>
+      <div class="text">Realizando prueba</div>
+    </div>
+
+
+
 		<div class="ui one column grid">
 		  <div ng-repeat="item in graphics" class="column">
   			<div class="ui top attached segment">
@@ -35,6 +45,10 @@
           <button ng-click="saveImg(item)" class="ui basic icon button export-button">
             <i class="file image outline icon"></i>
             Descargar gráfico
+          </button>
+          <button ng-click="saveData(item)" class="ui basic icon button export-button">
+            <i class="file excel outline icon"></i>
+            Descargar datos en .xls
           </button>
   			  <h2 class="ui header">{{ item.title }}</h2>
   			</div>
@@ -75,25 +89,26 @@
   					  </div>
   					  <div ng-repeat="label in item.labels" ng-class="{active : item.tab == $index}" class="ui bottom attached tab segment">
   						  <div ng-repeat="result in app.results | filter:{numUsers: label, chatSize: item.chatSize}">
+                  
+    							<h3 class="ui header">Resultados de los intentos</h3>
+    							<table class="ui celled small table">
+    							  <tbody>
+    								<tr>
+    								  <td class="collapsing">Nº intento</td>
+    								  <td ng-repeat="time in result.times track by $index">{{ $index + 1 }}</td>
+    								</tr>
+    								<tr>
+    								  <td class="collapsing">Tiempo (ms)</td>
+    								  <td ng-repeat="time in result.times track by $index">{{ time }}</td>
+    								</tr>
+    							  </tbody>
+    							</table>
 
-  							<h3 class="ui header">Resultados de los intentos</h3>
-  							<table class="ui celled small table">
-  							  <tbody>
-  								<tr>
-  								  <td class="collapsing">Nº intento</td>
-  								  <td ng-repeat="time in result.times track by $index">{{ $index + 1 }}</td>
-  								</tr>
-  								<tr>
-  								  <td class="collapsing">Tiempo (ms)</td>
-  								  <td ng-repeat="time in result.times track by $index">{{ time }}</td>
-  								</tr>
-  							  </tbody>
-  							</table>
+    							<h3 class="ui header">
+    								Uso de la memoria
+    								<div class="sub header">Proximamente</div>
+    							</h3>
 
-  							<h3 class="ui header">
-  								Uso de la memoria
-  								<div class="sub header">Proximamente</div>
-  							</h3>
   						  </div>
   					  </div>
   					</div>
@@ -152,6 +167,26 @@
       </table>
     </div>
   </div>
+
+  <!-- TO DOWNLOAD -->
+  <table class="ui celled table" id="results" ng-show="false">
+    <thead style="text-align: center; ">
+      <tr>
+        <th rowspan="2">Aplication</th>
+        <th colspan="{{currentItem.labels.length}}">Number of users per chat</th>
+      </tr>
+      <tr>
+        <th ng-repeat="label in currentItem.labels track by $index">{{ label }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="app in currentItem.series track by $index">
+        <td>{{ app }}</td>
+        <td ng-repeat="avgTime in currentItem.data[$index] track by $index">{{ avgTime }}</td>
+      </tr>
+    </tbody>
+  </table>
+
 
 
 	</div>
