@@ -1,11 +1,15 @@
 # TFG-WebChat
 
-This repository is about a comparison between 3 different reactive technologies: Akka, Vertx and Node.js
+This repository is about a comparison between 7 different technologies.
 
 The proyects which participates in this comparison are:
-- WebChatAkkaPlay
-- WebChatVertxWebsockets
-- WebChatNodeWebsockets
+- AkkaPlay
+- NodeJSCluster
+- NodeJS
+- SpringBoot-Jetty
+- SpringBoot-Tomcat
+- SpringBoot-Undertow
+- Vertx
 
 ## How test web servers
 
@@ -13,21 +17,26 @@ Clone the proyect
 ```sh
 $ git clone https://github.com/Maes95/TFG-WebChat.git
 ```
-Select a web server, set up and run it (Select a project to see the specific documentation)
+Set up all servers, including WebChatTest (Select a project to see the specific documentation)
 
-When server is running, run client test (need Maven 3.0.5):
+Run client test (need Maven 3.0.5):
 
 ```sh
 $ cd WebChatTest
 $ mvn test
 ```
-Then, you can see at console something like this:
+Then, you can see results at localhost:8080 (Opens automatically by aplication).
+
+![alt text](https://s29.postimg.org/q8dbxqbk7/N_usuarios_en_1_sala_s_de_chat.png)
+
+Also, you can see results at console like this:
 
 ```
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
 Running ChatTest
+Starting NodeJS application
 -------------------------------------------------------
 Nº Chats: 4
 Nº Users per chat: 20
@@ -43,22 +52,7 @@ Attempt 9: 26158
 Attempt 10: 26916
 Average time: 26234
 ```
-Number of users and chats can be set up at test parameters:
 
-```java
-@Parameters
-public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[][] {
-             // N users / 1 chat room
-             { 10, 1 }, { 20, 1 }, { 30, 1 },
-             { 40, 1 }, { 50, 1 }, { 60, 1 }, { 70, 1 },
-             // N users / 2 chat rooms
-             { 20, 2 }, { 25, 2 }, { 30, 2 }, { 35, 2 },
-             // N users / 4 chat rooms
-             { 10, 4 }, { 12, 4 }, { 15, 4 }, { 17, 4 },
-    });
-}
-```
 
 
 
