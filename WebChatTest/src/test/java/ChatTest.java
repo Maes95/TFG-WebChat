@@ -1,3 +1,6 @@
+import com.globex.app.Result;
+import com.globex.app.JSONFile;
+import com.globex.app.WebChatAplication;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globex.app.ChatTestResultsServer;
@@ -28,18 +31,17 @@ public final class ChatTest {
     
     // CONSTANTS
     
-    public static final long REPEAT_LIMIT = 10;
+    public static final int REPEAT_LIMIT = 10;
     public static final int NUM_MESSAGES = 500;
     public static final int TIME = 5000;
     public static final int EXTRA = 180000;
-    public static final int PORT = 9000;
     
     
     // STATIC CONTEXT 
 
     private static WebChatAplication current_application = null;
     private static long total_avg_time = 0;
-    private static final Result currentResult = new Result();
+    private static Result currentResult;
     
     static{
         // Set up results server
@@ -84,13 +86,13 @@ public final class ChatTest {
     }
 
 
-    public ChatTest(int usersPerChat, int numChats, String newApp){
-        if(current_application != null && !newApp.equals(current_application.getAppName())){
+    public ChatTest(int usersPerChat, int numChats, JSONObject app_config){
+        if(current_application != null && !app_config.getString("name").equals(current_application.getAppName())){
             current_application.destroy();
             current_application = null;
         }
         if(current_application == null){
-            current_application = new WebChatAplication(newApp);
+            current_application = new WebChatAplication(app_config);
             current_application.run();
         }
         this.usersPerChat = usersPerChat;
@@ -115,7 +117,7 @@ public final class ChatTest {
         System.out.println("Nº Chats: "+numChats);
         System.out.println("Nº Users per chat: "+usersPerChat);
         System.out.println("-------------------------------------------------------");
-        ChatTest.currentResult.setUp(numChats, usersPerChat, current_application.getAppName());
+        ChatTest.currentResult = new Result(numChats, usersPerChat, current_application.getAppName(),REPEAT_LIMIT);
         test(context, 1);
     }
 
@@ -202,7 +204,7 @@ public final class ChatTest {
     public void newclient(final String name, String chatName, final long totalMessages, Async async, int attempt) {
         final AtomicInteger numberOfMessages = new AtomicInteger(0);
 
-        vertx.createHttpClient().websocket(PORT, "localhost", "/chat", websocket -> {
+        vertx.createHttpClient().websocket(current_application.getPort(), current_application.getAddress(), "/chat", websocket -> {
 
                 websocket.handler(data -> {
                     JsonNode message = null;

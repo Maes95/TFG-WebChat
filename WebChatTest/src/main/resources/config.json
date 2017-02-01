@@ -1,5 +1,27 @@
 {
-    "apps" : ["NodeJS","NodeJSCluster"],
+    "apps" : [
+      {
+        "name" : "NodeJS"
+      },
+      {
+        "name" : "Vertx"
+      },
+      {
+        "name" : "AkkaPlay"
+      },
+      {
+        "name" : "SpringTomcat"
+      },
+      {
+        "name" : "SpringJetty"
+      },
+      {
+        "name" : "SpringUndertow"
+      },
+      {
+        "name" : "NodeJSCluster"
+      }
+    ],
     "chats": [
         {
             "numChats": 1,

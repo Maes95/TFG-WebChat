@@ -1,3 +1,5 @@
+package com.globex.app;
+
 
 import io.vertx.core.json.JsonArray;
 import java.util.ArrayList;
@@ -9,12 +11,19 @@ import io.vertx.core.json.JsonObject;
  */
 public class Result {
     
-    private int chatSize;
-    private int numUsers;
-    private String app;
-    private ArrayList<Long> times;
+    private final int chatSize;
+    private final int numUsers;
+    private final int repeat_limit;
+    private final String app;
+    private final ArrayList<Long> times;
     
-    public Result(){}
+    public Result(int chatSize, int numUsers, String app, int repeat_limit){
+        this.repeat_limit = repeat_limit;
+        this.times = new ArrayList<>();
+        this.chatSize = chatSize;
+        this.numUsers = numUsers;
+        this.app = app;
+    }
     
     public JsonObject toJson(){
         JsonObject response = new JsonObject();
@@ -26,7 +35,7 @@ public class Result {
             avg_time += time;
             timesList.add(time);           
         }
-        avg_time = avg_time / ChatTest.REPEAT_LIMIT;
+        avg_time = avg_time / repeat_limit;
         response.put("avgTime", avg_time);
         response.put("app", this.app);
         response.put("times", timesList);
@@ -36,12 +45,5 @@ public class Result {
     public void addTime(long time){
         this.times.add(time);
     }    
-
-    public void setUp(int chatSize, int numUsers, String app) {        
-        this.times = new ArrayList<>();
-        this.chatSize = chatSize;
-        this.numUsers = numUsers;
-        this.app = app;
-    }
 
 }
