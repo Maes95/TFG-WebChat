@@ -1,6 +1,6 @@
 # WebChatAkkaPlay
 
-This is a distributed WebChat with playFramework and akka.
+This is a distributed WebChat with PlayFramework and Akka.
 
 # Prerequisites
 
@@ -9,10 +9,10 @@ This is a distributed WebChat with playFramework and akka.
 ## SetUp
 
 ```
-$ git clone https://github.com/Maes95/TFG-WebChat.git
-$ cd TFG-WebChat/WebChatAkkaPlay
+$ cd TFG-WebChat/AkkaPlay-WebChat
 $ ./activator
-  run 9000
+[play-java] $ dist
+$ cd target/universal
+$ unzip play-java-1.0-SNAPSHOT.zip
 ```
 
-Open http://localhost:9000/ in your browser to see client (open this page in other browser to check chat interaction)
