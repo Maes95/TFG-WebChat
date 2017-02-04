@@ -46,10 +46,14 @@ public class WebChatAplication {
     
     public void run(){
         // IS A LOCAL APPLICATION, NEED TO RUN IT
+        System.out.println("Running "+appName+" application");
         if(this.address.equals(DEFAULT_ADDRESS)){
             try {
-                process = new ProcessBuilder(commands).directory(new File(PATH+folderName)).start();
-                Thread.sleep(5000);
+                process = new ProcessBuilder("./run.sh").directory(new File(PATH+folderName))
+                .redirectOutput(new File("log.txt"))
+                .redirectError(new File("errors.txt"))
+                .start();
+                Thread.sleep(10000);
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
             }

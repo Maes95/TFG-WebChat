@@ -20,10 +20,8 @@ public class ChatManager extends AbstractVerticle {
 
     private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
 
-    //Add because I need the chat to send through the bus and normal messages haven't chat tag
-    private final ConcurrentHashMap<String, String> users = new ConcurrentHashMap<>();
     //Add because the most easy way to obtain the deploymentID is when I deploy the verticle
-    private final ConcurrentHashMap<String, String> depID = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> users = new ConcurrentHashMap<>();
 
     // Convenience method so you can run it in your IDE
     public static void main(String[] args) {
@@ -51,10 +49,8 @@ public class ChatManager extends AbstractVerticle {
                         }
 
                     }else{
-                        //Is a normal message. It sends to the eventBus with the chat like label
-                        String chatName = users.get(message.getString("name"));
                         // Broadcast the message to all Users
-                        vertx.eventBus().publish(chatName, message);
+                        vertx.eventBus().publish(message.getString("chat"), message);
                     }
                 });
             }else{
@@ -79,8 +75,7 @@ public class ChatManager extends AbstractVerticle {
         vertx.deployVerticle(user, res -> {
             if (res.succeeded()) {
                 //Save the deploymentID to later remove the verticle
-                depID.put(name, res.result());
-                users.put(name, chat);
+                users.put(name, res.result());
             } else {
                 System.err.println("Error at deploy User");
             }
@@ -89,7 +84,7 @@ public class ChatManager extends AbstractVerticle {
 
     //Remove the verticle and unregister the handler
     private void deleteUser (String user_name){
-          vertx.undeploy(depID.get(user_name), res -> {
+          vertx.undeploy(users.get(user_name), res -> {
               if (res.succeeded()) {
                   System.out.println("Undeployed ok");
               } else {
@@ -97,7 +92,6 @@ public class ChatManager extends AbstractVerticle {
               }
           });
           users.remove(user_name);
-          depID.remove(user_name);
     }
 
 }

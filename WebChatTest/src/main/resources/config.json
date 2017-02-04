@@ -1,25 +1,10 @@
 {
     "apps" : [
       {
-        "name" : "NodeJS"
-      },
-      {
         "name" : "Vertx"
       },
       {
-        "name" : "AkkaPlay"
-      },
-      {
-        "name" : "SpringTomcat"
-      },
-      {
-        "name" : "SpringJetty"
-      },
-      {
-        "name" : "SpringUndertow"
-      },
-      {
-        "name" : "NodeJSCluster"
+        "name" : "VertxNoEventbus"
       }
     ],
     "chats": [

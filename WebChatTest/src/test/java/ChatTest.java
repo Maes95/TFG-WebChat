@@ -265,15 +265,15 @@ public final class ChatTest {
 
                 // TIME-OUT
 
-                vertx.setTimer(TIME + EXTRA, (Long arg0) -> {
-                    System.out.println("TIME OUT");
-                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
-                    websocket.close();
-                    done.addAndGet(1);
-                    if (done.get()==users){
-                        async.complete();
-                    }
-                });
+//                vertx.setTimer(TIME + EXTRA, (Long arg0) -> {
+//                    System.out.println("TIME OUT");
+//                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
+//                    websocket.close();
+//                    done.addAndGet(1);
+//                    if (done.get()==users){
+//                        async.complete();
+//                    }
+//                });
 
         });
     }
