@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatManager extends AbstractVerticle {
 
-    private final static int PORT = 9000;
+    private final static int PORT = 5000;
 
     private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
 

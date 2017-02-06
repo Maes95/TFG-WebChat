@@ -7,6 +7,7 @@ import com.globex.app.ChatTestResultsServer;
 import io.vertx.core.Handler;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunnerWithParametersFactory;
@@ -18,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import org.json.JSONArray;
@@ -108,7 +110,7 @@ public final class ChatTest {
 
     @After
     public void after(TestContext context) {
-      vertx.close(context.asyncAssertSuccess());
+      vertx.close();
     }
 
     @Test
@@ -168,14 +170,17 @@ public final class ChatTest {
 
     @Test
     public void testZ(TestContext context) {
+        JsonObject result = ChatTest.currentResult.toJson();
+        System.out.println("-------------------------------------------------------");
         System.out.println("Average time: "+total_avg_time/REPEAT_LIMIT);
-        ChatTestResultsServer.sendResult(ChatTest.currentResult.toJson());
+        System.out.println("Average cpu use: "+result.getValue("avgCpuUse"));
+        System.out.println("Average memory use: "+result.getValue("avgMemoryUse"));
+        ChatTestResultsServer.sendResult(result);
         total_avg_time = 0;
         context.assertTrue(true);
     }
 
-    public void test(TestContext context, int attempt) {
-        System.out.println("");
+    public void test(TestContext context, int attempt){
         Async async = context.async();
         start = 0;
         try {
@@ -198,6 +203,11 @@ public final class ChatTest {
                     attempt
             );
         }
+        
+        vertx.setPeriodic(1000, id -> {
+            ChatTest.currentResult.addMetric(current_application.getMetrics());
+        });
+
     }
 
 
@@ -217,26 +227,18 @@ public final class ChatTest {
                     String respuesta = message.get("message").asText();
                     Long _time = System.currentTimeMillis()-Long.parseLong(respuesta.substring(respuesta.indexOf("/") + 1));
                     times.addAndGet(_time);
-                    numberOfMessages.addAndGet(1);
+                    numberOfMessages.addAndGet(1);                                       
                     // When THIS user recive all messages from his chat
                     if (numberOfMessages.get()== totalMessagePerChat){
                         websocket.close();
                         done.addAndGet(1);
-                        // When ALL users recive all messages
+                        // When ALL users recive all messages                
                         if (done.get()==users){
-                            long avg_time = times.get()/totalMessages;
-                            ChatTest.currentResult.addTime(avg_time);
-                            System.out.println("Attempt "+attempt+":");
-                            System.out.println(" -> TIME: "+avg_time+" ms");
-                            total_avg_time += avg_time;
-                            /////////////////////////////////////////////////
-                            current_application.showMetrics();
-                            /////////////////////////////////////////////////
-                            async.complete();
+                            finishTest(totalMessages, attempt, async);
                         }
                     }
                 });
-
+                
                 // CONNECTION MESSAGE
 
                 websocket.writeFinalTextFrame("{\"chat\":\""+chatName+"\",\"name\":\""+name+"\"}");
@@ -255,6 +257,7 @@ public final class ChatTest {
                             if (i < NUM_MESSAGES) {
                                 websocket.writeFinalTextFrame(
                                         "{\"name\":\""+name+"\","
+                                        + "\"chat\":\""+chatName+"\","
                                         +"\"message\":\""+Integer.toString(sentMessages.getAndAdd(1))+"/"+System.currentTimeMillis()+"\"}");
                                 i++;
                             }
@@ -262,20 +265,21 @@ public final class ChatTest {
                         }
                     });
                 });
-
-                // TIME-OUT
-
-//                vertx.setTimer(TIME + EXTRA, (Long arg0) -> {
-//                    System.out.println("TIME OUT");
-//                    System.out.println("NUMBER OF MESSAGES:" + numberOfMessages.get());
-//                    websocket.close();
-//                    done.addAndGet(1);
-//                    if (done.get()==users){
-//                        async.complete();
-//                    }
-//                });
-
         });
+    }
+    
+    private final AtomicBoolean b = new AtomicBoolean(true);
+    
+    public synchronized void finishTest(long totalMessages, int attempt, Async async){
+        if(b.get()){
+            b.getAndSet(false);
+            long avg_time = times.get()/totalMessages;
+            ChatTest.currentResult.addTime(avg_time);
+            System.out.println("Attempt "+attempt+":");
+            System.out.println(" -> TIME: "+avg_time+" ms");
+            total_avg_time += avg_time;
+            async.complete();
+        }
     }
 
 }
