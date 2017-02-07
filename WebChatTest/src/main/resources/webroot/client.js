@@ -38,7 +38,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	function newGraphic(chatSizeName){
 		$scope.graphics[chatSizeName] = {
 		  chatSize: Number(chatSizeName),
-		  title: "N usuarios en "+chatSizeName+" sala(s) de chat",
+		  title: "N users in "+chatSizeName+" chat room(s)",
 		  labels: [],
 		  series: [],
 		  data: [],
@@ -94,7 +94,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 					},
 					scaleLabel: {
 						display: true,
-						labelString: "Tiempo en milisegundos"
+						labelString: "Time in milliseconds"
 					},
 	      }],
 	    xAxes: [{
@@ -104,7 +104,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 					},
 					scaleLabel: {
 						display: true,
-						labelString: "Número de usuarios por sala"
+						labelString: "Number of users per chat room"
 					},
 	      }]
     }

@@ -19,9 +19,9 @@ import java.util.logging.Logger;
  *
  * @author michel
  */
-public class ChatTestResultsServer extends AbstractVerticle {
+public class TestResultsServer extends AbstractVerticle {
 
-    public static ChatTestResultsServer currentServer;
+    public static TestResultsServer currentServer;
 
     @Override
     public void start() throws Exception {
@@ -56,14 +56,14 @@ public class ChatTestResultsServer extends AbstractVerticle {
 
     public static void setUp() {
       if(currentServer == null){
-          currentServer = new ChatTestResultsServer();
+          currentServer = new TestResultsServer();
           Vertx.vertx().deployVerticle(currentServer, (AsyncResult<String> res) -> {
             if (res.succeeded()){
                 if(Desktop.isDesktopSupported()){
                     try {
                         Desktop.getDesktop().browse(new URI("http://localhost:8080/"));
                     } catch (URISyntaxException | IOException ex) {
-                        Logger.getLogger(ChatTestResultsServer.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TestResultsServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }else{

@@ -1,22 +1,26 @@
 {
     "apps" : [
         {
-            "name" : "Vertx",
-            "commands" : "mvn exec:java",
-            "port" : "5000"
-        },
-        {
             "name" : "NodeJS",
             "commands" : "node app.js"
         },
         {
-            "name" : "AkkaPlay"
+            "name" : "NodeJSCluster",
+            "commands" : "node master.js"
         }
     ],
     "chats": [
         {
+            "numChats": 1,
+            "users": [10, 20, 30, 40, 50, 60]
+        },
+        {
             "numChats": 2,
-            "users": [35]
+            "users": [20, 25, 30, 35]
+        },
+        {
+            "numChats": 4,
+            "users": [10, 12, 15, 17]
         }
     ]
 }

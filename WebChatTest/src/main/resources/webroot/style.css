@@ -40,6 +40,15 @@ td{
   border-radius: 0px !important;
 }
 
+.segment.statistic {
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ui.statistic + .ui.statistic {
+    margin: 0em 0em 0em .5em !important;
+}
+
 .ui.top.attached.segment {
     background: #F9FAFB;
 }

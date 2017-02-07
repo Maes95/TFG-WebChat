@@ -3,7 +3,7 @@ import com.globex.app.JSONFile;
 import com.globex.app.WebChatAplication;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.globex.app.ChatTestResultsServer;
+import com.globex.app.TestResultsServer;
 import io.vertx.core.Handler;
 
 import io.vertx.core.Vertx;
@@ -47,7 +47,7 @@ public final class ChatTest {
     
     static{
         // Set up results server
-        ChatTestResultsServer.setUp();
+        TestResultsServer.setUp();
     }
     
     // CLASS ATRIBUTTES
@@ -175,7 +175,7 @@ public final class ChatTest {
         System.out.println("Average time: "+total_avg_time/REPEAT_LIMIT);
         System.out.println("Average cpu use: "+result.getValue("avgCpuUse"));
         System.out.println("Average memory use: "+result.getValue("avgMemoryUse"));
-        ChatTestResultsServer.sendResult(result);
+        TestResultsServer.sendResult(result);
         total_avg_time = 0;
         context.assertTrue(true);
     }

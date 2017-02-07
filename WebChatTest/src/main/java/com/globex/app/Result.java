@@ -45,22 +45,26 @@ public class Result {
         response.put("times", timesList);
         
         // METRICS
-        JsonArray cpuUseList = new JsonArray();
-        JsonArray memoryUseList = new JsonArray();
+//        JsonArray cpuUseList = new JsonArray();
+//        JsonArray memoryUseList = new JsonArray();
         double avg_cpu_use = 0;
         double avg_memory_use = 0;
+        double avg_vitual_memory = 0;
+        double avg_ram = 0;
         for(Metrics metric : this.metrics){
             avg_cpu_use += metric.getCpu();
             avg_memory_use += metric.getMemory();
-            cpuUseList.add(metric.getCpu());
-            memoryUseList.add(metric.getMemory());          
+            avg_vitual_memory += metric.getVirtual();
+            avg_ram += metric.getRam();
+//            cpuUseList.add(metric.getCpu());
+//            memoryUseList.add(metric.getMemory());          
         }
-        avg_cpu_use = avg_cpu_use / this.metrics.size();
-        response.put("avgCpuUse", avg_cpu_use);
-        response.put("cpuUseList", cpuUseList);
-        avg_memory_use = avg_memory_use / this.metrics.size();
-        response.put("avgMemoryUse", avg_memory_use);
-        response.put("memoryUseList", memoryUseList);
+        response.put("avgCpuUse", avg_cpu_use / this.metrics.size());
+//        response.put("cpuUseList", cpuUseList);
+        response.put("avgMemoryUse", avg_memory_use / this.metrics.size());
+//        response.put("memoryUseList", memoryUseList);
+        response.put("avgVitualMemory", avg_vitual_memory / this.metrics.size());
+        response.put("avgRam", avg_ram / this.metrics.size());
         
         return response;
     }

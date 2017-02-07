@@ -37,24 +37,29 @@ public class TestMetrics {
                 }
             }
             
-            int indexMem = 8;
-            int indexCpu = 9;
+            int indexMem = 0;
+            int indexCpu = 0;
+            int indexVirt = 0;
+            int indexRam = 0;
 
             // Skip header line.
             if (line != null) {
                 line = stdin.readLine();
-                indexMem = Arrays.asList(line.split("\\s+")).indexOf("%CPU") - 1;
-                indexCpu = Arrays.asList(line.split("\\s+")).indexOf("%MEM") - 1;
+                indexVirt = Arrays.asList(line.split("\\s+")).indexOf("VIRT");
+                indexRam = Arrays.asList(line.split("\\s+")).indexOf("RES");
+                indexMem = Arrays.asList(line.split("\\s+")).indexOf("%MEM");
+                indexCpu = Arrays.asList(line.split("\\s+")).indexOf("%CPU");
             }
-
+            line = stdin.readLine();
             if (line != null) {
-                line = stdin.readLine();
+                System.out.println(line);
                 String[] lineArray = line.split("\\s+");
-                return new Metrics(lineArray[indexMem],lineArray[indexCpu]);
+                return new Metrics(lineArray[indexVirt-1],lineArray[indexRam-1],lineArray[indexCpu-1],lineArray[indexMem-1]);
             }
         } catch (IOException ex) {
             Logger.getLogger(TestMetrics.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("NO METRIC");
         return new Metrics();
     }
     

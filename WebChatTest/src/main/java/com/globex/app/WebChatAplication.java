@@ -17,13 +17,14 @@ public class WebChatAplication {
     private static final String[] DEFAULT_COMMANDS = {"./run.sh"};
     private static final String DEFAULT_ADDRESS = "127.0.0.1";
     private static final int DEFAULT_PORT = 9000;
-    private static final int DELAY = 10000;
+    private static final int DEFAULT_DELAY = 10000;
     
     private final String folderName;
     private final String appName;
     private final String address;
     private final int port;
     private final List<String> commands;
+    private final int delay;
     
     private Process process;
     private long pid;
@@ -34,6 +35,7 @@ public class WebChatAplication {
         this.address = address;
         this.port = port;
         this.commands = Arrays.asList(DEFAULT_COMMANDS);
+        this.delay = DEFAULT_DELAY;
     }
     
     public WebChatAplication(JSONObject config){
@@ -41,8 +43,9 @@ public class WebChatAplication {
         this.folderName = config.isNull("folderName") ? appName+"-WebChat" : config.getString("folderName");
         this.address = config.isNull("address") ? DEFAULT_ADDRESS : config.getString("address");
         this.port = config.isNull("port") ? DEFAULT_PORT : config.getInt("port");
+        this.delay = config.isNull("delay") ? DEFAULT_DELAY : config.getInt("delay");
         if(config.isNull("commands")){
-            this.commands = Arrays.asList(DEFAULT_COMMANDS);;
+            this.commands = Arrays.asList(DEFAULT_COMMANDS);
         }else{
             this.commands = Arrays.asList(config.getString("commands").split("\\s+"));
         }
@@ -62,7 +65,7 @@ public class WebChatAplication {
                 System.out.println(" |-> pid: "+pid);
                 System.out.println(" |-> command: "+commands);
                 System.out.println(" |-> port: "+port);
-                Thread.sleep(DELAY);
+                Thread.sleep(delay);
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
             }
