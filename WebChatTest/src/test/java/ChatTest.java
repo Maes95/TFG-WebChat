@@ -116,6 +116,7 @@ public final class ChatTest {
     @Test
     public void test0(TestContext context) {
         System.out.println("-------------------------------------------------------");
+        System.out.println("App: "+current_application.getAppName());
         System.out.println("Nº Chats: "+numChats);
         System.out.println("Nº Users per chat: "+usersPerChat);
         System.out.println("-------------------------------------------------------");
@@ -204,9 +205,11 @@ public final class ChatTest {
             );
         }
         
-        vertx.setPeriodic(1000, id -> {
-            ChatTest.currentResult.addMetric(current_application.getMetrics());
-        });
+        if(!current_application.isRemote()){
+            vertx.setPeriodic(1000, id -> {
+                ChatTest.currentResult.addMetric(current_application.getMetrics());
+            });
+        }
 
     }
 

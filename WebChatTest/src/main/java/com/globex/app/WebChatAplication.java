@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -14,46 +15,48 @@ import org.json.JSONObject;
 public class WebChatAplication {
     
     private static final String PATH = System.getProperty("user.dir").substring(0,System.getProperty("user.dir").length() - 11);
-    private static final String[] DEFAULT_COMMANDS = {"./run.sh"};
-    private static final String DEFAULT_ADDRESS = "127.0.0.1";
+    private static final String LOCAL_ADDRESS = "127.0.0.1";
     private static final int DEFAULT_PORT = 9000;
     private static final int DEFAULT_DELAY = 10000;
     
-    private final String folderName;
-    private final String appName;
-    private final String address;
-    private final int port;
-    private final List<String> commands;
-    private final int delay;
+    private String folderName;
+    private String appName;
+    private String address;
+    private int port;
+    private List<String> commands;
+    private int delay;
+    private boolean remote;
     
     private Process process;
     private long pid;
     
-    public WebChatAplication(String appName, String address, int port){
-        this.appName = appName;
-        this.folderName = appName+"-WebChat";
-        this.address = address;
-        this.port = port;
-        this.commands = Arrays.asList(DEFAULT_COMMANDS);
-        this.delay = DEFAULT_DELAY;
-    }
-    
     public WebChatAplication(JSONObject config){
-        this.appName = config.getString("name");
-        this.folderName = config.isNull("folderName") ? appName+"-WebChat" : config.getString("folderName");
-        this.address = config.isNull("address") ? DEFAULT_ADDRESS : config.getString("address");
-        this.port = config.isNull("port") ? DEFAULT_PORT : config.getInt("port");
-        this.delay = config.isNull("delay") ? DEFAULT_DELAY : config.getInt("delay");
-        if(config.isNull("commands")){
-            this.commands = Arrays.asList(DEFAULT_COMMANDS);
-        }else{
-            this.commands = Arrays.asList(config.getString("commands").split("\\s+"));
+        try{
+            this.appName = config.getString("name");
+            this.folderName = config.isNull("folderName") ? appName+"-WebChat" : config.getString("folderName");
+            this.port = config.isNull("port") ? DEFAULT_PORT : config.getInt("port");
+            if(!config.isNull("remote") && config.getBoolean("remote")){
+                // REMOTE APPLICATION
+                this.remote = true;
+                this.address = config.isNull("address") ? LOCAL_ADDRESS : config.getString("address");
+                this.delay = 0;
+                
+            }else{
+                // LOCAL APPLICATION
+                this.remote = false;
+                this.address = LOCAL_ADDRESS;
+                this.delay = config.isNull("delay") ? DEFAULT_DELAY : config.getInt("delay");
+                this.commands = Arrays.asList(config.getString("commands").split("\\s+"));
+            }
+        }catch(JSONException ex){
+            System.err.println("Error at configuration, check WebChatTest/src/main/resources/config.json");
+            ex.printStackTrace();
         }
     }
     
     public void run(){
         // IS A LOCAL APPLICATION, NEED TO RUN IT
-        if(this.address.equals(DEFAULT_ADDRESS)){
+        if(!this.remote){
             try {
                 process = new ProcessBuilder(commands)
                 .directory(new File(PATH+folderName))
@@ -69,6 +72,8 @@ public class WebChatAplication {
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
             }
+        }else{
+            System.out.println("Connecting to remote "+appName+" application");
         }
     }
     
@@ -77,9 +82,13 @@ public class WebChatAplication {
     }
     
     public void destroy(){
-        System.out.println("Stopping "+appName+" application");
+        if(!this.remote){
+            System.out.println("Stopping "+appName+" application");
+            process.destroy();
+        }else{
+            System.out.println("Desconecting from remote "+appName+" application");
+        }
         System.out.println("-------------------------------------------------------");
-        process.destroy();
     }
     
     public String getAppName(){
@@ -92,5 +101,9 @@ public class WebChatAplication {
     
     public int getPort(){
         return this.port;
+    }
+    
+    public boolean isRemote(){
+        return this.remote;
     }
 }
