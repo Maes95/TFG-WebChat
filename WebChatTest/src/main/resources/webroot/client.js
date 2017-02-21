@@ -73,7 +73,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		'#6435C9', // VIOLET
 		'#ff6384', // RED
 		'#FDB45C', // ORANGE
-                '#45b7cd',  // BLUE
+    '#45b7cd',  // BLUE
 		"#FE9A76", // ORANGE
 		"#008080", // TEAL
 		"#32CD32", // OLIVE
@@ -81,7 +81,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		"#FFD700", // YELLOW
 		"#A52A2A", // BROWN
  		"#A0A0A0", // GREY
-                "#000000"  // BLACK
+    "#000000"  // BLACK
   ];
 
 	$scope.datasetOverride = [];
@@ -139,6 +139,11 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	    a.download = item.title+'.xls';
 	    a.click();
 		}, 10);
+	}
+
+	$scope.slideDown = function(graph){
+		$('#'+graph.chatSize).slideToggle( "fast");
+		graph.visible = !graph.visible;
 	}
 
 	if(location.host){

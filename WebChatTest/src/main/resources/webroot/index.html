@@ -26,7 +26,7 @@
 <body>
 	<div ng-app="client" ng-controller="resultsController" class="main">
 
-    <div class="loader">
+    <div ng-show="graphics.length == 0" class="loader">
       <div class="inner one"></div>
       <div class="inner two"></div>
       <div class="inner three"></div>
@@ -38,6 +38,9 @@
 		<div class="ui one column grid">
 		  <div ng-repeat="item in graphics" class="column">
   			<div class="ui top attached segment">
+          <button ng-init="item.visible = true;" ng-click="slideDown(item)" class="ui basic icon button drop">
+            <i class="chevron icon" ng-class="item.visible ? 'down' : 'right' "></i>
+          </button>
           <button ng-click="exportToPDF(item)" class="ui basic icon button export-button">
             <i class="file pdf outline icon"></i>
             Export to PDF
@@ -53,7 +56,7 @@
   			  <h2 class="ui header">{{ item.title }}</h2>
   			</div>
 
-  			<div class="ui two column grid attached segment">
+  			<div id="{{item.chatSize}}" class="ui two column grid attached segment">
   				<!-- GRAPHIC -->
   				<div class="column">
   					<canvas
@@ -105,8 +108,8 @@
     							</table>
 
                   <h3 class="ui header">Performance measures</h3>
-                  <div class="ui statistics mini">
-                    <div class="ui statistic blue segment">
+                  <div class="statistics">
+                    <div class="ui statistic blue segment mini">
                       <div class="value">
                         {{ result.avgCpuUse | number:2 }}%
                       </div>
@@ -115,7 +118,7 @@
                       </div>
                     </div>
 
-                    <div class="ui statistic violet segment">
+                    <div class="ui statistic violet segment mini">
                       <div class="value">
                         {{ result.avgMemoryUse | number:2 }}%
                       </div>
@@ -124,7 +127,7 @@
                       </div>
                     </div>
 
-                    <div class="ui statistic green segment">
+                    <div class="ui statistic green segment mini">
                       <div class="value">
                         {{ result.avgVitualMemory / 1024 / 1024 | number:2 }}&nbsp;gb
                       </div>
@@ -133,7 +136,7 @@
                       </div>
                     </div>
 
-                    <div class="ui statistic teal segment">
+                    <div class="ui statistic teal segment mini">
                       <div class="value">
                         {{ result.avgRam / 1024 / 1024 | number:2  }}&nbsp;gb
                       </div>
