@@ -111,6 +111,11 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
     }
 	};
 
+
+	/**
+		EXPORT
+	*/
+
 	var css = "<link href='https://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css' rel='stylesheet'></link>";
 	$scope.exportToPDF = function(item){
 		$scope.currentItem = item;
@@ -141,32 +146,18 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		graph.visible = !graph.visible;
 	}
 
-	function exportToJSON(){
+	function exportToJSON(appName){
 		var results = [];
 		for(var i in $scope.apps){
 			for(var j = 0; j <  $scope.apps[i].results.length; j++){
 				var result =  $scope.apps[i].results[j];
-				// if(result.app != "Node") continue;
+				if(result.app != appName) continue;
 				delete result.$$hashKey;
 				results.push(result);
 			}
 		}
 		var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(results));
 		download("data.json", "data: "+data);
-	}
-
-	$scope.files = [];
-	$scope.fileToJSON = function(data){
-		for(var i = 0; i < data.length; i++){
-			var _results = JSON.parse(window.atob(data[i].split(',')[1]));
-			for(var j = 0; j < _results.length; j++){
-				addResult(_results[j]);
-			}
-		}
-	}
-
-	$scope.loadResults = function(){
-		
 	}
 
 	function download(name, href){
@@ -178,8 +169,17 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
 
 	/**
-		DRAG AND DROP
+			UPLOAD RESULTS
 	*/
+
+	$scope.files = [];
+	$scope.results = [];
+
+	$scope.loadResults = function(){
+		for(var i = 0; i < $scope.results.length; i++){
+			addResult($scope.results[i]);
+		}
+	}
 
 	if (window.File && window.FileList) {
 			var drop_area = document.getElementById("drop_area");
@@ -200,53 +200,56 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	function filesDroped(event) {
 	    event.stopPropagation();
 	    event.preventDefault();
+			readFiles(event.dataTransfer.files);
+	}
 
-	    drop_area.className = "area";
+	$scope.onChange = function(changeEvent){
+		readFiles(changeEvent.target.files);
+	}
 
-	    var files = event.dataTransfer.files;
-			var reader = new FileReader();
+	function readFiles(files){
 
-			function readFile(index) {
-					if( index >= files.length ) return;
+		var reader = new FileReader();
 
-					var file = files[index];
-					reader.onload = function(loadEvent) {
-							$scope.$apply(function () {
-									$scope.files.push(loadEvent.target.result);
-									readFile(index+1)
-							});
-					}
-					reader.readAsDataURL(files[index]);
-			}
-			readFile(0);
+		function readFile(index) {
+				if( index >= files.length ) return;
 
+				var file = files[index];
+				reader.onload = function(loadEvent) {
+						$scope.$apply(function () {
+								$scope.files.push(loadEvent.target.result);
+								var _results = JSON.parse(window.atob(loadEvent.target.result.split(',')[1]));
+								for(var j = 0; j < _results.length; j++){
+									$scope.results.push(_results[j]);
+								}
+								readFile(index+1)
+						});
+				}
+				reader.readAsDataURL(files[index]);
+		}
+		readFile(0);
 
-	    var filesInfo = "";
-
-	    for (var i = 0; i < files.length; i++) {
-	        var file = files[i];
-
-	        filesInfo += "<li>Name: " + file.name + "</li>";
-
-	    }
-
-	    var output = document.getElementById("result");
-
-	    output.innerHTML = "<ul>" + filesInfo + "</ul>";
+		var filesInfo = "";
+		for (var i = 0; i < files.length; i++) {
+				filesInfo += "<li class='ui label'><i class='big file icon'></i>" + files[i].name + "</li>";
+		}
+		var output = document.getElementById("result");
+		output.innerHTML = "<ul>" + filesInfo + "</ul>";
 	}
 
 
 
-
-
+	/**
+		SET UP
+	*/
 
 	if(location.host){
 		// SERVER UP, OPEN CONNECTION
 		var eb = new EventBus("/eventbus/");
 		eb.onopen = function () {
 			eb.registerHandler("new.result", function(err, message){
-			console.log(JSON.stringify(message.body));
-			addResult(message.body);
+				console.log(JSON.stringify(message.body));
+				addResult(message.body);
 			});
 		};
 	}else{
@@ -277,28 +280,9 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
         scope: {
             filesread: "="
         },
+				restrict: 'A',
         link: function (scope, element, attributes) {
-            element.bind("change", function (changeEvent) {
-
-								var files = changeEvent.target.files;
-                var reader = new FileReader();
-
-								function readFile(index) {
-										if( index >= files.length ) return;
-
-										var file = files[index];
-										reader.onload = function(loadEvent) {
-										    scope.$apply(function () {
-		                        scope.filesread.push(loadEvent.target.result);
-														readFile(index+1)
-		                    });
-										}
-										reader.readAsDataURL(files[index]);
-								}
-								readFile(0);
-
-
-            });
+						element.bind('change', scope.filesread);
         }
     }
 }]);

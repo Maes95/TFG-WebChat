@@ -36,10 +36,11 @@
 
 		<div class="ui one column grid">
 
+      <!-- UPLOAD DATA -->
+
       <div ng-show="empty" class="column">
         <div class="ui segment load-box-init">
           <h2 class="ui icon header" style="width: 100%;">
-            <!-- <i class="lab icon"></i> -->
             <div class="content">
               WebChatTest
               <div class="sub header">No server running</div>
@@ -55,14 +56,16 @@
             </ul>
           </div>
           <div class="ui segment secondary">
-            <input type="file" filesread="files" multiple/>
-            <div class="ui horizontal divider">Or</div>
-            <div id="drop_area" class="area">Drop your files here!</div>
-            <output id="result" />
+            <input type="file" filesread="onChange" multiple/>
+            <div ng-show="results.length == 0" class="ui horizontal divider">Or</div>
+            <div ng-show="results.length == 0" id="drop_area" class="area">Drop your files here!</div>
+            <output id="result"/>
           </div>
-          <button ng-show="files.length > 0" ng-class="empty ? 'load-button-init':'load-button-final'" class="ui button" ng-click="fileToJSON(files)">Load files</button>
+          <button ng-show="results.length > 0" ng-class="empty ? 'load-button-init':'load-button-final'" class="ui button" ng-click="loadResults()">Load files</button>
         </div>
       </div>
+
+      <!-- CHARTS -->
 
 		  <div ng-repeat="item in graphics" class="column">
   			<div class="ui top attached segment">

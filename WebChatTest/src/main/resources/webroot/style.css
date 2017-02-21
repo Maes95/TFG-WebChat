@@ -53,7 +53,7 @@ td{
 .load-box-init{
     width: 35%;
     margin: auto !important;
-    margin-top: 12% !important;
+    margin-top: 10% !important;
 }
 
 .load-box-final{
@@ -71,7 +71,7 @@ td{
 }
 
 /**
-
+  DRAG AND DROP
 */
 
 article
@@ -84,15 +84,15 @@ article
 
 .area
 {
-    border: 5px dotted #ccc;
+    border: 3px dotted rgba(0,0,0,0.5);
     padding: 50px;
     text-align: center;
 }
 
 .drag
 {
-    border: 5px dotted green;
-    background-color: yellow;
+    border: 3px dotted rgba(0,0,0,0.2);
+    background-color: rgba(0,0,0,0.1);
 }
 
 #result ul{
@@ -104,6 +104,12 @@ article
 {
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
+}
+
+.file.big.icon{
+    display: block;
+    margin-right: 0 !important;
+    margin-bottom: 7px;
 }
 
 
