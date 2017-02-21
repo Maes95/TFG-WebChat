@@ -3,8 +3,10 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	var n = 0;
 	$scope.apps = {};
 	$scope.graphics = {};
+	$scope.empty = true;
 
 	function addResult(result){
+		$scope.empty = false;
 		var chatSizeName = result.chatSize.toString();
 		// IF GRAFIC WITH N CHAT ROOMS EXISTS
 		if(!$scope.graphics[chatSizeName]) newGraphic(chatSizeName);
@@ -18,7 +20,6 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		$scope.graphics[chatSizeName].data[k].push(result.avgTime);
 
 		$scope.apps[result.app].results.push(result);
-		$scope.$apply();
 	}
 
 	function newApp(app_name){
@@ -124,27 +125,120 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	}
 
 	$scope.saveImg = function(item){
-		var link = document.createElement('a');
-		link.href = $('#'+item.chatSize +'-size')[0].toDataURL("image/png");
-		link.download = item.title+'.png';
-		document.body.appendChild(link);
-		link.click();
+		download(item.title+".png", $('#'+item.chatSize +'-size')[0].toDataURL("image/png"));
 	}
 
 	$scope.saveData = function(item){
 		$scope.currentItem = item;
 		setTimeout(function () {
-			var a = document.createElement('a');
-	    a.href = Excel.tableToExcel('#results',item.title);;
-	    a.download = item.title+'.xls';
-	    a.click();
+			download(item.title+'.xls', Excel.tableToExcel('#results',item.title));
 		}, 10);
 	}
 
 	$scope.slideDown = function(graph){
+		// exportToJSON();
 		$('#'+graph.chatSize).slideToggle( "fast");
 		graph.visible = !graph.visible;
 	}
+
+	function exportToJSON(){
+		var results = [];
+		for(var i in $scope.apps){
+			for(var j = 0; j <  $scope.apps[i].results.length; j++){
+				var result =  $scope.apps[i].results[j];
+				// if(result.app != "Node") continue;
+				delete result.$$hashKey;
+				results.push(result);
+			}
+		}
+		var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(results));
+		download("data.json", "data: "+data);
+	}
+
+	$scope.files = [];
+	$scope.fileToJSON = function(data){
+		for(var i = 0; i < data.length; i++){
+			var _results = JSON.parse(window.atob(data[i].split(',')[1]));
+			for(var j = 0; j < _results.length; j++){
+				addResult(_results[j]);
+			}
+		}
+	}
+
+	$scope.loadResults = function(){
+		
+	}
+
+	function download(name, href){
+		var a = document.createElement('a');
+		a.href = href
+		a.download = name;
+		a.click();
+	}
+
+
+	/**
+		DRAG AND DROP
+	*/
+
+	if (window.File && window.FileList) {
+			var drop_area = document.getElementById("drop_area");
+			drop_area.addEventListener("dragover", dragHandler);
+			drop_area.addEventListener("drop", filesDroped);
+	}
+	else {
+			console.log("Your browser does not support File API");
+	}
+
+	function dragHandler(event) {
+	    event.stopPropagation();
+	    event.preventDefault();
+	    var drop_area = document.getElementById("drop_area");
+	    drop_area.className = "area drag";
+	}
+
+	function filesDroped(event) {
+	    event.stopPropagation();
+	    event.preventDefault();
+
+	    drop_area.className = "area";
+
+	    var files = event.dataTransfer.files;
+			var reader = new FileReader();
+
+			function readFile(index) {
+					if( index >= files.length ) return;
+
+					var file = files[index];
+					reader.onload = function(loadEvent) {
+							$scope.$apply(function () {
+									$scope.files.push(loadEvent.target.result);
+									readFile(index+1)
+							});
+					}
+					reader.readAsDataURL(files[index]);
+			}
+			readFile(0);
+
+
+	    var filesInfo = "";
+
+	    for (var i = 0; i < files.length; i++) {
+	        var file = files[i];
+
+	        filesInfo += "<li>Name: " + file.name + "</li>";
+
+	    }
+
+	    var output = document.getElementById("result");
+
+	    output.innerHTML = "<ul>" + filesInfo + "</ul>";
+	}
+
+
+
+
+
 
 	if(location.host){
 		// SERVER UP, OPEN CONNECTION
@@ -157,9 +251,10 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		};
 	}else{
 		// NO SERVER AVAILABLE
-		FakeResults.generate(function(result){
-			addResult(result);
-		});
+		$scope.local = true;
+		// FakeResults.generate(function(result){
+		// 	addResult(result);
+		// });
 	}
 
 })
@@ -177,3 +272,33 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
         }
     };
 })
+.directive("filesread", [function () {
+    return {
+        scope: {
+            filesread: "="
+        },
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+
+								var files = changeEvent.target.files;
+                var reader = new FileReader();
+
+								function readFile(index) {
+										if( index >= files.length ) return;
+
+										var file = files[index];
+										reader.onload = function(loadEvent) {
+										    scope.$apply(function () {
+		                        scope.filesread.push(loadEvent.target.result);
+														readFile(index+1)
+		                    });
+										}
+										reader.readAsDataURL(files[index]);
+								}
+								readFile(0);
+
+
+            });
+        }
+    }
+}]);

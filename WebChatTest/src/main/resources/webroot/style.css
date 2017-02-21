@@ -50,6 +50,63 @@ td{
     background: #F9FAFB;
 }
 
+.load-box-init{
+    width: 35%;
+    margin: auto !important;
+    margin-top: 12% !important;
+}
+
+.load-box-final{
+
+}
+
+.load-button-init{
+  margin-top: 1em !important;
+  width: 100%;
+}
+
+.load-button-final{
+
+
+}
+
+/**
+
+*/
+
+article
+{
+    width: 80%;
+    margin:auto;
+    margin-top:10px;
+}
+
+
+.area
+{
+    border: 5px dotted #ccc;
+    padding: 50px;
+    text-align: center;
+}
+
+.drag
+{
+    border: 5px dotted green;
+    background-color: yellow;
+}
+
+#result ul{
+    list-style: none;
+    margin-top:20px;
+}
+
+#result ul li
+{
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+
 /**
   LOADER
 */
