@@ -20,6 +20,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		$scope.graphics[chatSizeName].data[k].push(result.avgTime);
 
 		$scope.apps[result.app].results.push(result);
+		if(!$scope.local) $scope.$apply();
 	}
 
 	function newApp(app_name){
@@ -111,6 +112,22 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
     }
 	};
 
+	$scope.dropdown = function(elem){
+
+	 $(".item .menu").not(elem).slideUp( "fast", function() {
+		 $(".item .menu").removeClass('active visible');
+	 });
+
+   if(!$(elem).hasClass('visible')){
+     $(elem).addClass('active visible');
+     $(elem+" .menu").slideDown( "fast");
+   }else {
+     $(elem+" .menu").slideUp( "fast", function() {
+       $(elem).removeClass('active visible');
+     });
+   }
+  }
+
 
 	/**
 		EXPORT
@@ -146,18 +163,19 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		graph.visible = !graph.visible;
 	}
 
-	function exportToJSON(appName){
+	$scope.exportToJSON = function(appName, chatSize){
 		var results = [];
 		for(var i in $scope.apps){
 			for(var j = 0; j <  $scope.apps[i].results.length; j++){
 				var result =  $scope.apps[i].results[j];
-				if(result.app != appName) continue;
+				if(result.app != appName || (chatSize && Number(result.chatSize) != chatSize)) continue;
 				delete result.$$hashKey;
 				results.push(result);
 			}
 		}
 		var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(results));
-		download("data.json", "data: "+data);
+		var fileName = chatSize ? appName + "_"+chatSize+"_room": appName;
+		download(fileName+".json", "data: "+data);
 	}
 
 	function download(name, href){
@@ -194,7 +212,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	    event.stopPropagation();
 	    event.preventDefault();
 	    var drop_area = document.getElementById("drop_area");
-	    drop_area.className = "area drag";
+	    drop_area.className = "drop-area drag";
 	}
 
 	function filesDroped(event) {
@@ -245,6 +263,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
 	if(location.host){
 		// SERVER UP, OPEN CONNECTION
+		$scope.local = false;
 		var eb = new EventBus("/eventbus/");
 		eb.onopen = function () {
 			eb.registerHandler("new.result", function(err, message){

@@ -9,7 +9,7 @@ body {
 .main {
     max-width: 90%;
     margin: auto;
-    margin-top: 5em;
+    margin-top: 3em;
 }
 
 h2.ui.header {
@@ -50,6 +50,16 @@ td{
     background: #F9FAFB;
 }
 
+.item.title{
+  font-size: 1.1em;
+  font-weight: bold !important;
+}
+
+.item .menu{
+  width: 15em;
+}
+
+
 .load-box-init{
     width: 35%;
     margin: auto !important;
@@ -82,7 +92,7 @@ article
 }
 
 
-.area
+.drop-area
 {
     border: 3px dotted rgba(0,0,0,0.5);
     padding: 50px;

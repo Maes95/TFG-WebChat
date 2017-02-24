@@ -38,7 +38,7 @@
 
       <!-- UPLOAD DATA -->
 
-      <div ng-show="empty" class="column">
+      <div ng-show="empty && local" class="column">
         <div class="ui segment load-box-init">
           <h2 class="ui icon header" style="width: 100%;">
             <div class="content">
@@ -58,7 +58,7 @@
           <div class="ui segment secondary">
             <input type="file" filesread="onChange" multiple/>
             <div ng-show="results.length == 0" class="ui horizontal divider">Or</div>
-            <div ng-show="results.length == 0" id="drop_area" class="area">Drop your files here!</div>
+            <div ng-show="results.length == 0" id="drop_area" class="drop-area">Drop your files here!</div>
             <output id="result"/>
           </div>
           <button ng-show="results.length > 0" ng-class="empty ? 'load-button-init':'load-button-final'" class="ui button" ng-click="loadResults()">Load files</button>
@@ -66,6 +66,28 @@
       </div>
 
       <!-- CHARTS -->
+      <div ng-show="!empty" class="column">
+        <div class="ui stackable menu">
+          <a class="item title">
+            Web Chat Test
+          </a>
+          <div ng-repeat="app in apps" class="ui floating labeled icon dropdown item" id="{{ app.name }}" ng-style="{ color : colors[$index] }" ng-click="dropdown('#'+app.name)">
+            <span class="text">{{ app.name }}</span>
+            <div class="menu">
+              <div class="header">
+                {{ app.name }} application
+              </div>
+              <div class="divider"></div>
+              <div class="item" ng-click="exportToJSON(app.name)">
+                <span class="text">Download all data</span>
+              </div>
+              <div ng-repeat="g in graphics" class="item" ng-click="exportToJSON(app.name, g.chatSize)">
+                <span class="text">Download {{ g.chatSize }} room(s)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
 		  <div ng-repeat="item in graphics" class="column">
   			<div class="ui top attached segment">
