@@ -52,7 +52,7 @@ public class TestMetrics {
             }
             line = stdin.readLine();
             if (line != null) {
-                String[] lineArray = line.split("\\s+");
+                String[] lineArray = line.trim().split("\\s+");
                 return new Metrics(lineArray[indexVirt-1],lineArray[indexRam-1],lineArray[indexCpu-1],lineArray[indexMem-1]);
             }
         } catch (IOException ex) {

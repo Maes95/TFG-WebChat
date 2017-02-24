@@ -1,13 +1,10 @@
 {
     "apps" : [
-        {
-            "name" : "NodeJS",
-            "commands" : "node app.js"
-        },
-        {
-            "name" : "NodeJSCluster",
-            "commands" : "node master.js"
-        }
+	{
+       	    "name" : "VertxNoEventbus",
+	    "commands" : "mvn exec:java",
+            "port" : 9000
+      	}
     ],
     "chats": [
         {
