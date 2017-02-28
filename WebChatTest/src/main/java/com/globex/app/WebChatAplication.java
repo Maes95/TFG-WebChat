@@ -40,7 +40,7 @@ public class WebChatAplication {
                 this.remote = true;
                 this.address = config.isNull("address") ? LOCAL_ADDRESS : config.getString("address");
                 this.delay = 0;
-                
+                this.pid = config.isNull("pid") ? -1 : config.getInt("pid");
             }else{
                 // LOCAL APPLICATION
                 this.remote = false;
@@ -105,5 +105,9 @@ public class WebChatAplication {
     
     public boolean isRemote(){
         return this.remote;
+    }
+    
+    public boolean isAtSameMachine(){
+        return !this.remote || (this.pid != -1);
     }
 }

@@ -204,7 +204,7 @@ public final class ChatTest {
             );
         }
         
-        if(!current_application.isRemote()){
+        if(!current_application.isRemote() || current_application.isAtSameMachine()){
             vertx.setPeriodic(1000, id -> {
                 ChatTest.currentResult.addMetric(current_application.getMetrics());
             });
@@ -229,7 +229,7 @@ public final class ChatTest {
                     String respuesta = message.get("message").asText();
                     Long _time = System.currentTimeMillis()-Long.parseLong(respuesta.substring(respuesta.indexOf("/") + 1));
                     times.addAndGet(_time);
-                    numberOfMessages.addAndGet(1);                                       
+                    numberOfMessages.addAndGet(1);   
                     // When THIS user recive all messages from his chat
                     if (numberOfMessages.get()== totalMessagePerChat){
                         websocket.close();
