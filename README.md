@@ -10,6 +10,7 @@ The proyects which participates in this comparison are:
 - SpringBoot-Tomcat
 - SpringBoot-Undertow
 - Vertx
+- VertxNoEventBus
 
 ## How test web servers
 
