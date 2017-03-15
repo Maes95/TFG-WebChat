@@ -1,9 +1,8 @@
 {
     "apps" : [
         {
-            "name" : "Akka",
-            "remote" : true,
-            "pid": 1596
+            "name" : "SpringBoot-Undertow",
+            "commands" : "mvn spring-boot:run"
         }
     ],
     "chats": [
