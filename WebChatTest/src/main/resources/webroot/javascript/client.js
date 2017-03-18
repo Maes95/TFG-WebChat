@@ -17,7 +17,9 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		if(!$scope.apps[result.app]) newApp(result.app);
 		var k = $scope.apps[result.app].index;
 
-		$scope.graphics[chatSizeName].data[k].push(result.avgTime);
+		$scope.graphics[chatSizeName].dataTimes[k].push(result.avgTime);
+		$scope.graphics[chatSizeName].dataCpuUse[k].push(result.avgCpuUse);
+		$scope.graphics[chatSizeName].dataMemoryUse[k].push(result.avgMemoryUse);
 
 		$scope.apps[result.app].results.push(result);
 		if(!$scope.local) $scope.$apply();
@@ -32,7 +34,9 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		}
 		n++;
 		for(key in $scope.graphics){
-			$scope.graphics[key].data.push([]);
+			$scope.graphics[key].dataTimes.push([]);
+			$scope.graphics[key].dataCpuUse.push([]);
+			$scope.graphics[key].dataMemoryUse.push([]);
 			$scope.graphics[key].series.push(app_name);
 		}
 	}
@@ -43,12 +47,16 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		  title: "N users in "+chatSizeName+" chat room(s)",
 		  labels: [],
 		  series: [],
-		  data: [],
+		  dataTimes: [],
+			dataCpuUse : [],
+			dataMemoryUse : [],
 		  tab: 0
 		}
 		for(key in $scope.apps){
 			$scope.graphics[chatSizeName].series.push(key)
-			$scope.graphics[chatSizeName].data.push([]);
+			$scope.graphics[chatSizeName].dataTimes.push([]);
+			$scope.graphics[chatSizeName].dataCpuUse.push([]);
+			$scope.graphics[chatSizeName].dataMemoryUse.push([]);
 		}
 	}
 
@@ -59,6 +67,14 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	$scope.tabApp = 0;
 	$scope._tabApp = function(index){
 		$scope.tabApp = index;
+	}
+
+	// MULTI-GRAPHIC
+
+	var dataKeys = ["dataTimes", "dataCpuUse", "dataMemoryUse"];
+
+	$scope.getData = function(graphic, index){
+		return graphic[dataKeys[graphic.tab]][index];
 	}
 
 	$scope.tabLabel = 0;
@@ -88,29 +104,36 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
 	$scope.datasetOverride = [];
 
-	$scope.options = {
-    scales: {
-			yAxes: [{
-					ticks: {
-						padding: 30,
-					},
-					scaleLabel: {
-						display: true,
-						labelString: "Time in milliseconds"
-					},
-	      }],
-	    xAxes: [{
-					gridLines :{
-						lineWidth: 1,
-						zeroLineColor: "rgba(0, 0, 0, 0)"
-					},
-					scaleLabel: {
-						display: true,
-						labelString: "Number of users per chat room"
-					},
-	      }]
-    }
-	};
+	$scope.timeOptions = getOptions('Time in milliseconds');
+	$scope.cpuOptions = getOptions('% of CPU');
+	$scope.memoryOptions = getOptions('% of Memory');
+
+	function getOptions(legend){
+		var options = {
+	    scales: {
+				yAxes: [{
+						ticks: {
+							padding: 30,
+						},
+						scaleLabel: {
+							display: true,
+							labelString: legend
+						},
+		      }],
+		    xAxes: [{
+						gridLines :{
+							lineWidth: 1,
+							zeroLineColor: "rgba(0, 0, 0, 0)"
+						},
+						scaleLabel: {
+							display: true,
+							labelString: "Number of users per chat room"
+						},
+		      }]
+	    }
+		}
+		return options;
+	}
 
 	$scope.dropdown = function(elem){
 
@@ -136,7 +159,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	var css = "<link href='https://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css' rel='stylesheet'></link>";
 	$scope.exportToPDF = function(item){
 		$scope.currentItem = item;
-		$scope.chart_img = $('#'+$scope.currentItem.chatSize +'-size')[0].toDataURL("image/png");
+		$scope.chart_img = $('#'+$scope.currentItem.chatSize +'-size-times')[0].toDataURL("image/png");
 		setTimeout(function () {
 			var title = $scope.currentItem.title;
 			var printWindow = window.open("", "", "width=1000, height=800");
@@ -147,7 +170,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	}
 
 	$scope.saveImg = function(item){
-		download(item.title+".png", $('#'+item.chatSize +'-size')[0].toDataURL("image/png"));
+		download(item.title+".png", $('#'+item.chatSize +'-size-times')[0].toDataURL("image/png"));
 	}
 
 	$scope.saveData = function(item){
@@ -158,7 +181,6 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	}
 
 	$scope.slideDown = function(graph){
-		// exportToJSON();
 		$('#'+graph.chatSize).slideToggle( "fast");
 		graph.visible = !graph.visible;
 	}

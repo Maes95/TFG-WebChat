@@ -109,101 +109,86 @@
   			  <h2 class="ui header">{{ item.title }}</h2>
   			</div>
 
+
+
   			<div id="{{item.chatSize}}" class="ui two column grid attached segment">
   				<!-- GRAPHIC -->
   				<div class="column">
-  					<canvas
-                id="{{item.chatSize +'-size'}}"
+            <canvas
+                ng-show="item.tab == 0"
+                id="{{item.chatSize +'-size-times'}}"
                 class="chart chart-line"
-  							chart-data="item.data"
+  							chart-data="item.dataTimes"
   							chart-labels="item.labels"
   							chart-series="item.series"
   							chart-click="onClick"
   							chart-colors="colors"
-  							chart-options="options"
+  							chart-options="timeOptions"
+  							chart-dataset-override="datasetOverride">
+  					</canvas>
+  					<canvas
+                ng-show="item.tab == 1"
+                id="{{item.chatSize +'-size-cpu'}}"
+                class="chart chart-line"
+  							chart-data="item.dataCpuUse"
+  							chart-labels="item.labels"
+  							chart-series="item.series"
+  							chart-click="onClick"
+  							chart-colors="colors"
+  							chart-options="cpuOptions"
+  							chart-dataset-override="datasetOverride">
+  					</canvas>
+            <canvas
+                ng-show="item.tab == 2"
+                id="{{item.chatSize +'-size-memory'}}"
+                class="chart chart-line"
+  							chart-data="item.dataMemoryUse"
+  							chart-labels="item.labels"
+  							chart-series="item.series"
+  							chart-click="onClick"
+  							chart-colors="colors"
+  							chart-options="memoryOptions"
   							chart-dataset-override="datasetOverride">
   					</canvas>
   				</div>
-  				<!-- DATA -->
+
   				<div class="column">
-  					<div class="ui pointing secondary menu">
-  					  <a ng-repeat="app in apps"
-  						 ng-click="_tabApp(app.index)"
-  						 ng-class="{active : tabApp == app.index}"
-  						 ng-style="tabApp == app.index && {'color': colors[$index], 'border-color': colors[$index]} || {}"
-  						 class="item">{{ app.name }}</a>
-  					</div>
-  					<div ng-repeat="app in apps" class="ui tab" ng-class="{active : tabApp == app.index}">
-  					  <div class="ui top attached tabular menu">
-  						<a ng-repeat="label in item.labels"
-  						   ng-click="_tabLabel(item.chatSize, $index)"
-  						   ng-class="{active : item.tab == $index}"
-  						   class="item">
-  							{{ label }}
-  							<span ng-show="item.tab == $index">&nbsp;users</span>
-  						</a>
-  					  </div>
-  					  <div ng-repeat="label in item.labels" ng-class="{active : item.tab == $index}" class="ui bottom attached tab segment">
-  						  <div ng-repeat="result in app.results | filter:{numUsers: label, chatSize: item.chatSize}">
 
-    							<h3 class="ui header">Results of attemps</h3>
-    							<table class="ui celled small table">
-    							  <tbody>
-    								<tr>
-    								  <td class="collapsing">Nº of attemp</td>
-    								  <td ng-repeat="time in result.times track by $index">{{ $index + 1 }}</td>
-    								</tr>
-    								<tr>
-    								  <td class="collapsing">Time (ms)</td>
-    								  <td ng-repeat="time in result.times track by $index">{{ time }}</td>
-    								</tr>
-    							  </tbody>
-    							</table>
-
-                  <h3 class="ui header">Performance measures</h3>
-                  <div class="statistics">
-                    <div class="ui statistic blue segment mini">
-                      <div class="value">
-                        {{ result.avgCpuUse | number:2 }}%
-                      </div>
-                      <div class="label">
-                        CPU use
-                      </div>
+            <!-- METRIC SELECTOR -->
+            <div class="ui form">
+              <div class="field">
+                  <label>Select a metric</label>
+                  <div id="selectMetric{{item.chatSize}}" class="ui selection dropdown metrics-menu" ng-click="dropdown('#selectMetric'+item.chatSize)">
+                    <input type="hidden" name="gender">
+                    <i class="dropdown icon"></i>
+                    <div class="default text" ng-init="item.current_tab = 'Response time'; item.tab = 0;">{{ item.current_tab }}</div>
+                    <div class="menu">
+                      <div class="item" ng-click="item.current_tab = 'Response time'; item.tab = 0;">Response time</div>
+                      <div class="item" ng-click="item.current_tab = 'CPU use'; item.tab = 1;">CPU use</div>
+                      <div class="item" ng-click="item.current_tab = 'Memory use'; item.tab = 2;">Memory use</div>
                     </div>
-
-                    <div class="ui statistic violet segment mini">
-                      <div class="value">
-                        {{ result.avgMemoryUse | number:2 }}%
-                      </div>
-                      <div class="label">
-                        Memory use
-                      </div>
-                    </div>
-
-                    <div class="ui statistic green segment mini">
-                      <div class="value">
-                        {{ result.avgVitualMemory / 1024 / 1024 | number:2 }}&nbsp;gb
-                      </div>
-                      <div class="label">
-                        Virt. memory
-                      </div>
-                    </div>
-
-                    <div class="ui statistic teal segment mini">
-                      <div class="value">
-                        {{ result.avgRam / 1024 / 1024 | number:2  }}&nbsp;gb
-                      </div>
-                      <div class="label">
-                        RAM memory
-                      </div>
-                    </div>
-
                   </div>
+              </div>
+            </div>
 
-
-  						  </div>
-  					  </div>
-  					</div>
+            <!-- DATA -->
+            <table class="ui celled table">
+              <thead style="text-align: center; ">
+                <tr>
+                  <th rowspan="2">App</th>
+                  <th colspan="{{ item.labels.length }}">Nº of user per room / time (in ms)</th>
+                </tr>
+                <tr>
+                  <th ng-repeat="label in item.labels track by $index">{{ label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="app in item.series track by $index">
+                  <td class="app-name" ng-style="{ color : colors[$index] }">{{ app }}</td>
+                  <td class="metric" ng-repeat="metric in getData(item, $index) track by $index">{{ metric | number: item.tab }}</td>
+                </tr>
+              </tbody>
+            </table>
   				</div>
   			</div>
 
@@ -240,7 +225,7 @@
       <div class="sub header">Results report</div>
     </h1>
     <div id="{{currentItem.chatSize +'-size-paste'}}" class="column" style="width: 40%;">
-      <img src="{{ chart_img }}"/>
+      <img ng-if="chart_img" ng-src="{{ chart_img }}"/>
     </div>
     <div style="margin-top: 2em;">
       <table class="ui celled table">
@@ -256,7 +241,7 @@
         <tbody>
           <tr ng-repeat="app in currentItem.series track by $index">
             <td>{{ app }}</td>
-            <td ng-repeat="avgTime in currentItem.data[$index] track by $index">{{ avgTime }}</td>
+            <td ng-repeat="avgTime in getData(currentItem, $index) track by $index">{{ avgTime }}</td>
             <!-- <td>{{ apps[app].results[0].avgRam }}</td> -->
           </tr>
         </tbody>
@@ -279,7 +264,7 @@
     <tbody>
       <tr ng-repeat="app in currentItem.series track by $index">
         <td>{{ app }}</td>
-        <td ng-repeat="avgTime in currentItem.data[$index] track by $index">{{ avgTime }}</td>
+        <td ng-repeat="avgTime in getData(currentItem, $index) track by $index">{{ avgTime }}</td>
       </tr>
     </tbody>
   </table>

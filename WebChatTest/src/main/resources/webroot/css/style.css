@@ -17,11 +17,21 @@ h2.ui.header {
     text-align: center;
 }
 
-table{
-	font-size: 0.8em !important;
-}
 table td{
 	text-align: center !important;
+}
+
+table td.app-name{
+  font-size: 0.9em !important;
+  font-weight: bold;
+}
+
+.metrics-menu{
+  width: 100% !important;
+}
+
+table td.metric{
+	font-size: 0.8em !important;
 }
 
 table td.collapsing{
