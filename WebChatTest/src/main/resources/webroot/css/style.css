@@ -52,10 +52,6 @@ td{
     font-size: 0.9em !important;
 }
 
-.drop{
-  position: absolute;
-}
-
 .ui.top.attached.segment {
     background: #F9FAFB;
 }
@@ -93,6 +89,10 @@ td{
 /**
   DRAG AND DROP
 */
+
+.drop{
+  position: absolute;
+}
 
 article
 {
@@ -209,4 +209,8 @@ article
   100% {
     transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
   }
+}
+
+#comparativeReport{
+  display: none;
 }

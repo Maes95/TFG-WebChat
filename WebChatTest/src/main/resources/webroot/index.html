@@ -24,7 +24,7 @@
 </head>
 
 <body>
-	<div ng-app="client" ng-controller="resultsController" class="main">
+	<div  ng-app="client" ng-controller="resultsController" class="main">
 
     <div ng-show="empty && !local" class="loader">
       <div class="inner one"></div>
@@ -86,6 +86,12 @@
               </div>
             </div>
           </div>
+          <div class="right menu">
+            <a class="ui item" ng-click="generateDocument()">
+              <i class="file text outline icon"></i>
+              Generate comparative report
+            </a>
+          </div>
         </div>
       </div>
 
@@ -111,7 +117,7 @@
 
 
 
-  			<div id="{{item.chatSize}}" class="ui two column grid attached segment">
+  			<div id="{{item.chatSize}}" class="ui two column grid stackable attached segment">
   				<!-- GRAPHIC -->
   				<div class="column">
             <canvas
@@ -150,6 +156,9 @@
   							chart-options="memoryOptions"
   							chart-dataset-override="datasetOverride">
   					</canvas>
+            <div ng-show="item.tab == 1" class="ui visible message">
+              <p>* Exceeds 100% if the machine has more than one core</p>
+            </div>
   				</div>
 
   				<div class="column">
@@ -176,7 +185,9 @@
               <thead style="text-align: center; ">
                 <tr>
                   <th rowspan="2">App</th>
-                  <th colspan="{{ item.labels.length }}">Nº of user per room / time (in ms)</th>
+                  <th ng-if="item.tab == 0" colspan="{{ item.labels.length }}">Nº of user per room / time (in ms)</th>
+                  <th ng-if="item.tab == 1" colspan="{{ item.labels.length }}">Nº of user per room / % CPU use</th>
+                  <th ng-if="item.tab == 2" colspan="{{ item.labels.length }}">Nº of user per room / % memory use</th>
                 </tr>
                 <tr>
                   <th ng-repeat="label in item.labels track by $index">{{ label }}</th>
@@ -185,7 +196,8 @@
               <tbody>
                 <tr ng-repeat="app in item.series track by $index">
                   <td class="app-name" ng-style="{ color : colors[$index] }">{{ app }}</td>
-                  <td class="metric" ng-repeat="metric in getData(item, $index) track by $index">{{ metric | number: item.tab }}</td>
+                  <td ng-if="!item.tab" class="metric" ng-repeat="metric in getData(item, item.tab, $index) track by $index">{{ metric }}</td>
+                  <td ng-if="item.tab" class="metric" ng-repeat="metric in getData(item, item.tab, $index) track by $index">{{ metric | number: 2 }}</td>
                 </tr>
               </tbody>
             </table>
@@ -241,7 +253,7 @@
         <tbody>
           <tr ng-repeat="app in currentItem.series track by $index">
             <td>{{ app }}</td>
-            <td ng-repeat="avgTime in getData(currentItem, $index) track by $index">{{ avgTime }}</td>
+            <td ng-repeat="avgTime in getData(currentItem, currentItem.tab, $index) track by $index">{{ avgTime }}</td>
             <!-- <td>{{ apps[app].results[0].avgRam }}</td> -->
           </tr>
         </tbody>
@@ -264,10 +276,139 @@
     <tbody>
       <tr ng-repeat="app in currentItem.series track by $index">
         <td>{{ app }}</td>
-        <td ng-repeat="avgTime in getData(currentItem, $index) track by $index">{{ avgTime }}</td>
+        <td ng-repeat="avgTime in getData(currentItem, currentItem.tab, $index) track by $index">{{ avgTime }}</td>
       </tr>
     </tbody>
   </table>
+
+  <!-- TO DOWNLOAD REPORT -->
+
+  <div ng-if="cosa" id="comparativeReport">
+
+    <div ng-repeat="item in graphics" class="column graphic">
+      <div class="ui top attached segment">
+        <h2 class="ui header">{{ item.title }}</h2>
+      </div>
+
+      <div id="{{item.chatSize}}" class="ui two column grid stackable attached segment">
+
+        <div class="column">
+          <img id="{{item.chatSize + 'times'}}" class="ui fluid image" src="{{getGraphImg(item,'times')}}"/>
+          <img id="{{item.chatSize + 'cpu'}}" class="ui fluid image" src="{{getGraphImg(item,'cpu')}}" style="display: none;"/>
+          <img id="{{item.chatSize + 'memory'}}" class="ui fluid image" src="{{getGraphImg(item,'memory')}}" style="display: none;"/>
+          <div class="ui message" style="display: none;">
+            <p>* Exceeds 100% if the machine has more than one core</p>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="ui form">
+            <div class="field">
+                <label>Select a metric</label>
+                <div id="selectMetric{{item.chatSize}}" class="ui selection dropdown metrics-menu" onClick="dropdown(this)">
+                  <input type="hidden" name="gender">
+                  <i class="dropdown icon"></i>
+                  <div class="default text" ng-init="item.current_tab = 'Response time'; item.tab = 0;">Response time</div>
+                  <div class="menu">
+                    <div class="item" data-chat-size="{{item.chatSize}}" onClick="select(this,'times', 'Response time')">Response time</div>
+                    <div class="item" data-chat-size="{{item.chatSize}}" onClick="select(this,'cpu', 'CPU use')">CPU use</div>
+                    <div class="item" data-chat-size="{{item.chatSize}}" onClick="select(this,'memory', 'Memory use')">Memory use</div>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <!-- DATA -->
+          <table id="table-{{item.chatSize}}-times" class="ui celled table unstackable">
+            <thead style="text-align: center; ">
+              <tr>
+                <th rowspan="2">App</th>
+                <th colspan="{{ item.labels.length }}">Number of user per room / time (in ms)</th>
+              </tr>
+              <tr>
+                <th ng-repeat="label in item.labels track by $index">{{ label }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="app in item.series track by $index">
+                <td class="app-name" ng-style="{ color : colors[$index] }">{{ app }}</td>
+                <td class="metric" ng-repeat="metric in getData(item, 0, $index) track by $index">{{ metric | number: item.tab }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- DATA -->
+          <table id="table-{{item.chatSize}}-cpu" class="ui celled table unstackable" style="display: none;">
+            <thead style="text-align: center; ">
+              <tr>
+                <th rowspan="2">App</th>
+                <th colspan="{{ item.labels.length }}">Number of user per room / % CPU use</th>
+              </tr>
+              <tr>
+                <th ng-repeat="label in item.labels track by $index">{{ label }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="app in item.series track by $index">
+                <td class="app-name" ng-style="{ color : colors[$index] }">{{ app }}</td>
+                <td class="metric" ng-repeat="metric in getData(item, 1, $index) track by $index">{{ metric | number: item.tab }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- DATA -->
+          <table id="table-{{item.chatSize}}-memory" class="ui celled table unstackable" style="display: none;">
+            <thead style="text-align: center; ">
+              <tr>
+                <th rowspan="2">App</th>
+                <th colspan="{{ item.labels.length }}">Number of user per room / % memory use</th>
+              </tr>
+              <tr>
+                <th ng-repeat="label in item.labels track by $index">{{ label }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="app in item.series track by $index">
+                <td class="app-name" ng-style="{ color : colors[$index] }">{{ app }}</td>
+                <td class="metric" ng-repeat="metric in getData(item, 2, $index) track by $index">{{ metric | number: item.tab }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+
+    <script>
+      function select(_this, selector, msg){
+        var chatSize = _this.getAttribute('data-chat-size');
+        $('#'+chatSize+' table').hide();
+        $('#'+chatSize+' img').hide();
+        $('#table-'+chatSize+'-'+selector).show();
+        $('#'+chatSize+' img#'+chatSize+selector).show();
+        $('#'+chatSize+' .default.text').html(msg);
+        if(selector == "cpu"){
+          $(".message").show();
+        }else{
+          $(".message").hide();
+        }
+      }
+      function dropdown(_this){
+        var elem = "#"+_this.id.trim();
+        $(".item .menu").not(elem).slideUp( "fast", function() {
+          $(".item .menu").removeClass('active visible');
+        });
+
+         if(!$(elem).hasClass('visible')){
+           $(elem).addClass('active visible');
+           $(elem+" .menu").slideDown( "fast");
+         }else {
+           $(elem+" .menu").slideUp( "fast", function() {
+             $(elem).removeClass('active visible');
+           });
+         }
+      }
+    </script>
+  </div>
 
 
 

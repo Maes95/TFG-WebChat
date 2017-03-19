@@ -73,8 +73,8 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
 	var dataKeys = ["dataTimes", "dataCpuUse", "dataMemoryUse"];
 
-	$scope.getData = function(graphic, index){
-		return graphic[dataKeys[graphic.tab]][index];
+	$scope.getData = function(graphic, tab, index){
+		return graphic[dataKeys[tab]][index];
 	}
 
 	$scope.tabLabel = 0;
@@ -155,6 +155,23 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	/**
 		EXPORT
 	*/
+
+	var style = "body{font-family:sans-serif;color:#333;height:auto;background-image:radial-gradient(circle farthest-corner at center,#3C4B57 0,#1C262B 100%)}.main{max-width:90%;margin:3em auto auto}h2.ui.header{margin-top:0;text-align:center}table td{text-align:center!important}table td.app-name{font-size:.9em!important;font-weight:700}.metrics-menu{width:100%!important}table td.metric{font-size:.8em!important}table td.collapsing{font-weight:700}td{font-size:.9em!important}.graphic{width:96%;margin:1em auto}"
+
+	$scope.generateDocument = function(){
+		$scope.cosa = true;
+		setTimeout(function () {
+			var title = "Comparative report";
+			var css = "<link href='https://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css' rel='stylesheet'></link><style>"+style+"</style>";
+			var js = "<script src='https://code.jquery.com/jquery-1.11.2.min.js'></script>"
+			var html = '<html><head><title>'+title+'</title>'+css+js+'</head><body">' + document.getElementById('comparativeReport').innerHTML + '</body></html>';
+			download('fullDocument','data:' + 'text/html' +  ';charset=utf-8,' + encodeURIComponent(html))
+		}, 1000)
+	}
+
+	$scope.getGraphImg = function(item, selector){
+		return $('#'+item.chatSize +'-size-'+selector)[0].toDataURL("image/png");
+	}
 
 	var css = "<link href='https://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css' rel='stylesheet'></link>";
 	$scope.exportToPDF = function(item){
