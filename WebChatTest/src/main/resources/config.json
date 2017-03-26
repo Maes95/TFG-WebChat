@@ -2,7 +2,9 @@
     "apps" : [
         {
             "name" : "SpringBoot-Undertow",
-            "commands" : "mvn spring-boot:run"
+            "globalDefinition": "Spring is a framework for application development and investment control container, open source for the Java platform. Spring Boot makes it easy to create Spring-powered, production-grade applications and services with minimum effort.",
+            "specificDefinition": "This application use Jetty as server.",
+            "remote" : true
         }
     ],
     "chats": [

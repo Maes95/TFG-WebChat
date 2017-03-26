@@ -15,16 +15,20 @@ public class Result {
     private final int numUsers;
     private final int repeat_limit;
     private final String app;
+    private final String globalDefinition;
+    private final String specificDefinition;
     private final ArrayList<Long> times;
     private final ArrayList<Metrics> metrics;
     
-    public Result(int chatSize, int numUsers, String app, int repeat_limit){
+    public Result(int chatSize, int numUsers, String app, String globalDef, String specificDef, int repeat_limit){
         this.repeat_limit = repeat_limit;
-        this.times = new ArrayList<>();
+        this.times = new ArrayList<>(repeat_limit);
         this.metrics = new ArrayList<>();
         this.chatSize = chatSize;
         this.numUsers = numUsers;
         this.app = app;
+        this.globalDefinition = globalDef;
+        this.specificDefinition = specificDef;
     }
     
     public JsonObject toJson(){
@@ -32,6 +36,8 @@ public class Result {
         response.put("chatSize", this.chatSize);
         response.put("numUsers", this.numUsers);
         response.put("app", this.app);
+        response.put("globalDefinition", this.globalDefinition);
+        response.put("specificDefinition", this.specificDefinition);
         
         // TIMES
         JsonArray timesList = new JsonArray();

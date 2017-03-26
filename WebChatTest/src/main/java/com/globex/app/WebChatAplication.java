@@ -21,6 +21,8 @@ public class WebChatAplication {
     
     private String folderName;
     private String appName;
+    private String globalDefinition;
+    private String specificDefinition;
     private String address;
     private int port;
     private List<String> commands;
@@ -33,6 +35,8 @@ public class WebChatAplication {
     public WebChatAplication(JSONObject config){
         try{
             this.appName = config.getString("name");
+            this.globalDefinition = config.isNull("globalDefinition") ? "No definition provided" : config.getString("globalDefinition");
+            this.specificDefinition = config.isNull("specificDefinition") ? "" : config.getString("specificDefinition");
             this.folderName = config.isNull("folderName") ? appName+"-WebChat" : config.getString("folderName");
             this.port = config.isNull("port") ? DEFAULT_PORT : config.getInt("port");
             if(!config.isNull("remote") && config.getBoolean("remote")){
@@ -109,5 +113,33 @@ public class WebChatAplication {
     
     public boolean isAtSameMachine(){
         return !this.remote || (this.pid != -1);
+    }
+
+    /**
+     * @return the globalDefinition
+     */
+    public String getGlobalDefinition() {
+        return globalDefinition;
+    }
+
+    /**
+     * @param globalDefinition the globalDefinition to set
+     */
+    public void setGlobalDefinition(String globalDefinition) {
+        this.globalDefinition = globalDefinition;
+    }
+
+    /**
+     * @return the specificDefinition
+     */
+    public String getSpecificDefinition() {
+        return specificDefinition;
+    }
+
+    /**
+     * @param specificDefinition the specificDefinition to set
+     */
+    public void setSpecificDefinition(String specificDefinition) {
+        this.specificDefinition = specificDefinition;
     }
 }

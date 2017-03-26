@@ -119,7 +119,15 @@ public final class ChatTest {
         System.out.println("Nº Chats: "+numChats);
         System.out.println("Nº Users per chat: "+usersPerChat);
         System.out.println("-------------------------------------------------------");
-        ChatTest.currentResult = new Result(numChats, usersPerChat, current_application.getAppName(),REPEAT_LIMIT);
+        ChatTest.currentResult = 
+                new Result(
+                        numChats, 
+                        usersPerChat, 
+                        current_application.getAppName(), 
+                        current_application.getGlobalDefinition(), 
+                        current_application.getSpecificDefinition(),
+                        REPEAT_LIMIT
+                );
         test(context, 1);
     }
 
