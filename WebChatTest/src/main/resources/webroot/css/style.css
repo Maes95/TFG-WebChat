@@ -6,6 +6,25 @@ body {
     background-image: radial-gradient(circle farthest-corner at center, #3C4B57 0%, #1C262B 100%);
 }
 
+.modal .content{
+  padding-left: 6em !important;
+  padding-right: 6em !important;
+  padding-bottom: 4em !important;
+  padding-top: 3em !important;
+}
+
+p.huge-font{
+  font-size: 1.3em;
+}
+
+.center-text{
+  text-align: center;
+}
+
+#appDef{
+  top: 35% !important;
+}
+
 .main {
     max-width: 90%;
     margin: auto;

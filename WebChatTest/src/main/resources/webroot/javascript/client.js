@@ -14,7 +14,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		var index = $scope.graphics[chatSizeName].labels.indexOf(result.numUsers)
 		if(index == -1) newLabel(result.numUsers, chatSizeName);
 		// IF APP EXISTS
-		if(!$scope.apps[result.app]) newApp(result.app);
+		if(!$scope.apps[result.app]) newApp(result.app, result.globalDefinition, result.specificDefinition);
 		var k = $scope.apps[result.app].index;
 
 		$scope.graphics[chatSizeName].dataTimes[k].push(result.avgTime);
@@ -25,10 +25,12 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 		if(!$scope.local) $scope.$apply();
 	}
 
-	function newApp(app_name){
+	function newApp(app_name,globalDefinition,specificDefinition){
 		$scope.datasetOverride.push({lineTension: 0});
 		$scope.apps[app_name] = {
 			name: app_name,
+			globalDefinition: globalDefinition,
+			specificDefinition: specificDefinition,
 			index: n,
 			results: []
 		}
@@ -150,6 +152,11 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
      });
    }
   }
+
+	$scope.openModal = function(app){
+		$scope.selectedApp = $scope.apps[app.name];
+		$('#appDef.ui.modal').modal('show');
+	}
 
 
 	/**
