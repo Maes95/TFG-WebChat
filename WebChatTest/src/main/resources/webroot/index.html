@@ -294,8 +294,8 @@
         <a id="cosa" class="item title">
           Comparative Report
         </a>
-        <div ng-repeat="app in apps" class="ui floating labeled icon dropdown item app-detail"  ng-style="{ color : colors[$index] }">
-          <span id="{{ app.name }}_report" class="text"  onClick="popup(this)" >{{ app.name }}</span>
+        <div ng-repeat="app in apps" class="ui floating labeled icon dropdown item app-detail"  ng-style="{ color : colors[$index] }" id="{{ app.name }}_report">
+          <span  class="text">{{ app.name }}</span>
           <div class="ui popup bottom left transition hidden" style="top: 554px; left: 1px; bottom: auto; right: auto; width: 25em; max-width: 50em !important;">
             <h1 class="ui header" ng-style="{ color : colors[app.index] }">{{ app.name }}</h1>
             <p class="huge-font">{{ app.globalDefinition }}</p>
@@ -399,7 +399,10 @@
 
 
     <script>
-      $(".app-detail span").popup({on: "click"});
+      $(".app-detail").each(function(i) {
+        var id = $(".app-detail")[i].id;
+        $("#"+id).popup({popup: '#'+id+' .popup', on: "click"});
+      });
 
       function select(_this, selector, msg){
         var chatSize = _this.getAttribute('data-chat-size');
