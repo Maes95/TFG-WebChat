@@ -89,17 +89,14 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 	};
 
 	$scope.colors = [
-		'#46BFBD', // GREEN
-		'#6435C9', // VIOLET
 		'#ff6384', // RED
-		'#FDB45C', // ORANGE
-    '#45b7cd',  // BLUE
-		"#FE9A76", // ORANGE
-		"#008080", // TEAL
 		"#32CD32", // OLIVE
-		"#FF1493", // PINK
-		"#FFD700", // YELLOW
+		"#008080", // TEAL
+		'#46BFBD', // GREEN
+		'#FDB45C', // ORANGE
+		'#6435C9', // VIOLET
 		"#A52A2A", // BROWN
+
  		"#A0A0A0", // GREY
     "#000000"  // BLACK
   ];
