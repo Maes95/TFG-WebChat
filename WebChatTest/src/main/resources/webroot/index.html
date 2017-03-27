@@ -16,6 +16,7 @@
     <!-- Local Javascript -->
     <script src="./javascript/lib/vertx-eventbus.js"></script>
     <script src="./javascript/client.js"></script>
+    <script src="./javascript/export-api.js"></script>
     <script src="./javascript/test.js"></script>
 	  <script src="./javascript/lib/angular-chart.js"></script>
 
@@ -104,10 +105,10 @@
           <button ng-init="item.visible = true;" ng-click="slideDown(item)" class="ui basic icon button drop">
             <i class="chevron icon" ng-class="item.visible ? 'down' : 'right' "></i>
           </button>
-          <button ng-click="exportToPDF(item)" class="ui basic icon button export-button">
+          <!-- <button ng-click="exportToPDF(item)" class="ui basic icon button export-button">
             <i class="file pdf outline icon"></i>
             Export to PDF
-          </button>
+          </button> -->
           <button ng-click="saveImg(item)" class="ui basic icon button export-button">
             <i class="file image outline icon"></i>
             Download all graphics
@@ -217,7 +218,7 @@
 
 
   <!-- TO PRINT -->
-  <div id="toPrint" ng-show="false">
+  <!-- <div id="toPrint" ng-show="false">
     <style>
       /* To print only 1 page */
       @media print {
@@ -258,20 +259,19 @@
           <tr ng-repeat="app in currentItem.series track by $index">
             <td>{{ app }}</td>
             <td ng-repeat="avgTime in getData(currentItem, currentItem.tab, $index) track by $index">{{ avgTime }}</td>
-            <!-- <td>{{ apps[app].results[0].avgRam }}</td> -->
           </tr>
         </tbody>
       </table>
 
     </div>
-  </div>
+  </div> -->
 
   <!-- TO DOWNLOAD XLS -->
-  <table class="ui celled table" id="results" ng-show="false">
+  <table ng-repeat="tab in [0,1,2]" class="ui celled table" id="xls-results-{{ dataKeys[tab] }}" ng-show="false">
     <thead style="text-align: center; ">
       <tr>
         <th rowspan="2">Aplication</th>
-        <th colspan="{{currentItem.labels.length}}">Number of users per room</th>
+        <th colspan="{{currentItem.labels.length}}">Number of users per room / {{ dataKeysDescription[tab] }}</th>
       </tr>
       <tr>
         <th ng-repeat="label in currentItem.labels track by $index">{{ label }}</th>
@@ -280,7 +280,7 @@
     <tbody>
       <tr ng-repeat="app in currentItem.series track by $index">
         <td>{{ app }}</td>
-        <td ng-repeat="avgTime in getData(currentItem, currentItem.tab, $index) track by $index">{{ avgTime }}</td>
+        <td ng-repeat="avgTime in getData(currentItem, tab, $index) track by $index">{{ avgTime }}</td>
       </tr>
     </tbody>
   </table>
