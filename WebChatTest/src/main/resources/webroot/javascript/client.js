@@ -194,6 +194,8 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
 	$scope.saveImg = function(item){
 		download(item.title+".png", $('#'+item.chatSize +'-size-times')[0].toDataURL("image/png"));
+		download(item.title+".png", $('#'+item.chatSize +'-size-cpu')[0].toDataURL("image/png"));
+		download(item.title+".png", $('#'+item.chatSize +'-size-memory')[0].toDataURL("image/png"));
 	}
 
 	$scope.saveData = function(item){
@@ -294,7 +296,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
 		var filesInfo = "";
 		for (var i = 0; i < files.length; i++) {
-				filesInfo += "<li class='ui label'><i class='big file icon'></i>" + files[i].name + "</li>";
+				filesInfo += "<li class='ui label'><i class='file icon'></i>" + files[i].name + "</li>";
 		}
 		var output = document.getElementById("result");
 		output.innerHTML = "<ul>" + filesInfo + "</ul>";
