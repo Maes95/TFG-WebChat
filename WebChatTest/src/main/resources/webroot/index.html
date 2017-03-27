@@ -287,7 +287,23 @@
 
   <!-- TO DOWNLOAD REPORT -->
 
-  <div ng-if="cosa" id="comparativeReport">
+  <div id="comparativeReport">
+
+    <div id="menu" class="column">
+      <div class="ui stackable menu">
+        <a id="cosa" class="item title">
+          Comparative Report
+        </a>
+        <div ng-repeat="app in apps" class="ui floating labeled icon dropdown item app-detail"  ng-style="{ color : colors[$index] }">
+          <span id="{{ app.name }}_report" class="text"  onClick="popup(this)" >{{ app.name }}</span>
+          <div class="ui popup bottom left transition hidden" style="top: 554px; left: 1px; bottom: auto; right: auto; width: 25em; max-width: 50em !important;">
+            <h1 class="ui header" ng-style="{ color : colors[app.index] }">{{ app.name }}</h1>
+            <p class="huge-font">{{ app.globalDefinition }}</p>
+            <p class="huge-font">{{ app.specificDefinition }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div ng-repeat="item in graphics" class="column graphic">
       <div class="ui top attached segment">
@@ -297,9 +313,9 @@
       <div id="{{item.chatSize}}" class="ui two column grid stackable attached segment">
 
         <div class="column">
-          <img id="{{item.chatSize + 'times'}}" class="ui fluid image" src="{{getGraphImg(item,'times')}}"/>
-          <img id="{{item.chatSize + 'cpu'}}" class="ui fluid image" src="{{getGraphImg(item,'cpu')}}" style="display: none;"/>
-          <img id="{{item.chatSize + 'memory'}}" class="ui fluid image" src="{{getGraphImg(item,'memory')}}" style="display: none;"/>
+          <img id="{{item.chatSize + 'times'}}" class="ui fluid image" ng-src="{{getGraphImg(item,'times')}}"/>
+          <img id="{{item.chatSize + 'cpu'}}" class="ui fluid image" ng-src="{{getGraphImg(item,'cpu')}}" style="display: none;"/>
+          <img id="{{item.chatSize + 'memory'}}" class="ui fluid image" ng-src="{{getGraphImg(item,'memory')}}" style="display: none;"/>
           <div class="ui message" style="display: none;">
             <p>* Exceeds 100% if the machine has more than one core</p>
           </div>
@@ -383,6 +399,8 @@
 
 
     <script>
+      $(".app-detail span").popup({on: "click"});
+
       function select(_this, selector, msg){
         var chatSize = _this.getAttribute('data-chat-size');
         $('#'+chatSize+' table').hide();
