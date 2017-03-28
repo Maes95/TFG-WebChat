@@ -88,7 +88,7 @@ public class WebChatAplication {
     public void destroy(){
         if(!this.remote){
             System.out.println("Stopping "+appName+" application");
-            process.destroy();
+            process.destroyForcibly();
         }else{
             System.out.println("Desconecting from remote "+appName+" application");
         }

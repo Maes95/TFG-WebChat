@@ -7,18 +7,18 @@ import javax.websocket.Session;
 public class User {
 	private String name;
 	private String chat;
-	private Session session;
+	private final Session session;
 	
 	public User(Session session) {
-            this.session = session;
+                this.session = session;
 	}
 	
 	public void setUp(String name, String chat) {
-        this.name = name;
-        this.chat = chat;
+                this.name = name;
+                this.chat = chat;
 	}
 	
-	public void send(String message){
+	public synchronized void send(String message){
 		try {
 			this.session.getBasicRemote().sendText(message);
 		} catch (IOException e) {
