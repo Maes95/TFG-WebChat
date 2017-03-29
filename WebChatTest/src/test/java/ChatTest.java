@@ -1,9 +1,11 @@
 import com.globex.app.Result;
-import com.globex.app.JSONFile;
-import com.globex.app.WebChatAplication;
+import utils.JSONFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globex.app.TestResultsServer;
+import com.globex.app.WebChatApp.WebChatApp;
+import com.globex.app.WebChatApp.WebChatAppFactory;
+import com.globex.app.WebChatApp.WebChatAppFactoryMethod;
 import io.vertx.core.Handler;
 
 import io.vertx.core.Vertx;
@@ -26,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import utils.Colors;
 
 @RunWith(Parameterized.class)
 @Parameterized.UseParametersRunnerFactory(VertxUnitRunnerWithParametersFactory.class)
@@ -41,13 +44,22 @@ public final class ChatTest {
     
     // STATIC CONTEXT 
 
-    private static WebChatAplication current_application = null;
+    private static WebChatApp current_application = null;
     private static long total_avg_time = 0;
     private static Result currentResult;
+    private static final WebChatAppFactoryMethod webChatAppFactory;
     
     static{
         // Set up results server
         TestResultsServer.setUp();
+        // To create web chat applications
+        webChatAppFactory = new WebChatAppFactory();
+        System.out.println(Colors.LOW_INTENSITY+" _    _      _     _____ _           _ _____         _   \n" +
+                           "| |  | |    | |   /  __ \\ |         | |_   _|       | |  \n" +
+                           "| |  | | ___| |__ | /  \\/ |__   __ _| |_| | ___  ___| |_ \n" +
+                           "| |/\\| |/ _ \\ '_ \\| |   | '_ \\ / _` | __| |/ _ \\/ __| __|\n" +
+                           "\\  /\\  /  __/ |_) | \\__/\\ | | | (_| | |_| |  __/\\__ \\ |_ \n" +
+                           " \\/  \\/ \\___|_.__/ \\____/_| |_|\\__,_|\\__\\_/\\___||___/\\__|"+Colors.ANSI_RESET);
     }
     
     // CLASS ATRIBUTTES
@@ -93,7 +105,7 @@ public final class ChatTest {
             current_application = null;
         }
         if(current_application == null){
-            current_application = new WebChatAplication(app_config);
+            current_application = webChatAppFactory.createWebChatApp(app_config);
             current_application.run();
         }
         this.usersPerChat = usersPerChat;
@@ -114,11 +126,11 @@ public final class ChatTest {
 
     @Test
     public void test0(TestContext context) {
-        System.out.println("-------------------------------------------------------");
-        System.out.println("App: "+current_application.getAppName());
-        System.out.println("Nº Chats: "+numChats);
-        System.out.println("Nº Users per chat: "+usersPerChat);
-        System.out.println("-------------------------------------------------------");
+        System.out.println(Colors.GREY_LINE);
+        System.out.println(" App: \u001B[34m"+current_application.getAppName()+"\u001B[0m");
+        System.out.println(" Nº Chats: "+numChats);
+        System.out.println(" Nº Users per chat: "+usersPerChat);
+        System.out.println(Colors.GREY_LINE);
         ChatTest.currentResult = 
                 new Result(
                         numChats, 
@@ -179,10 +191,10 @@ public final class ChatTest {
     @Test
     public void testZ(TestContext context) {
         JsonObject result = ChatTest.currentResult.toJson();
-        System.out.println("-------------------------------------------------------");
-        System.out.println("Average time: "+total_avg_time/REPEAT_LIMIT);
-        System.out.println("Average cpu use: "+result.getValue("avgCpuUse"));
-        System.out.println("Average memory use: "+result.getValue("avgMemoryUse"));
+        System.out.println(Colors.GREY_LINE);
+        System.out.println(" Average time: "+total_avg_time/REPEAT_LIMIT);
+        System.out.println(" Average cpu use: "+result.getValue("avgCpuUse"));
+        System.out.println(" Average memory use: "+result.getValue("avgMemoryUse"));
         TestResultsServer.sendResult(result);
         total_avg_time = 0;
         context.assertTrue(true);
@@ -212,7 +224,7 @@ public final class ChatTest {
             );
         }
         
-        if(!current_application.isRemote() || current_application.isAtSameMachine()){
+        if(current_application.isAtSameMachine()){
             vertx.setPeriodic(1000, id -> {
                 ChatTest.currentResult.addMetric(current_application.getMetrics());
             });
@@ -285,8 +297,7 @@ public final class ChatTest {
             b.getAndSet(false);
             long avg_time = times.get()/totalMessages;
             ChatTest.currentResult.addTime(avg_time);
-            System.out.println("Attempt "+attempt+":");
-            System.out.println(" -> TIME: "+avg_time+" ms");
+            System.out.println(" Attempt "+attempt+" -> "+Colors.ANSI_GREEN+avg_time+" ms"+ Colors.ANSI_RESET );
             total_avg_time += avg_time;
             async.complete();
         }

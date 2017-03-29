@@ -1,4 +1,4 @@
-package com.globex.app;
+package utils;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
