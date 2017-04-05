@@ -6,7 +6,6 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
-import java.util.HashMap;
 import java.util.Map;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,12 +39,12 @@ public class ChatManager extends AbstractVerticle {
 
                     JsonObject message = data.toJsonObject();
 
-                    if (!message.containsKey("message")){ 
+                    if (!message.containsKey("message")){
                         if (userExist(message.getString("name"))){
                             //If the username exists it send a message and close the conexion
                             ws.writeFinalTextFrame(DUPLICATE_MSG);
                             ws.close();
-                        }else{ 
+                        }else{
                             // Create new user
                             newUser(message, ws);
                         }
@@ -61,12 +60,12 @@ public class ChatManager extends AbstractVerticle {
             }
         })
         .requestHandler((HttpServerRequest req) -> {
-            if (req.uri().equals("/")) 
+            if (req.uri().equals("/"))
                 req.response().sendFile("webroot/index.html"); // Serve the html
         }).listen(PORT);
 
     }
-    
+
     private boolean userExist(String user_name){
         return users.values().stream().anyMatch((chat) -> (
             chat.containsKey(user_name)
@@ -82,7 +81,7 @@ public class ChatManager extends AbstractVerticle {
             users.get(chat).put(name, user);
         }else{
             // Chat doesn't exist
-            users.put(chat, new HashMap<>());
+            users.put(chat, new ConcurrentHashMap<>());
         }
     }
 
