@@ -4,5 +4,11 @@
 @import "{{ site.theme }}";
 
 .page-header {
-    background-image: linear-gradient(360deg, #155799, #383b3c) !important;
+    background: linear-gradient(to right, #141e30, #243b55);
+}
+
+.main-content {
+  h1, h2, h3, h4, h5, h6 {
+    color: #1e6bb8;
+  }
 }
