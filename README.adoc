@@ -3,6 +3,7 @@
 This repository is about a comparison between 7 different technologies.
 
 The proyects which participates in this comparison are:
+
 * AkkaPlay
 * NodeJSCluster
 * NodeJS
@@ -30,7 +31,7 @@ $ mvn test
 ----
 Then, you can see results at localhost:8080 (Opens automatically by aplication).
 
-:imagesdir: https://s29.postimg.org/q8dbxqbk7/N_usuarios_en_1_sala_s_de_chat.png
+image::https://s29.postimg.org/q8dbxqbk7/N_usuarios_en_1_sala_s_de_chat.png
 
 Also, you can see results at console like this:
 
