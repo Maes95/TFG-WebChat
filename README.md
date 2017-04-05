@@ -52,9 +52,6 @@ Attempt 8: 26165
 Attempt 9: 26158
 Attempt 10: 26916
 Average time: 26234
-```
-
-
 
 
 
