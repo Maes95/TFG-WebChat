@@ -32,10 +32,10 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 >- **Node.js + Express**
 >- **Node.js + Express + Cluster **
 
-<space>
+<space></space>
 <img src="http://rubenjgarcia.es/wp-content/uploads/2016/09/springboot.png" width="200">
-<space>
-<space>
+<space></space>
+<space></space>
 
 **[SpringBoot(v1.4.3)](https://projects.spring.io/spring-boot/)**: tecnología perteneciente al ecosistema de Spring (framework de Java para el desarrollo de aplicaciones). Puede utilizar distintos servidores para lanzar la aplicación, en esta comparativa probaremos:
 > Aplicaciones en la comparativa:
