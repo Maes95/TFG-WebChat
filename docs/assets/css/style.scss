@@ -1,0 +1,20 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.page-header {
+    background: linear-gradient(to right, #141e30, #243b55);
+}
+
+.main-content {
+  h1, h2, h3, h4, h5, h6 {
+    color: #1e6bb8;
+  }
+}
+
+@media screen and (min-width: 64em) {
+  .page-header {
+    padding: 4rem 6rem;
+  }
+}
