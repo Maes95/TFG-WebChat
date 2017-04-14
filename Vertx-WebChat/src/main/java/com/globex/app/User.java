@@ -30,6 +30,7 @@ public class User extends AbstractVerticle{
                 }catch(IllegalStateException e){
                     // The user is offline, so I delete it.
                     vertx.eventBus().publish("delete.user", name);
+                    wss.close();
                 } 
             });
 	}

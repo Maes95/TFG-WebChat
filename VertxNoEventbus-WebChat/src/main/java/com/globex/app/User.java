@@ -29,6 +29,7 @@ public class User{
             }catch(IllegalStateException e){
                 // The user is offline, so I delete it.
                 manager.deleteUser(chat, name);
+                this.wss.close();
             } 
         }
         
