@@ -1,3 +1,6 @@
+Estudio comparativo de sistemas reactivos (Escalado vertical)
+===========
+
 ## Introducción 
 La necesidad hoy en día de sistemas distribuidos altamente escalables no es ninguna novedad. Una forma de abordar esta necesidad puede ser mediante el uso de tecnologías reactivas, que siguiendo el paradigma reactivo cuentan entre sus características:
 
@@ -13,14 +16,14 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 **[Akka (v2.4)](http://http://akka.io/)**: librería nativa de Scala basada en el modelo de actores, aunque para este proyecto hemos usado su versión en Java. Para poder lanzar la aplicación en un servidor haremos uso de PlayFramework, el cual incluye la libreria de Akka además de librerias adicionales para la conexión mediante websocket.
 
 > Aplicaciones en la comparativa:
-
+>
 >- **Akka + PlayFramework**
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Vert.x_Logo.svg/2000px-Vert.x_Logo.svg.png" width="200">
 
 **[Vertx (v3.3.3)](http://vertx.io/)**: librería disponible en diferentes lenguajes de programación para crear aplicaciones reactivas, también usaremos su versión en Java. Esta librería provee tanto un servidor para lanzar la aplicación como para websockets. Uno de sus principales (y cuestionados, como veremos mas adelante) recursos es su EventBus, siendo este el que le da su carácter reactivo. Compararemos como se comporta haciendo o no uso de el:
 > Aplicaciones en la comparativa:
-
+>
 > - **Vertx con EventBus**
 > - **Vertx sin EventBus**
 
@@ -29,8 +32,8 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 **[Node.js(v5.6.0)](https://nodejs.org)**: entorno en tiempo de ejecución para Javascript, basado en una arquitectura de eventos. Node.js corre por defecto en único hilo de ejecución, aunque dispone de librerías para aprovechar todos los procesadores de la máquina que lo utilice. Contemplaremos ambas implementaciones haciendo uso de la librería Express para lanzar el servidor y ws para manejar la conexión mediante websocket.
 > Aplicaciones en la comparativa:
 > 
->- **Node.js + Express**
->- **Node.js + Express + Cluster **
+> - **Node.js + Express**
+> - **Node.js + Express + Cluster**
 
 <space></space>
 <img src="http://rubenjgarcia.es/wp-content/uploads/2016/09/springboot.png" width="200">
@@ -38,6 +41,7 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 <space></space>
 
 **[SpringBoot(v1.4.3)](https://projects.spring.io/spring-boot/)**: tecnología perteneciente al ecosistema de Spring (framework de Java para el desarrollo de aplicaciones). Puede utilizar distintos servidores para lanzar la aplicación, en esta comparativa probaremos:
+
 > Aplicaciones en la comparativa:
 > 
 > -  **SpringBoot + Tomcat**
@@ -70,7 +74,12 @@ Para el experimento, se han realizado pruebas para distinto número de chats en 
 
 #### Aplicación con N usuarios en 1 sala de chat
 
-![1 Room - Time](https://lh3.googleusercontent.com/-YkRxw2UoXVc/WOu4tAuYJ_I/AAAAAAAAAs8/t7dVAyDJTpIin5xQKs9zbHtzQOOLHwoMACLcB/s0/N+users+in+1+chat+room%2528s%2529.png "N users in 1 chat room&#40;s&#41;.png")
+<div width="400" height="400">
+<canvas id="compate-time" ></canvas>
+</div>
+<script>
+	createChart("compate-time", 'Time in milliseconds', "avgTime", 1);
+</script>
 
 > **Nota:** Al correr la aplicación en Vert.x con 70 usuarios este daba un aviso de que los EventLoops (Threads en Vert.x) se quedan bloqueados demasiado tiempo. Dándole más tiempo de espera a estos Threads únicamente provoca que el GC (Garbage Collector) de Java se llenase y diese un error, por lo que no ha sido posible obtener resultados en este caso.
 
@@ -99,3 +108,5 @@ Si nos fijamos en el uso de la CPU, destaca cómo las aplicaciones que corren so
 Cabe a destacar, que mientras Akka y Vert.x son tecnologías basadas en el modelo de actores y aprovechan varios hilos de ejecución para escalar, Node.js funciona con un solo hilo de ejecución (por lo que ahorra mucho tiempo en cambios de contexto). El problema de este modelo es que necesita módulos adicionales para poder aprovechar al máximo los núcleos del procesador (la aplicación en Node.js con la que se han realizado las pruebas no cuenta con ningún módulo que lo permita).
 
 Por el contrario, atendiendo al uso de la memoria, Node.js hace un uso más eficiente de la misma (1,3%) frente a las aplicaciones en Java: Vert.x (18,9%) y Akka (10,3%). Esto se debe a que Node.js no hace uso de entidades como los verticles de Vertx o los actores de Akka.
+
+
