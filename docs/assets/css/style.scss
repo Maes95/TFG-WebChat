@@ -13,6 +13,12 @@
   }
 }
 
+.logo {
+    width: 12em;
+    margin: auto;
+    display: block;
+}
+
 @media screen and (min-width: 64em) {
   .page-header {
     padding: 4rem 6rem;
