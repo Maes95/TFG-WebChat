@@ -1,11 +1,8 @@
-Estudio comparativo de sistemas reactivos (Escalado vertical)
-===========
-
 ## Introducción 
 La necesidad hoy en día de sistemas distribuidos altamente escalables no es ninguna novedad. Una forma de abordar esta necesidad puede ser mediante el uso de tecnologías reactivas, que siguiendo el paradigma reactivo cuentan entre sus características:
 
  - Tiempos de respuestas rapidos
- - Tolerantes a fallos 
+ - Tolerantes a fallos
  - Adaptación a variaciones en la carga de trabajo
  - Uso de mensajes asíncronos para la comunicación (no bloqueantes)
 
@@ -31,7 +28,7 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 
 **[Node.js(v5.6.0)](https://nodejs.org)**: entorno en tiempo de ejecución para Javascript, basado en una arquitectura de eventos. Node.js corre por defecto en único hilo de ejecución, aunque dispone de librerías para aprovechar todos los procesadores de la máquina que lo utilice. Contemplaremos ambas implementaciones haciendo uso de la librería Express para lanzar el servidor y ws para manejar la conexión mediante websocket.
 > Aplicaciones en la comparativa:
-> 
+>
 > - **Node.js + Express**
 > - **Node.js + Express + Cluster**
 
@@ -43,13 +40,13 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 **[SpringBoot(v1.4.3)](https://projects.spring.io/spring-boot/)**: tecnología perteneciente al ecosistema de Spring (framework de Java para el desarrollo de aplicaciones). Puede utilizar distintos servidores para lanzar la aplicación, en esta comparativa probaremos:
 
 > Aplicaciones en la comparativa:
-> 
+>
 > -  **SpringBoot + Tomcat**
 > -  **SpringBoot + Jetty**
 
 El objetivo de esta comparativa será comprobar cómo se comportan estas tecnologías a medida que la carga de trabajo aumenta, concretamente prestaremos atención a los tiempos de respuesta y al uso de los recursos de la máquina (cómo aprovechan los cores y el uso de memoria).
 
-Para ello, **se han desarrollado para cada tecnología un chat distribuido** de funcionamiento idéntico y **un cliente común** para que haya la máxima homogeneidad en las pruebas. El cliente está desarrollado en Java y utiliza conjuntamente las librerías de testing JUnit y las librerías nativas de testing de Vert.x. 
+Para ello, **se han desarrollado para cada tecnología un chat distribuido** de funcionamiento idéntico y **un cliente común** para que haya la máxima homogeneidad en las pruebas. El cliente está desarrollado en Java y utiliza conjuntamente las librerías de testing JUnit y las librerías nativas de testing de Vert.x.
 
 El funcionamiento de este chat es sencillo, el cliente se conecta con un nombre de usuario (que se comprueba que sea único) y el nombre de una sala de chat a la que se une. De esta forma, el usuario que se conecta a la sala de chat y puede enviar mensajes y recibir mensajes del resto de usuarios conectados al mismo chat.
 
@@ -103,10 +100,8 @@ Atendiendo a los tiempos de respuesta, Akka es la mejor opción, su intercambio 
 
 Además, podemos denotar como Node.js escala mejor que Vert.x cuando aumenta el número de usuarios en un chat único, aunque a medida que se aumenta el número de salas de chat, Vert.x se vuelve más parejo en su escalado a Akka mientras que Node.js no mejora en absoluto, continuando con su escalado lineal.
 
-Si nos fijamos en el uso de la CPU, destaca cómo las aplicaciones que corren sobre la máquina virtual de Java aprovechan todos los cores de la máquina, al contrario que Node.js. 
+Si nos fijamos en el uso de la CPU, destaca cómo las aplicaciones que corren sobre la máquina virtual de Java aprovechan todos los cores de la máquina, al contrario que Node.js.
 
 Cabe a destacar, que mientras Akka y Vert.x son tecnologías basadas en el modelo de actores y aprovechan varios hilos de ejecución para escalar, Node.js funciona con un solo hilo de ejecución (por lo que ahorra mucho tiempo en cambios de contexto). El problema de este modelo es que necesita módulos adicionales para poder aprovechar al máximo los núcleos del procesador (la aplicación en Node.js con la que se han realizado las pruebas no cuenta con ningún módulo que lo permita).
 
 Por el contrario, atendiendo al uso de la memoria, Node.js hace un uso más eficiente de la misma (1,3%) frente a las aplicaciones en Java: Vert.x (18,9%) y Akka (10,3%). Esto se debe a que Node.js no hace uso de entidades como los verticles de Vertx o los actores de Akka.
-
-
