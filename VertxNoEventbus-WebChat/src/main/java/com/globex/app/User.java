@@ -9,19 +9,19 @@ import io.vertx.core.json.JsonObject;
  */
 
 public class User{
-	
+
 	private final String name;
 	private final String chat;
         private final ServerWebSocket wss;
         private final ChatManager manager;
-	
+
 	public User(String name, String chat, ServerWebSocket wss, ChatManager manager) {
             this.name = name;
             this.chat = chat;
             this.wss = wss;
             this.manager = manager;
 	}
-        
+
         public void send(JsonObject message){
             try{
                 // Try to send the message
@@ -29,10 +29,9 @@ public class User{
             }catch(IllegalStateException e){
                 // The user is offline, so I delete it.
                 manager.deleteUser(chat, name);
-                this.wss.close();
-            } 
+            }
         }
-        
+
         public boolean equals(String name){
             return this.name.equals(name);
         }

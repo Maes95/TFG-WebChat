@@ -6,6 +6,7 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
 import java.util.Map;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +23,7 @@ public class ChatManager extends AbstractVerticle {
     private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
 
     // The key is the chat name, that have many users
-    private final ConcurrentHashMap<String, Map<String, User>> users = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, User>> users = new HashMap<>();
 
     // Convenience method so you can run it in your IDE
     public static void main(String[] args) {
@@ -76,13 +77,11 @@ public class ChatManager extends AbstractVerticle {
         String name = message.getString("name");
         String chat = message.getString("chat");
         User user = new User(name, chat, ws, this);
-        if(users.containsKey(chat)){
-            // Chat exist
-            users.get(chat).put(name, user);
-        }else{
+        if(!users.containsKey(chat)){
             // Chat doesn't exist
             users.put(chat, new ConcurrentHashMap<>());
         }
+        users.get(chat).put(name, user);
     }
 
     //Remove the verticle and unregister the handler
