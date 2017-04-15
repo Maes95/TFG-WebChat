@@ -9,34 +9,30 @@ const path = require('path')
 
 app.use(express.static(path.join(__dirname, '/client')));
 
+DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"User already exist\"}";
+
 const wss = new SocketServer({ server });
 
-// Dictionary where key is the user_name and the value is the chat_name
-var users = new Map();
+// Set where key is the user_name and the value is the chat_name
+var users = new Set();
 
 wss.on('connection', (ws) => {
-
-  console.log('Client connected');
 
 	ws.on('message', (data) => {
 		var message = JSON.parse(data);
 		if(message['message']){
-			// Normal message
-      message.name = message['name'];
-      var stringMessage = JSON.stringify(message)
+			// Normal message (broadcast it)
 			wss.clients
-      .filter( (client) => client.chat == users.get(message['name']))
-      .forEach( (client) => {
-        client.send(stringMessage);
-      });
+      .filter(  (client) => client.chat == ws.chat )
+      .forEach( (client) => client.send(data) );
 		}else{
 			// First message (first connection)
       if(users.has(message['name'])){
-        ws.send(JSON.stringify({ type: 'system', message: 'User already exist' }));
+        ws.send(DUPLICATE_MSG);
         ws.close();
       }else{
-        users.set(message['name'], message.chat);
-        ws.chat = message.chat;
+        users.add(message['name']);
+        ws['chat'] = message['chat'];
         ws['name'] = message['name'];
       }
 		}
@@ -44,7 +40,6 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     users.delete(ws['name']);
-    console.log('Client disconnected')
   });
 
 });

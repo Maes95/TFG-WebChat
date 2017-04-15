@@ -1,12 +1,11 @@
 {
     "apps" : [
         {
-            "name" : "VertxNoEventbus",
-            "globalDefinition": "Vert.x is event driven and non blocking framework which can handle a lot of concurrency using a small number of kernel threads. ",
-            "pecificDefinition": "This application has been built without use the vertx event bus",
-            "commands" : "mvn exec:java"
+            "name" : "NodeJS",
+            "globalDefinition": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.",
+            "specificDefinition": "This application runs in a single thread",
+            "commands" : "node app.js"
         }
-
     ],
     "chats": [
         {
