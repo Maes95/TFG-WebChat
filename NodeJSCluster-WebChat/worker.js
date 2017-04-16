@@ -8,6 +8,8 @@ const server = http.createServer(app).listen(9000);
 // To use client files
 app.use(express.static(path.join(__dirname, '/client')));
 
+DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"User already exist\"}";
+
 const wss = new SocketServer({ server });
 
 var worker_id;
@@ -58,7 +60,7 @@ process.on('message', (data) => {
       // Master said us if user exists or not
       var ws = users.get(data['ws_id']);
       if(data.exist){
-          ws.send(JSON.stringify({ type: 'system', message: 'User already exist' }));
+          ws.send(DUPLICATE_MSG);
           ws.close();
       }else{
           ws['chat'] = data['chat'];

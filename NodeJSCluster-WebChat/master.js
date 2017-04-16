@@ -33,7 +33,6 @@ for (var id in cluster.workers) {
       case "delete.user":
         // Delete user
         users.delete(message['name']);
-        console.log('Client -' + message['name'] + '- disconnected');
         break;
     }
   });

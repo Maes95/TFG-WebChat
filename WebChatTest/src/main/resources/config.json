@@ -1,10 +1,10 @@
 {
     "apps" : [
         {
-            "name" : "NodeJS",
+            "name" : "NodeJSCluster",
             "globalDefinition": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.",
-            "specificDefinition": "This application runs in a single thread",
-            "commands" : "node app.js"
+            "specificDefinition": "A single instance of Node.js runs in a single thread. To take advantage of multi-core systems, this application use Node’s cluster library.",
+            "commands" : "node master.js"
         }
     ],
     "chats": [
