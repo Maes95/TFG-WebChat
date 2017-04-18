@@ -112,7 +112,7 @@ A continuación se muestran los resultados en función de 3 métricas: Tiempo de
 	<canvas id="compare-cpu-1" ></canvas>
 </div>
 <script>
-	createChart("compare-cpu-1", '% of CPU', "avgRam", 1);
+	createChart("compare-cpu-1", '% of CPU', "avgCpuUse", 1);
 </script>
 
 
@@ -123,7 +123,7 @@ A continuación se muestran los resultados en función de 3 métricas: Tiempo de
 	<canvas id="compare-cpu-2" ></canvas>
 </div>
 <script>
-	createChart("compare-cpu-2", '% of CPU', "avgRam", 2);
+	createChart("compare-cpu-2", '% of CPU', "avgCpuUse", 2);
 </script>
 
 
@@ -134,7 +134,7 @@ A continuación se muestran los resultados en función de 3 métricas: Tiempo de
 	<canvas id="compare-cpu-4" ></canvas>
 </div>
 <script>
-	createChart("compare-cpu-4", '% of CPU', "avgRam", 4);
+	createChart("compare-cpu-4", '% of CPU', "avgCpuUse", 4);
 </script>
 
 
