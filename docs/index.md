@@ -83,9 +83,6 @@ A continuación se muestran los resultados en función de 3 métricas: Tiempo de
 
 #### Aplicación con N usuarios en 2 salas de chat
 
-![2 Rooms - Time](https://lh3.googleusercontent.com/-Uwlp0D3wJoY/WOu66Dw4_DI/AAAAAAAAAto/61Sc1fs2ODw0lxy6gHEnNKqpBMBBAKF-gCLcB/s0/N+users+in+2+chat+room%2528s%2529.png "N users in 2 chat room&#40;s&#41;.png")
-
-
 <div width="400" height="400">
 	<canvas id="compare-time-2" ></canvas>
 </div>
