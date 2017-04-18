@@ -17,7 +17,7 @@ Aunque son muchas las tecnologías aplicables a este problema, las elegidas para
 >
 >- **Akka + PlayFramework**
 
-<img  class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Vert.x_Logo.svg/2000px-Vert.x_Logo.svg.png" width="200" style="margin-left: 2em;">
+<img  class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Vert.x_Logo.svg/2000px-Vert.x_Logo.svg.png" width="200">
 
 **[Vertx (v3.3.3)](http://vertx.io/)**: librería disponible en diferentes lenguajes de programación para crear aplicaciones reactivas, también usaremos su versión en Java. Esta librería provee tanto un servidor para lanzar la aplicación como para websockets. Uno de sus principales (y cuestionados, como veremos mas adelante) recursos es su EventBus, siendo este el que le da su carácter reactivo. Compararemos como se comporta haciendo o no uso de el:
 > Aplicaciones en la comparativa:
