@@ -57,15 +57,11 @@ The functionating of this chat is simple, the client connects with a user name (
 
 ## Implementation
 
-The implementations of Akka and Vert.x belong to [Javier Mateos](https://github.com/meji92), although Vert.x applications were revised and updated from version 2.1.5 to 3.3.3 of the same library. The source code of the applications used can be found in the following repository, which corresponds to the second version of the project (v2.0):
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.0
+The implementations of Akka and Vert.x belong to [Javier Mateos](https://github.com/meji92), although Vert.x applications were revised and updated from version 2.1.5 to 3.3.3 of the same library. The source code of the applications used can be found in the following repository, which corresponds to the [second version of the project (v2.0)](https://github.com/Maes95/TFG-WebChat/tree/v2.0).
 
 Although many technologies rely on external libraries to manage communications with WebSocket (such as Sockjs or Socket.io), the basic implementation provided by each technology has been used.
 
-The client is developed in Java and uses together the JUnit testing libraries and the native Vert.x testing libraries. This implementation can be found in:
-
-https://github.com/Maes95/TFG-WebChat/tree/v2.0/WebChatTest
+The client is developed in Java and uses together the JUnit testing libraries and the native Vert.x testing libraries. This implementation can be found [here](https://github.com/Maes95/TFG-WebChat/tree/v2.0/WebChatTest)
 
 ## Comparative
 
