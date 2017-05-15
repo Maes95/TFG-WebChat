@@ -1,6 +1,6 @@
 # TFG-WebChat
 
-This repository is about a comparison between 7 different technologies.
+This repository is about a comparison between 7 different applications.
 
 The proyects which participates in this comparison are:
 - AkkaPlay
