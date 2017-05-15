@@ -8,7 +8,6 @@ The proyects which participates in this comparison are:
 - NodeJS
 - SpringBoot-Jetty
 - SpringBoot-Tomcat
-- SpringBoot-Undertow
 - Vertx
 - VertxNoEventBus
 
@@ -52,6 +51,3 @@ Attempt 8: 26165
 Attempt 9: 26158
 Attempt 10: 26916
 Average time: 26234
-
-
-
