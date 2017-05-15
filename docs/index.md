@@ -212,6 +212,6 @@ Finally, build reactive applications in Node.js is trival, given the reactive na
 
 After studying the different metrics, we can state the following solutions to the problem of reactive applications:
 
-* If we are looking for a reliable application ** against large workloads ** and do not make excessive use of the resources of the machine on which it runs, the optimal technology would be ** SpringBoot **, specifically using as Tomcat server.
+* If we are looking for a reliable application **against large workloads** and do not make excessive use of the resources of the machine on which it runs, the optimal technology would be **SpringBoot**, specifically using as Tomcat server.
 
-* If we are looking for a lightweight application that makes a **minimal use of the resources of the machine** that will not have large workloads, our best option would be ** Node.js ** (adding the cluster library if necessary to optimize the service it provides).
+* If we are looking for a lightweight application that makes a **minimal use of the resources of the machine** that will not have large workloads, our best option would be **Node.js** (adding the cluster library if necessary to optimize the service it provides).
