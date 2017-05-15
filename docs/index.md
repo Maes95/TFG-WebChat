@@ -61,7 +61,7 @@ The implementations of Akka and Vert.x belong to [Javier Mateos](https://github.
 
 Although many technologies rely on external libraries to manage communications with WebSocket (such as Sockjs or Socket.io), the basic implementation provided by each technology has been used.
 
-The client is developed in Java and uses together the JUnit testing libraries and the native Vert.x testing libraries. This implementation can be found [here](https://github.com/Maes95/TFG-WebChat/tree/v2.0/WebChatTest)
+The client is developed in Java and uses together the JUnit testing libraries and the native Vert.x testing libraries. This implementation can be found [here](https://github.com/Maes95/TFG-WebChat/tree/v2.0/WebChatTest).
 
 ## Comparative
 
@@ -104,7 +104,7 @@ Below are the results based on 3 metrics: Response time, CPU usage and consumed 
 
 ### CPU usage
 
-> The CPU usage above 100% is due to the plurality of processors of the particular machine, which offers a **maximum of 800% CPU ** (8 cores of processing)
+> The CPU usage above 100% is due to the plurality of processors of the particular machine, which offers a **maximum of 800% CPU** (8 cores of processing)
 
 #### Application with N users in 1 chat room - CPU
 
