@@ -1,5 +1,4 @@
-package com.globex.app;
-
+package client;
 
 import io.vertx.core.json.JsonArray;
 import java.util.ArrayList;

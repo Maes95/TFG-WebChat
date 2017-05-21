@@ -1,11 +1,11 @@
-import com.globex.app.Result;
+import client.Result;
 import utils.JSONFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.globex.app.TestResultsServer;
-import com.globex.app.WebChatApp.WebChatApp;
-import com.globex.app.WebChatApp.WebChatAppFactory;
-import com.globex.app.WebChatApp.WebChatAppFactoryMethod;
+import client.TestResultsServer;
+import WebChatApp.WebChatApp;
+import WebChatApp.WebChatAppFactory;
+import WebChatApp.WebChatAppFactoryMethod;
 import io.vertx.core.Handler;
 
 import io.vertx.core.Vertx;
@@ -101,7 +101,7 @@ public final class ChatTest {
 
     public ChatTest(int usersPerChat, int numChats, JSONObject app_config){
         if(current_application != null && !app_config.getString("name").equals(current_application.getAppName())){
-            current_application.destroy();
+            current_application.stop();
             current_application = null;
         }
         if(current_application == null){

@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.globex.app.WebChatApp;
+package WebChatApp;
 
-import com.globex.app.Metrics;
-import com.globex.app.TestMetrics;
+import client.Metrics;
+import client.TestMetrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -66,7 +61,7 @@ public class WebChatThrowableApp extends AbstractWebChatApp{
     }
 
     @Override
-    public void destroy() {
+    public void stop() {
         System.out.println(" Stopping "+this.getAppName()+" application");
         process.destroyForcibly();
     }

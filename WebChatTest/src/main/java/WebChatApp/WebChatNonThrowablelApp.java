@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.globex.app.WebChatApp;
+package WebChatApp;
 
-import com.globex.app.Metrics;
+import client.Metrics;
 import utils.Colors;
 
 /**
@@ -27,8 +22,8 @@ public abstract class WebChatNonThrowablelApp extends AbstractWebChatApp{
     public abstract Metrics getMetrics();
 
     @Override
-    public void destroy() {
-        System.out.println(" Desconecting from remote "+this.getAppName()+" application");
+    public void stop() {
+        System.out.println(" Disconnecting from remote "+this.getAppName()+" application");
         System.out.println(Colors.GREY_LINE);
     }
 

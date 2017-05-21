@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.globex.app.WebChatApp;
+package WebChatApp;
 
+import client.Metrics;
 import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +27,13 @@ public class WebChatAppFactory implements WebChatAppFactoryMethod{
             int port = config.isNull("port") ? DEFAULT_PORT : config.getInt("port");
             
             if(!config.isNull("remote") && config.getBoolean("remote")){
-                // REMOTE APPLICATION
+                app = new WebChatRemote(
+                    name, 
+                    LOCAL_ADDRESS, 
+                    port, 
+                    globalDefinition, 
+                    specificDefinition, 
+                        () -> { return null; });
                 throw new Error("Remote applications not implemented yet");
             }else if(config.isNull("commands")){
                 // LOCAL APPLICATION

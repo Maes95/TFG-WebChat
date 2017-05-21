@@ -1,4 +1,4 @@
-package com.globex.app;
+package client;
 
 //import com.sun.management.OperatingSystemMXBean;
 import java.io.BufferedReader;
