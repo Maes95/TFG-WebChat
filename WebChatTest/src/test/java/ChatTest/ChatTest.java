@@ -1,7 +1,6 @@
+package ChatTest;
+
 import client.Result;
-import utils.JSONFile;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import client.TestResultsServer;
 import WebChatApp.WebChatApp;
 import WebChatApp.WebChatAppFactory;
@@ -9,29 +8,31 @@ import WebChatApp.WebChatAppFactoryMethod;
 import io.vertx.core.Handler;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunnerWithParametersFactory;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.AfterClass;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import utils.Colors;
 
 @RunWith(Parameterized.class)
 @Parameterized.UseParametersRunnerFactory(VertxUnitRunnerWithParametersFactory.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class ChatTest {
     
     // CONSTANTS
@@ -50,16 +51,15 @@ public final class ChatTest {
     private static final WebChatAppFactoryMethod webChatAppFactory;
     
     static{
+        // Create logs folder
+        File logs = new File("logs");
+        if(!logs.exists()) logs.mkdir();
+        // Print header
+        ChatTestUtils.printHeader();
         // Set up results server
         TestResultsServer.setUp();
         // To create web chat applications
         webChatAppFactory = new WebChatAppFactory();
-        System.out.println(Colors.LOW_INTENSITY+" _    _      _     _____ _           _ _____         _   \n" +
-                           "| |  | |    | |   /  __ \\ |         | |_   _|       | |  \n" +
-                           "| |  | | ___| |__ | /  \\/ |__   __ _| |_| | ___  ___| |_ \n" +
-                           "| |/\\| |/ _ \\ '_ \\| |   | '_ \\ / _` | __| |/ _ \\/ __| __|\n" +
-                           "\\  /\\  /  __/ |_) | \\__/\\ | | | (_| | |_| |  __/\\__ \\ |_ \n" +
-                           " \\/  \\/ \\___|_.__/ \\____/_| |_|\\__,_|\\__\\_/\\___||___/\\__|"+Colors.ANSI_RESET);
     }
     
     // CLASS ATRIBUTTES
@@ -77,26 +77,7 @@ public final class ChatTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        
-        JSONObject properties = JSONFile.parse(System.getProperty("user.dir")+"/src/main/resources/config.json");
-
-        List<Object[]> params = new ArrayList<>();
-        
-        // Names of aplications which participate in the test
-        ((JSONArray) properties.get("apps")).forEach((_app) -> {
-            // Number of chat romms
-            ((JSONArray) properties.get("chats")).forEach((chat) -> {
-                JSONObject _chat = (JSONObject) chat;
-                int _numChats = _chat.getInt("numChats");
-                // Number of users in chat
-                ((JSONArray) _chat.get("users")).forEach((_numUsers) -> {
-                    Object[] o = { _numUsers, _numChats, _app };
-                    params.add(o);
-                });
-            });
-        });
-        
-        return params;
+        return ChatTestUtils.getConfig();
     }
 
     public ChatTest(int usersPerChat, int numChats, JSONObject app_config){
@@ -123,78 +104,50 @@ public final class ChatTest {
     public void after(TestContext context) {
       vertx.close();
     }
-
-    @Test
-    public void test0(TestContext context) {
-        System.out.println(Colors.GREY_LINE);
-        System.out.println(" App: \u001B[34m"+current_application.getAppName()+"\u001B[0m");
-        System.out.println(" Nº Chats: "+numChats);
-        System.out.println(" Nº Users per chat: "+usersPerChat);
-        System.out.println(Colors.GREY_LINE);
-        ChatTest.currentResult = 
-                new Result(
-                        numChats, 
-                        usersPerChat, 
-                        current_application.getAppName(), 
-                        current_application.getGlobalDefinition(), 
-                        current_application.getSpecificDefinition(),
-                        REPEAT_LIMIT
-                );
-        test(context, 1);
+    
+    @AfterClass 
+    public static void close() {
+        if(current_application != null) current_application.stop();
     }
 
     @Test
-    public void test1(TestContext context) {
-        test(context, 2);
+    public void aaInit(TestContext context) {
+        System.out.println(Colors.GREY_LINE + "\n" +
+            " App: \u001B[34m"+current_application.getAppName()+"\u001B[0m\n" +
+            " Nº Chats: "+numChats + "\n" +
+            " Nº Users per chat: "+usersPerChat + "\n" +
+            Colors.GREY_LINE
+        );
+        currentResult = new Result(
+                numChats, 
+                usersPerChat, 
+                current_application.getAppName(), 
+                current_application.getGlobalDefinition(), 
+                current_application.getSpecificDefinition(),
+                REPEAT_LIMIT
+        );
     }
+    
+    @Test public void attempt0(TestContext context){ test(context, 1); }
+    @Test public void attempt1(TestContext context){ test(context, 2); }
+    @Test public void attempt2(TestContext context){ test(context, 3); }
+    @Test public void attempt3(TestContext context){ test(context, 4); }
+    @Test public void attempt4(TestContext context){ test(context, 5); }
+    @Test public void attempt5(TestContext context){ test(context, 6); }
+    @Test public void attempt6(TestContext context){ test(context, 7); }
+    @Test public void attempt7(TestContext context){ test(context, 8); }
+    @Test public void attempt8(TestContext context){ test(context, 9); }
+    @Test public void attempt9(TestContext context){ test(context, 10); }
+    
 
     @Test
-    public void test2(TestContext context) {
-        test(context, 3);
-    }
-
-    @Test
-    public void test3(TestContext context) {
-        test(context, 4);
-    }
-
-    @Test
-    public void test4(TestContext context) {
-        test(context, 5);
-    }
-
-    @Test
-    public void test5(TestContext context) {
-        test(context, 6);
-    }
-
-    @Test
-    public void test6(TestContext context) {
-        test(context, 7);
-    }
-
-    @Test
-    public void test7(TestContext context) {
-        test(context, 8);
-    }
-
-    @Test
-    public void test8(TestContext context) {
-        test(context, 9);
-    }
-
-    @Test
-    public void test9(TestContext context) {
-        test(context, 10);
-    }
-
-    @Test
-    public void testZ(TestContext context) {
-        JsonObject result = ChatTest.currentResult.toJson();
+    public void zzTest(TestContext context) {
+        JsonObject result = currentResult.toJson();
         System.out.println(Colors.GREY_LINE);
         System.out.println(" Average time: "+total_avg_time/REPEAT_LIMIT);
         System.out.println(" Average cpu use: "+result.getValue("avgCpuUse"));
         System.out.println(" Average memory use: "+result.getValue("avgMemoryUse"));
+        System.out.println(Colors.GREY_LINE);
         TestResultsServer.sendResult(result);
         total_avg_time = 0;
         context.assertTrue(true);
@@ -203,12 +156,7 @@ public final class ChatTest {
     public void test(TestContext context, int attempt){
         Async async = context.async();
         start = 0;
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        
         for (int i = 0; i < users; i++) {
             newclient(
                     // User name
@@ -225,9 +173,9 @@ public final class ChatTest {
         }
         
         if(current_application.isAtSameMachine()){
-            vertx.setPeriodic(1000, id -> {
-                ChatTest.currentResult.addMetric(current_application.getMetrics());
-            });
+            vertx.setPeriodic(1000, id -> 
+                ChatTest.currentResult.addMetric(current_application.getMetrics())
+            );
         }
 
     }
@@ -238,15 +186,8 @@ public final class ChatTest {
 
         vertx.createHttpClient().websocket(current_application.getPort(), current_application.getAddress(), "/chat", websocket -> {
 
-                websocket.handler(data -> {
-                    JsonNode message = null;
-                    ObjectMapper mapper = new ObjectMapper();
-                    try {
-                        message = mapper.readTree(data.getBytes());  //message to Json
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    String respuesta = message.get("message").asText();
+                websocket.handler((Buffer buffer) -> {
+                    String respuesta = ChatTestUtils.parseBuffer(buffer);
                     Long _time = System.currentTimeMillis()-Long.parseLong(respuesta.substring(respuesta.indexOf("/") + 1));
                     times.addAndGet(_time);
                     numberOfMessages.addAndGet(1);   

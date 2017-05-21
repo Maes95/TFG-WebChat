@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Colors;
 
 /**
  *
@@ -37,11 +38,12 @@ public class WebChatThrowableApp extends AbstractWebChatApp{
         try {
             process = new ProcessBuilder(commands)
                     .directory(new File(PATH+folderName))
-                    .redirectOutput(new File(this.getAppName()+"_log.txt"))
-                    .redirectError(new File(this.getAppName()+"_errors.txt"))
+                    .redirectOutput(new File("logs/"+this.getAppName()+"_log.txt"))
+                    .redirectError(new File("logs/"+this.getAppName()+"_errors.txt"))
                     .start();
         } catch (IOException ex) {
             System.err.println("Can't run application");
+            ex.printStackTrace();
         }
         this.pid = TestMetrics.getProcessPID(process);
         System.out.println(" Running "+this.getAppName()+" application");
@@ -63,7 +65,13 @@ public class WebChatThrowableApp extends AbstractWebChatApp{
     @Override
     public void stop() {
         System.out.println(" Stopping "+this.getAppName()+" application");
+        System.out.println(Colors.GREY_LINE);
         process.destroyForcibly();
+        try {
+            process.waitFor();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebChatThrowableApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

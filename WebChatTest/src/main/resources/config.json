@@ -1,10 +1,5 @@
 {
     "apps" : [
-       {
-            "name" : "AkkaPlay",
-            "globalDefinition": "Akka is a toolkit and runtime for building highly concurrent, distributed, and resilient message-driven applications on the JVM",
-            "commands" : "./target/universal/play-java-1.0-SNAPSHOT/bin/play-java "
-        },
         {
             "name" : "NodeJS",
             "globalDefinition": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.",
@@ -41,7 +36,13 @@
             "globalDefinition": "Vert.x is event driven and non blocking framework which can handle a lot of concurrency using a small number of kernel threads. ",
             "specificDefinition": "This application has been built without use the vertx event bus",
             "commands" : "mvn exec:java"
-        }
+        },
+        {
+             "name" : "AkkaPlay",
+             "globalDefinition": "Akka is a toolkit and runtime for building highly concurrent, distributed, and resilient message-driven applications on the JVM",
+             "delay": 30000,
+             "commands" : "./target/universal/play-java-1.0-SNAPSHOT/bin/play-java "
+         }
 
     ],
     "chats": [

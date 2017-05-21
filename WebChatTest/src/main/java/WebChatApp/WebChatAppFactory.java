@@ -1,6 +1,5 @@
 package WebChatApp;
 
-import client.Metrics;
 import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -60,7 +60,6 @@ public class TestMetrics {
         } catch (IOException ex) {
             Logger.getLogger(TestMetrics.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("NO METRIC");
         return new Metrics();
     }
     

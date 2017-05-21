@@ -20,6 +20,7 @@ public class WebChatRemote extends WebChatNonThrowablelApp{
      * @param port
      * @param globalDefinition
      * @param specificDefinition
+     * @param function
      */
     public WebChatRemote(String appName, String address, int port, String globalDefinition, String specificDefinition, GetMetricsFunction function) {
         super(appName, address, port, globalDefinition, specificDefinition);
