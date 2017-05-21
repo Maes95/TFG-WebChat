@@ -1,3 +1,8 @@
+---
+layout: default
+comments: true
+---
+
 ## Introduction
 
 Nowadays, the need of highly scalable distributed systems it's nothing new. One way to approach this need may be through the use of reactive technologies, that following the [Reactive Manifesto](http://www.reactivemanifesto.org/), count among its characteristics:
