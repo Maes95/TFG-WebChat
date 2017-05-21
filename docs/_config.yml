@@ -1,3 +1,4 @@
 theme: jekyll-theme-cayman
 title: Comparison of server technologies for websockets based services
 description: Vertical Scaling
+comments: true
