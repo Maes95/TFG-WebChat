@@ -26,17 +26,17 @@ public class WebChatAppFactory implements WebChatAppFactoryMethod{
             int port = config.isNull("port") ? DEFAULT_PORT : config.getInt("port");
             
             if(!config.isNull("remote") && config.getBoolean("remote")){
+                // REMOTE APPLICATION
+                System.out.println("THIS APP RUNS WITHOUT PROVIDE METRICS");
                 app = new WebChatRemote(
                     name, 
                     LOCAL_ADDRESS, 
                     port, 
                     globalDefinition, 
-                    specificDefinition, 
-                        () -> { return null; });
-                throw new Error("Remote applications not implemented yet");
+                    specificDefinition
+                );
             }else if(config.isNull("commands")){
                 // LOCAL APPLICATION
-                
                 app = new WebChatLocalApp(
                     name, 
                     LOCAL_ADDRESS, 
