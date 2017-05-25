@@ -2,11 +2,11 @@
 
 Nowadays, the need of highly scalable distributed systems it's nothing new. One way to approach this need may be through the use of reactive technologies, that following the [Reactive Manifesto](http://www.reactivemanifesto.org/), count among its characteristics:
 
-- **Responsive:** Responsive systems focus on providing rapid and consistent response times, respond in a timely manner if at all possible. 
+- **Responsive:** Responsive systems focus on providing rapid and consistent response times, respond in a timely manner if at all possible.
 
 -  **Resilient:** The system stays responsive in the face of failure. Resilience is achieved by replication, containment, isolation and delegation. The systems must be able to recover without compromising the integrity of the system.
 
-- **Elastic:** The system stays responsive under varying workload. This implies designs that have no contention points or central bottlenecks. 
+- **Elastic:** The system stays responsive under varying workload. This implies designs that have no contention points or central bottlenecks.
 
 - **Message Driven:** Reactive Systems rely on asynchronous message-passing to establish a boundary between components that ensures loose coupling, isolation and location transparency.  Communication is non-blocking.
 
@@ -35,17 +35,17 @@ There are many technologies applicable to this problem, the ones chosen for this
 
 **[Node.js(v5.6.0)](https://nodejs.org)**: Run-time environment for Javascript, based on an event-driven architecture. Node.js runs by default in single thread, although it has libraries to take advantage of all the processors of the machine that uses it. We will contemplate both implementations making use of the Express library to launch the server and ws to handle the connection using websocket.
 > Applications in the comparison:
-> 
+>
 > - **Node.js + Express**
 > - **Node.js + Express + Cluster**
 
 <img  class="logo spring-logo" src="http://rubenjgarcia.es/wp-content/uploads/2016/09/springboot.png" width="200">
 
-**[SpringBoot(v1.4.3)](https://projects.spring.io/spring-boot/)**: 
+**[SpringBoot(v1.4.3)](https://projects.spring.io/spring-boot/)**:
 Technology belonging to the Spring ecosystem (Java framework for application development). Although the technology is not reactive, we include it to test and verify the effectiveness of other technologies. You can use the different servers to launch the application, in this comparison we will use:
 
 > Applications in the comparison:
-> 
+>
 > -  **SpringBoot + Tomcat**
 > -  **SpringBoot + Jetty**
 
@@ -141,7 +141,7 @@ Below are the results based on 3 metrics: Response time, CPU usage and consumed 
 	<canvas id="compare-memory-1" ></canvas>
 </div>
 <script>
-	createChart("compare-memory-1", '% of Memory', "avgMemoryUse", 1);
+	createChart("compare-memory-1", '% of Memory', "avgRam", 1);
 </script>
 
 #### Application with N users in 2 chat rooms - Memory
@@ -150,7 +150,7 @@ Below are the results based on 3 metrics: Response time, CPU usage and consumed 
 	<canvas id="compare-memory-2" ></canvas>
 </div>
 <script>
-	createChart("compare-memory-2", '% of Memory', "avgMemoryUse", 2);
+	createChart("compare-memory-2", '% of Memory', "avgRam", 2);
 </script>
 
 
@@ -160,7 +160,7 @@ Below are the results based on 3 metrics: Response time, CPU usage and consumed 
 	<canvas id="compare-memory-4" ></canvas>
 </div>
 <script>
-	createChart("compare-memory-4", '% of Memory', "avgMemoryUse", 4);
+	createChart("compare-memory-4", '% of Memory', "avgRam", 4);
 </script>
 
 ## Comparative study
@@ -171,7 +171,7 @@ Spring applications, although with differences between them, offer considerably 
 
 On the other hand, in the applications of Vert.x, it can be seen that the use of the Eventbus assumes a greater consumption of time than if it is not used.
 
-The worst results within this metric are found in the application of Node.js. This application is executed in a single thread, unlike the other technologies that make use of multiple threads to attend the requests concurrently. 
+The worst results within this metric are found in the application of Node.js. This application is executed in a single thread, unlike the other technologies that make use of multiple threads to attend the requests concurrently.
 
 The Node.js application with the cluster library tries to solve this problem, improving response time, with worse results than Java applications, except Vert.x with Eventbus
 
@@ -179,7 +179,7 @@ Therefore, we can affirm that the best option is SpringBoot, that makes use of a
 
 ### CPU usage
 
-We can denote the correlation with the response times. Technologies that show better times (SpringBoot and Akka) also make more CPU use. 
+We can denote the correlation with the response times. Technologies that show better times (SpringBoot and Akka) also make more CPU use.
 
 In the case of Vert.x, the Eventbus not only harms the response time, also makes much greater use of the CPU.
 
@@ -195,9 +195,9 @@ On the other hand, we can see that the applications that use this resource are N
 
 ### Building
 
-At the time of developing, we must also consider the time and/or difficulty that can lead us, in this case, to create a reactive system. 
+At the time of developing, we must also consider the time and/or difficulty that can lead us, in this case, to create a reactive system.
 
-Akka and Vert.x applications have extensive libraries that entails an initial learning curve that is much higher than the other technologies shown, introducing the model of actors in order to solve problems of concurrency. 
+Akka and Vert.x applications have extensive libraries that entails an initial learning curve that is much higher than the other technologies shown, introducing the model of actors in order to solve problems of concurrency.
 In the case of Akka, in addition, it is added the difficulty of embedding our application in the framework Play to obtain a Webscoket server.
 
 On the other hand, SpringBoot applications are much simpler and faster to build through to its investment of control, although it leaves to the user's hands solve possible concurrency problems.

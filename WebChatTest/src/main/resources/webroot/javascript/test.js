@@ -288,14 +288,9 @@ angular.module("client").service('FakeResults', function() {
   ]
 
     this.generate = function(callback){
-      var i = 0;
-      var interval = setInterval(function(){
+      for(var i in fake_results[i]){
         callback(fake_results[i]);
-        i++;
-        if(i == fake_results.length){
-          clearInterval(interval);
-        };
-      }, DELAY);
+      }
     }
 
 });

@@ -18,7 +18,7 @@ function getDataSet(type, chat_size){
 			console.log(chat_size == Number(result.chatSize))
 			if(chat_size == Number(result.chatSize)){
 				var num_users = result["numUsers"];
-				if(data.labels.indexOf(num_users) == -1) data.labels.push(num_users);
+				if(data.labels.indexOf(num_users) == -1) data.labels.push(num_users * numUsers * 500 * result.chatSize);
 				if(apps.indexOf(result.app) == -1 ){
 					apps.push(result.app);
 					var new_index = apps.indexOf(result.app);
@@ -33,7 +33,7 @@ function getDataSet(type, chat_size){
 					});
 				}else{
 					var index = apps.indexOf(result.app);
-					data.datasets[index].data.push(result[type]);
+					data.datasets[index].data.push(Math.round(result[type]));
 				}
 			}
 		}
@@ -60,7 +60,7 @@ function getOptions(legend) {
 				},
 				scaleLabel: {
 					display: true,
-					labelString: "Number of users per chat room"
+					labelString: "Number of messages sent"
 				},
 			}]
 		}
@@ -79,5 +79,3 @@ var colors = [
 	"#A0A0A0", // GREY
 	"#000000"  // BLACK
 ];
-
-

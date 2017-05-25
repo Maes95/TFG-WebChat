@@ -13,12 +13,16 @@
     <link rel="stylesheet" href="http://rawgit.com/Semantic-Org/Semantic-UI/next/dist/semantic.css">
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
+
     <!-- Local Javascript -->
+    <script type="text/javascript" src="./javascript/results.js"></script>
     <script src="./javascript/lib/vertx-eventbus.js"></script>
     <script src="./javascript/client.js"></script>
     <script src="./javascript/export-api.js"></script>
     <script src="./javascript/test.js"></script>
+    <script src="./javascript/static-data.js"></script>
 	  <script src="./javascript/lib/angular-chart.js"></script>
+
 
     <!-- Local Styles -->
     <link rel="stylesheet" href="./css/style.css">
@@ -26,7 +30,33 @@
 </head>
 
 <body>
-	<div  ng-app="client" ng-controller="resultsController" class="main">
+  <!-- <div id="static-loader" class="loader">
+      <div class="inner one"></div>
+      <div class="inner two"></div>
+      <div class="inner three"></div>
+  </div> -->
+
+	<div  ng-app="client" ng-controller="resultsController" class="main hide">
+
+    <div ng-show="empty && static" id="selection-segment" class="ui segment">
+      <div class="ui message">
+        <div class="header">
+          Comparative Dashboard
+        </div>
+        <p>Click <b>Upload</b> to see your results or <b>View</b> to see default results.</p>
+      </div>
+      <div class="ui fluid large buttons">
+        <button class="ui button teal" ng-click="selectMode(true)">
+            <i class="cloud upload icon"></i>
+            Upload
+        </button>
+        <div class="or"></div>
+        <button class="ui button" ng-click="selectMode(false)">
+            <i class="unhide icon"></i>
+            View
+        </button>
+      </div>
+    </div>
 
     <div id="appDef" class="ui modal">
       <div class="header center-text">Application detail</div>
@@ -43,11 +73,11 @@
       </div>
     </div>
 
-    <div ng-show="empty && !local" class="loader">
+    <div ng-show="empty && !local && !static" class="loader">
       <div class="inner one"></div>
       <div class="inner two"></div>
       <div class="inner three"></div>
-      <div class="text">Running test</div>
+      <div class="text">{{ loading_text }}</div>
     </div>
 
 
@@ -55,7 +85,7 @@
 
       <!-- UPLOAD DATA -->
 
-      <div ng-show="empty && local" class="column">
+      <div id="upload-data" class="column" ng-show="uploadData">
         <div class="ui segment load-box-init">
           <h2 class="ui icon header" style="width: 100%;">
             <div class="content">
@@ -100,7 +130,7 @@
         </div>
       </div>
 
-		  <div ng-repeat="item in graphics" class="column">
+		  <div ng-repeat="item in graphics" class="column hide">
   			<div class="ui top attached segment">
           <button ng-init="item.visible = true;" ng-click="slideDown(item)" class="ui basic icon button drop">
             <i class="chevron icon" ng-class="item.visible ? 'down' : 'right' "></i>
@@ -190,9 +220,9 @@
               <thead style="text-align: center; ">
                 <tr>
                   <th rowspan="2">App</th>
-                  <th ng-if="item.tab == 0" colspan="{{ item.labels.length }}">Nº of user per room / time (in ms)</th>
-                  <th ng-if="item.tab == 1" colspan="{{ item.labels.length }}">Nº of user per room / % CPU use</th>
-                  <th ng-if="item.tab == 2" colspan="{{ item.labels.length }}">Nº of user per room / % memory use</th>
+                  <th ng-if="item.tab == 0" colspan="{{ item.labels.length }}">Number of messages / time (in ms)</th>
+                  <th ng-if="item.tab == 1" colspan="{{ item.labels.length }}">Number of messages / % CPU use</th>
+                  <th ng-if="item.tab == 2" colspan="{{ item.labels.length }}">Number of messages / memory use (in KBytes)</th>
                 </tr>
                 <tr>
                   <th ng-repeat="label in item.labels track by $index">{{ label }}</th>
@@ -201,8 +231,8 @@
               <tbody>
                 <tr ng-repeat="app in item.series track by $index">
                   <td class="app-name" ng-style="{ color : colors[$index] }">{{ app }}</td>
-                  <td ng-if="!item.tab" class="metric" ng-repeat="metric in getData(item, item.tab, $index) track by $index">{{ metric }}</td>
-                  <td ng-if="item.tab" class="metric" ng-repeat="metric in getData(item, item.tab, $index) track by $index">{{ metric | number: 2 }}</td>
+                  <td ng-if="item.tab == 0" class="metric" ng-repeat="metric in getData(item, item.tab, $index) track by $index">{{ metric }}</td>
+                  <td ng-if="item.tab > 0" class="metric" ng-repeat="metric in getData(item, item.tab, $index) track by $index">{{ metric }}</td>
                 </tr>
               </tbody>
             </table>
@@ -249,7 +279,7 @@
         <thead style="text-align: center; ">
           <tr>
             <th rowspan="2">App</th>
-            <th colspan="{{currentItem.labels.length}}">Nº of user per room / time (en ms)</th>
+            <th colspan="{{currentItem.labels.length}}">Number of messages / time (en ms)</th>
           </tr>
           <tr>
             <th ng-repeat="label in currentItem.labels track by $index">{{ label }}</th>

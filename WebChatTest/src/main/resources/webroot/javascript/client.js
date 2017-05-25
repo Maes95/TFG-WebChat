@@ -1,4 +1,4 @@
-angular.module("client", ['chart.js']).controller("resultsController", function($scope, $window, $export,FakeResults, Excel) {
+angular.module("client", ['chart.js']).controller("resultsController", function($scope, $window, $export,FakeResults, Excel, StaticData, $filter) {
 
         var n = 0;
         $scope.apps = {};
@@ -11,18 +11,19 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
             // IF GRAFIC WITH N CHAT ROOMS EXISTS
             if (!$scope.graphics[chatSizeName]) newGraphic(chatSizeName);
             // IF LABEL IN GRAPHIC EXIST
-            var index = $scope.graphics[chatSizeName].labels.indexOf(result.numUsers)
-            if (index == -1) newLabel(result.numUsers, chatSizeName);
+            var label = result.numUsers * result.numUsers * 500 * result.chatSize;
+            var index = $scope.graphics[chatSizeName].labels.indexOf(label)
+            if (index == -1) newLabel(label, chatSizeName);
             // IF APP EXISTS
             if (!$scope.apps[result.app]) newApp(result.app, result.globalDefinition, result.specificDefinition);
             var k = $scope.apps[result.app].index;
 
             $scope.graphics[chatSizeName].dataTimes[k].push(result.avgTime);
-            $scope.graphics[chatSizeName].dataCpuUse[k].push(result.avgCpuUse);
-            $scope.graphics[chatSizeName].dataMemoryUse[k].push(result.avgMemoryUse);
+            $scope.graphics[chatSizeName].dataCpuUse[k].push(Math.round(result.avgCpuUse));
+            $scope.graphics[chatSizeName].dataMemoryUse[k].push(Math.round(result.avgRam));
 
             $scope.apps[result.app].results.push(result);
-            if (!$scope.local) $scope.$apply();
+            if (!$scope.local && !STATIC) $scope.$apply();
         }
 
         function newApp(app_name, globalDefinition, specificDefinition) {
@@ -76,7 +77,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
         // MULTI-GRAPHIC
 
         $scope.dataKeys = ["dataTimes", "dataCpuUse", "dataMemoryUse"];
-        $scope.dataKeysDescription = ["time (in ms)", "% CPU use", "% memory use"];
+        $scope.dataKeysDescription = ["time (in ms)", "% CPU use", "memory use (in KBytes)"];
 
         $scope.getData = function(graphic, tab, index) {
             return graphic[$scope.dataKeys[tab]][index];
@@ -110,7 +111,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
 
         $scope.timeOptions = getOptions('Time in milliseconds');
         $scope.cpuOptions = getOptions('% of CPU');
-        $scope.memoryOptions = getOptions('% of Memory');
+        $scope.memoryOptions = getOptions('Memory in KBytes');
 
         function getOptions(legend) {
             var options = {
@@ -131,7 +132,7 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
                         },
                         scaleLabel: {
                             display: true,
-                            labelString: "Number of users per chat room"
+                            labelString: "Number of messages sent"
                         },
                     }]
                 }
@@ -176,7 +177,9 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
         }
 
         $scope.getGraphImg = function(item, selector) {
-            return $('#' + item.chatSize + '-size-' + selector)[0].toDataURL("image/png");
+            var elem = $('#' + item.chatSize + '-size-' + selector);
+            if(elem.length)
+                return elem[0].toDataURL("image/png");
         }
 
         $scope.exportToPDF = function(item) {
@@ -220,17 +223,21 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
         $scope.results = [];
 
         $scope.loadResults = function() {
+            $scope.uploadData = false;
             for (var i = 0; i < $scope.results.length; i++) {
                 addResult($scope.results[i]);
             }
         }
 
-        if (window.File && window.FileList) {
-            var drop_area = document.getElementById("drop_area");
-            drop_area.addEventListener("dragover", dragHandler);
-            drop_area.addEventListener("drop", filesDroped);
-        } else {
-            console.log("Your browser does not support File API");
+        function enableUploadFiles() {
+          $scope.uploadData = true;
+          if (window.File && window.FileList) {
+              var drop_area = document.getElementById("drop_area");
+              drop_area.addEventListener("dragover", dragHandler);
+              drop_area.addEventListener("drop", filesDroped);
+          } else {
+              console.log("Your browser does not support File API");
+          }
         }
 
         function dragHandler(event) {
@@ -286,33 +293,59 @@ angular.module("client", ['chart.js']).controller("resultsController", function(
         	SET UP
         */
 
-        if (location.host) {
-            // SERVER UP, OPEN CONNECTION
-            $scope.local = false;
-            var eb = new EventBus("/eventbus/");
-            eb.onopen = function() {
-                eb.registerHandler("new.result", function(err, message) {
-                    console.log(JSON.stringify(message.body));
-                    addResult(message.body);
-                });
-            };
-        } else {
-            // NO SERVER AVAILABLE
+        $scope.selectMode = function(upload){
+          if(upload){
             $scope.local = true;
-            // FakeResults.generate(function(result){
-            // 	addResult(result);
-            // });
+            $scope.static = false;
+            enableUploadFiles();
+          }else{
+            StaticData.generate(function(result){
+              addResult(result);
+            });
+          }
+        }
+
+        STATIC = false;
+        $('.main').show();
+        if (location.host) {
+            if(STATIC){
+                // STATIC SERVER
+                var param  = window.location.search.substr(1);
+                if( param == "view"){
+                  $scope.selectMode(false);
+                }else if(param == "upload"){
+                  $scope.selectMode(true);
+                }else{
+                  $scope.static = true;
+                }
+            }else{
+              // SERVER UP, OPEN CONNECTION
+              //$('#static-loader').hide();
+              $scope.loading_text = "Running test";
+              $scope.local = false;
+              var eb = new EventBus("/eventbus/");
+              eb.onopen = function() {
+                  eb.registerHandler("new.result", function(err, message) {
+                      console.log(JSON.stringify(message.body));
+                      addResult(message.body);
+                  });
+              };
+            }
+        } else {
+            // LOCAL
+            $scope.local = true;
+            enableUploadFiles();
         }
 
     })
-    .directive("filesread", [function() {
-        return {
-            scope: {
-                filesread: "="
-            },
-            restrict: 'A',
-            link: function(scope, element, attributes) {
-                element.bind('change', scope.filesread);
-            }
+.directive("filesread", [function() {
+    return {
+        scope: {
+            filesread: "="
+        },
+        restrict: 'A',
+        link: function(scope, element, attributes) {
+            element.bind('change', scope.filesread);
         }
-    }]);
+    }
+}]);
