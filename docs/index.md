@@ -32,7 +32,6 @@ These technologies, which follow the [Reactive Manifesto](http://www.reactiveman
 
 ![Reactive Manifesto](https://lh3.googleusercontent.com/-YjSNNBJvh5Y/WSTEL5O5BHI/AAAAAAAAA64/qFzWMtKLjEE7Xa_zEiXyP70mkbSlZ6qngCLcB/s0/Untitled+Diagram.png "ReactiveManifest.png")
 
-</br></br>
 The reactive technologies selected were:
 
 <img class="logo" src="http://akka.io/resources/images/akka_full_color.svg" width="200">
@@ -142,7 +141,7 @@ Therefore, we can affirm that the best option is SpringBoot, that makes use of a
 
 ### CPU usage
 
-> The CPU usage above 100% is due to the plurality of processors of the particular machine, which offers a **maximum of 800% CPU ** (8 cores of processing)
+> The CPU usage above 100% is due to the plurality of processors of the particular machine, which offers a **maximum of 800% CPU** (8 cores of processing)
 
 #### Application with N users in 1 chat room - CPU
 
