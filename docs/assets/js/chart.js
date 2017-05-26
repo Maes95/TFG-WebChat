@@ -15,10 +15,9 @@ function getDataSet(type, chat_size){
 	for(var i in results){
 		for(var j in results[i]){
 			var result = results[i][j];
-			console.log(chat_size == Number(result.chatSize))
 			if(chat_size == Number(result.chatSize)){
-				var num_users = result["numUsers"];
-				if(data.labels.indexOf(num_users) == -1) data.labels.push(num_users * num_users * 500 * result.chatSize);
+				var value = result.num_users * result.num_users * 500 * result.chatSize;
+				if(data.labels.indexOf(value) == -1) data.labels.push(value);
 				if(apps.indexOf(result.app) == -1 ){
 					apps.push(result.app);
 					var new_index = apps.indexOf(result.app);
