@@ -85,9 +85,9 @@ The comparison has been made on a Linux Mint 17.3 machine with 8 CPU cores.
 For this comparison we will consider 3 different metrics:
 
 - **Latency (response time)**: To measure the time it takes for messages to be received, the client sending, attached to the message body, the current time and an identifier. When the message arrives, it calculates the time it has taken (current time less the time that it brings in the body) and this is added to a variable, that when arriving all the messages is divided between the total number of messages, obtaining the average time (in milliseconds) that a message takes to transmit.
-</BR>
-![latency](https://lh3.googleusercontent.com/Z2isjzBwNsI8dW9l9RWaZhODZbrGyZBXL3P1zZIycnzLxNLvRRhD2a1GZ_e4ryzWDqC28KGA=s0 "latency.png")
-</BR>
+
+<img  id="latency" src="https://lh3.googleusercontent.com/Z2isjzBwNsI8dW9l9RWaZhODZbrGyZBXL3P1zZIycnzLxNLvRRhD2a1GZ_e4ryzWDqC28KGA=s0">
+
 
 - **Resources: CPU use and Memory**: Each second, the client collects the data provided by the `top` command of the particular application being tested, obtaining the percentage of CPU usage and the amount of physical RAM used by the process.
 
@@ -123,8 +123,6 @@ The results obtained from the test are shown below
 
 #### Application with N users in 4 chat rooms - Latency
 
-![4 Rooms - Time](https://lh3.googleusercontent.com/ZAENSkfnTRD8Myq_piJc8eS3oz-AVZEiyolzJlFFLTk4pe45slR6yTMjQnRvzb-VMbsxo0rx=s0 "N users in 4 chat room&#40;s&#41; - Time")
-
 <div width="400" height="400">
 	<canvas id="compare-time-4" ></canvas>
 </div>
@@ -148,8 +146,6 @@ Therefore, we can affirm that the best option is SpringBoot, that makes use of a
 
 #### Application with N users in 1 chat room - CPU
 
-![1 Room - CPU](https://lh3.googleusercontent.com/kUIeP_WDFautqInqn5v6s-gSqt8PSSalgFUBxBYPux6VtY5ET472M63y3n_uZcrlRVvcvGLZ=s0 "N users in 1 chat room&#40;s&#41; - CPU.png")
-
 <div width="400" height="400">
 	<canvas id="compare-cpu-1" ></canvas>
 </div>
@@ -159,8 +155,6 @@ Therefore, we can affirm that the best option is SpringBoot, that makes use of a
 
 #### Application with N users in 2 chat rooms - CPU
 
-![2 Rooms - CPU](https://lh3.googleusercontent.com/Q-Xa5AQxBzoNzLMj3MZ9-fBAfmqCQOTZwkuqJoinavjRIT7PATZtHtXMmF6MKMWOYS7MswCg=s0 "N users in 2 chat room&#40;s&#41; - CPU.png")
-
 <div width="400" height="400">
 	<canvas id="compare-cpu-2" ></canvas>
 </div>
@@ -169,8 +163,6 @@ Therefore, we can affirm that the best option is SpringBoot, that makes use of a
 </script>
 
 #### Application with N users in 4 chat rooms - CPU
-
-![4 Rooms - CPU](https://lh3.googleusercontent.com/LmDJ2nVgztNgUw492EAg55nzRwVkTFYEdmuZ390TJydo5tamuFbffVZ98fqAKNPl7koKn_MH=s0 "N users in 4 chat room&#40;s&#41; - CPU.png")
 
 <div width="400" height="400">
 	<canvas id="compare-cpu-4" ></canvas>
