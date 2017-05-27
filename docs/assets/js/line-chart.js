@@ -1,8 +1,8 @@
-function createChart(name, legend, type, chat_size){
+function createChart(name, legend, type, chat_size, title){
 	var myChart = new Chart($("#"+name), {
 		type: 'line',
 		data: getDataSet(type, chat_size),
-		options: getOptions(legend)
+		options: getOptions(legend, title)
 	});
 }
 
@@ -40,9 +40,12 @@ function getDataSet(type, chat_size){
 	return data;
 }
 
-function getOptions(legend) {
+function getOptions(legend, title) {
 	var options = {
-		scales: {
+		title: {
+			display: title,
+			text: title
+		},scales: {
 			yAxes: [{
 				ticks: {
 					padding: 30,

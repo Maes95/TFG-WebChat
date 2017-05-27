@@ -9,7 +9,7 @@ Nowadays there are many applications that, based on [WebSockets](https://en.wiki
 
 We have a multitude of technologies to address the development of this type of applications, but which is the best? Throughout the article we will compare different technologies (and different implementations of the same ones) to find the answer.
 
-To carry out the comparative, we will create a chat application for each technology that must meet certain requirements, which can be found [here](https://github.com/Maes95/TFG-WebChat/wiki#what-are-the-requirements-for-an-application-to-be-tested). 
+To carry out the comparative, we will create a chat application for each technology that must meet certain requirements, which can be found [here](https://github.com/Maes95/TFG-WebChat/wiki#what-are-the-requirements-for-an-application-to-be-tested).
 
 > The functionating of this chat is simple, the client connects with a username (which proves to be unique) and the name of a chat room to which it is attached. In this way, the user who connects to the chat room can send and receive messages from other users connected to the same chat.
 
@@ -22,11 +22,11 @@ Among the technologies selected for the comparative, we will distinguish between
 
 These technologies, which follow the [Reactive Manifesto](http://www.reactivemanifesto.org/), count among its characteristics
 
-- **Responsive:** Responsive systems focus on providing rapid and consistent response times, respond in a timely manner if at all possible. 
+- **Responsive:** Responsive systems focus on providing rapid and consistent response times, respond in a timely manner if at all possible.
 
 -  **Resilient:** The system stays responsive in the face of failure. Resilience is achieved by replication, containment, isolation and delegation. The systems must be able to recover without compromising the integrity of the system.
 
-- **Elastic:** The system stays responsive under a varying workload. This implies designs that have no contention points or central bottlenecks. 
+- **Elastic:** The system stays responsive under a varying workload. This implies designs that have no contention points or central bottlenecks.
 
 - **Message Driven:** Reactive Systems rely on asynchronous message-passing to establish a boundary between components that ensures loose coupling, isolation and location transparency.  Communication is non-blocking.
 
@@ -75,7 +75,7 @@ The client is developed in Java and uses together with the JUnit testing librari
 
 ## Comparative
 
-To perform the comparison, our test client will generate N users for a specific application, each of which will send 500 messages to the users that belong to their same chat room. 
+To perform the comparison, our test client will generate N users for a specific application, each of which will send 500 messages to the users that belong to their same chat room.
 
 The tests have been performed for a different number of rooms in different applications. For these tests, the client has been tested with different numbers of users (up to 10 iterations to have been performed for each number of users to obtain the maximum homogeneity in the results).
 
@@ -94,7 +94,7 @@ For this comparison we will consider 3 different metrics:
 The results obtained from the test are shown below
 
 - Graphs are dynamics, allow show-hide to compare concrete technologies
-- The number of messages on the X axis corresponds to the total number of messages sent using the following equation: 
+- The number of messages on the X axis corresponds to the total number of messages sent using the following equation:
 
 	`No. of messages = (No. of users/room ^ 2) * number of rooms`
 
@@ -133,7 +133,7 @@ Spring applications, although with differences between them, offer considerably 
 
 On the other hand, in the applications of Vert.x, it can be seen that the use of the Eventbus assumes a greater consumption of time than if it is not used.
 
-The worst results within this metric are found in the application of Node.js. This application is executed in a single thread, unlike the other technologies that make use of multiple threads to attend the requests concurrently. 
+The worst results within this metric are found in the application of Node.js. This application is executed in a single thread, unlike the other technologies that make use of multiple threads to attend the requests concurrently.
 
 The Node.js application with the cluster library tries to solve this problem, improving response time, with worse results than Java applications, except Vert.x with Eventbus
 
@@ -170,7 +170,7 @@ Therefore, we can affirm that the best option is SpringBoot, that makes use of a
 	createChart("compare-cpu-4", '% of CPU', "avgCpuUse", 4);
 </script>
 
-We can denote the correlation with the response times. Technologies that show better times (SpringBoot and Akka) also make more CPU use. 
+We can denote the correlation with the response times. Technologies that show better times (SpringBoot and Akka) also make more CPU use.
 
 In the case of Vert.x, the Eventbus not only harms the response time, also makes much greater use of the CPU.
 
@@ -207,7 +207,7 @@ Node.js applications, following the correlation mentioned, makes much less use o
 </div>
 <script>
 	createChart("compare-memory-4", 'Memory in KBytes', "avgRam", 4);
-</script> 
+</script>
 
 Java applications, for low workloads, consume a similar memory, but when the workload increases (more than 1M messages sent with only 1 room), Vertx with Eventbus and Akka trigger their memory consumption (25 and 15% respectively).
 
@@ -215,14 +215,39 @@ The Vert.x application owes this excessive memory usage to its Eventbus, the sam
 
 On the other hand, we can see that the applications that use this resource are Node.js, which would be the best if we care this metric.
 
+#### Sumary of comparison
+
+To finish the comparison, let's take a look at all the metrics at once in one of the most representative cases (60 users in 1 chat room) with the help of a scatter chart.
+
+<div width="400" height="400">
+	<canvas id="compare-dispersion" ></canvas>
+</div>
+<script>
+	createBubleChart("compare-dispersion", 1, 60, "Latency in correlation to resource consumption");
+</script>
+
+
 ### Development
 
-At the time of developing, we must also consider the time and/or difficulty that can lead us, in this case, to create a reactive system. 
+At the time of developing, we must also consider the time and/or difficulty that can lead us, in this case, to create a reactive system.
 
-Akka and Vert.x applications have extensive libraries that entails an initial learning curve that is much higher than the other technologies shown, introducing the model of actors in order to solve problems of concurrency. 
+Akka and Vert.x applications have extensive libraries that entails an initial learning curve that is much higher than the other technologies shown, introducing the model of actors in order to solve problems of concurrency.
 In the case of Akka, in addition, it is added the difficulty of embedding our application in the framework Play to obtain a Webscoket server.
 
 On the other hand, SpringBoot applications are much simpler and faster to build through to its investment of control, although it leaves the user's hands solve possible concurrency problems.
 
 Finally, build reactive applications in Node.js is trivial, given the reactive nature of the language itself, being able to write all the functionality in very few lines in a clear and concise way. However, when you add the cluster library, the flow of the application can be complicated.
 
+## Conclusions
+
+After studying the different metrics, we can state the following solutions to the problem of reactive applications:
+
+* If we are looking for a reliable application **against large workloads** and do not make excessive use of the resources of the machine on which it runs, the optimal technology would be **SpringBoot**, specifically using as Tomcat server.
+
+* If we are looking for a lightweight application that makes a **minimal use of the resources of the machine** that will not have large workloads, our best option would be **Node.js** (adding the cluster library if necessary to optimize the service it provides).
+
+## Contributing
+
+The implementation of Akka application belongs to [Javier Mateos](https://github.com/meji92).
+
+If you want to contribute, clone [the proyect](https://github.com/Maes95/TFG-WebChat) and add your own application following [these (simple) steps](https://github.com/Maes95/TFG-WebChat/wiki#how-to-build-an-application) and share your results in the comments.
