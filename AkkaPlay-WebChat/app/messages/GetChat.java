@@ -5,7 +5,7 @@ import akka.actor.ActorRef;
 import java.io.Serializable;
 
 public class GetChat implements Serializable{
-    private String chatname;
+    private final String chatname;
     private ActorRef chat;
 
     public GetChat (String chatname){

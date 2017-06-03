@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class CheckUser implements Serializable{
 
-    private String user;
+    private final String user;
 
     public CheckUser (String user){
         this.user = user;

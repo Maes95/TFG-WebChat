@@ -5,9 +5,7 @@ import akka.actor.PoisonPill;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import messages.*;
-import play.libs.Json;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +13,15 @@ import play.libs.Akka;
 
 
 public class User extends UntypedActor {
+    
+    private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"This user already exists\"}";
 
     private final ActorRef out;
     private final ActorRef chatManager;
     private final List<Message> unsendMessages;
     private ActorRef chat;
     private String username;
+    
 
     public static Props props(ActorRef out) {
         return Props.create(User.class, out, Akka.system().actorFor("akka://application/user/ChatManager"));
@@ -46,7 +47,7 @@ public class User extends UntypedActor {
             // Normal message, send to the chat
             else{
                 Message msg = new Message(json.get("name").asText(),json.get("message").asText());
-                //To avoid the first messages to be sent before the chat actorRef is received
+                // To avoid the first messages to be sent before the chat actorRef is received
                 if (chat!= null){
                     chat.tell(msg, getSelf());
                 }else{
@@ -70,11 +71,9 @@ public class User extends UntypedActor {
                     unsendMessages.clear();
                 }else{
                     if (message instanceof DuplicatedUser){
-                        ObjectNode msg = Json.newObject();
-                        msg.put("type", "system");
-                        msg.put("message", "This user already exists");
-                        chat = null; //To avoid the dead letters when this actor do the postStop and the Chat reply
-                        out.tell(msg.toString(),getSelf());
+                        //To avoid the dead letters when this actor do the postStop and the Chat reply
+                        chat = null; 
+                        out.tell(DUPLICATE_MSG,getSelf());
                         self().tell(PoisonPill.getInstance(), self());
                     }
                 }
