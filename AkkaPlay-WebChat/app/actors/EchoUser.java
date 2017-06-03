@@ -14,6 +14,7 @@ public class EchoUser extends UntypedActor {
         this.out = out;
     }
 
+    @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof String) {
             out.tell("I received your message: " + message, self());
