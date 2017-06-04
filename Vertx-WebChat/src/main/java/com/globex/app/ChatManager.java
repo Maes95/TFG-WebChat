@@ -2,12 +2,14 @@ package com.globex.app;
 
 // Vertx libraries
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -21,11 +23,11 @@ public class ChatManager extends AbstractVerticle {
     private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
 
     //Add because the most easy way to obtain the deploymentID is when I deploy the verticle
-    private final ConcurrentHashMap<String, String> users = new ConcurrentHashMap<>();
+    private final Map<String, String> users = new HashMap<>();
 
     // Convenience method so you can run it in your IDE
     public static void main(String[] args) {
-      Runner.runExample(ChatManager.class);
+        Vertx.vertx().deployVerticle(new ChatManager());
     }
 
     @Override
@@ -38,12 +40,13 @@ public class ChatManager extends AbstractVerticle {
 
                     JsonObject message = data.toJsonObject();
 
-                    if (!message.containsKey("message")){ //Is the log in message (don't have message)
-                        //If don't exists this username or a chat with the same name...
+                    if (!message.containsKey("message")){ 
+                        // Is a connect message
                         if (!users.containsKey(message.getString("name"))){
                             // Create new user
                             newUser(message, ws);
-                        }else{ //If the username exists it send a message and close the conexion
+                        }else{ 
+                            // User already exist
                             ws.writeFinalTextFrame(DUPLICATE_MSG);
                             ws.close();
                         }

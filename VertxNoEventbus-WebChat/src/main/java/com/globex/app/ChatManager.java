@@ -2,6 +2,7 @@ package com.globex.app;
 
 // Vertx libraries
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.ServerWebSocket;
@@ -23,18 +24,17 @@ public class ChatManager extends AbstractVerticle {
     private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
 
     // The key is the chat name, that have many users
-    private final Map<String, Map<String, User>> users = new HashMap<>();
+    private final Map<String, Map<String, User>> rooms = new HashMap<>();
 
-    // Convenience method so you can run it in your IDE
     public static void main(String[] args) {
-      Runner.runExample(ChatManager.class);
+        Vertx.vertx().deployVerticle(new ChatManager());
     }
 
     @Override
     @SuppressWarnings("empty-statement")
     public void start() throws Exception {
 
-        vertx.createHttpServer().websocketHandler( (ServerWebSocket ws) -> {
+        vertx.createHttpServer().websocketHandler((ServerWebSocket ws) -> {
             if (ws.path().equals("/chat")) {
                 ws.handler((Buffer data) -> {
 
@@ -51,7 +51,7 @@ public class ChatManager extends AbstractVerticle {
                         }
 
                     }else{
-                        users.get(message.getString("chat")).values().forEach((user)->{
+                        rooms.get(message.getString("chat")).values().forEach((user)->{
                             user.send(message);
                         });
                     }
@@ -68,7 +68,7 @@ public class ChatManager extends AbstractVerticle {
     }
 
     private boolean userExist(String user_name){
-        return users.values().stream().anyMatch((chat) -> (
+        return rooms.values().stream().anyMatch((chat) -> (
             chat.containsKey(user_name)
         ));
     }
@@ -77,16 +77,16 @@ public class ChatManager extends AbstractVerticle {
         String name = message.getString("name");
         String chat = message.getString("chat");
         User user = new User(name, chat, ws, this);
-        if(!users.containsKey(chat)){
+        if(!rooms.containsKey(chat)){
             // Chat doesn't exist
-            users.put(chat, new ConcurrentHashMap<>());
+            rooms.put(chat, new ConcurrentHashMap<>());
         }
-        users.get(chat).put(name, user);
+        rooms.get(chat).put(name, user);
     }
 
     //Remove the verticle and unregister the handler
     public void deleteUser (String chat_name, String name){
-        users.get(chat_name).remove(name);
+        rooms.get(chat_name).remove(name);
     }
 
 }
