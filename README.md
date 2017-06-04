@@ -51,3 +51,12 @@ Attempt 8: 26165
 Attempt 9: 26158
 Attempt 10: 26916
 Average time: 26234
+```
+
+## How to build an application
+
+https://github.com/Maes95/TFG-WebChat/wiki/How-to-Build-an-Application
+
+## How to generate a comparative report 
+
+https://github.com/Maes95/TFG-WebChat/wiki/How-to-generate-a-report
