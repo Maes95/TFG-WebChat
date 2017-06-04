@@ -6,13 +6,11 @@ import play.libs.Json;
 import java.io.Serializable;
 
 public class Message implements Serializable{
-    private String name;
-    private String message;
-    private String color;
+    private final String name;
+    private final String message;
 
-    public Message (String name, String message, String color){
+    public Message (String name, String message){
         this.name = name;
-        this.color = color;
         this.message = message;
     }
 
@@ -24,7 +22,6 @@ public class Message implements Serializable{
         ObjectNode msgdata = Json.newObject();
         msgdata.put("name",name);
         msgdata.put("message",message);
-        msgdata.put("color",color);
         return msgdata;
     }
 }

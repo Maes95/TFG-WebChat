@@ -26,3 +26,4 @@ server.pid
 .cache
 
 project/play-fork-run.sbt
+/.nb-play.properties

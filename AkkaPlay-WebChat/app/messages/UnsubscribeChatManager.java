@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class UnsubscribeChatManager implements Serializable{
 
-    private String chat;
+    private final String chat;
 
     public UnsubscribeChatManager (String chat){
         this.chat = chat;
