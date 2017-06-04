@@ -19,17 +19,11 @@ public class User {
 	}
 	
 	public synchronized void send(String message){
-		try {
-			this.session.getBasicRemote().sendText(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void send(String message, String chatName){
-		if(this.chat.equals(chatName)){
-			this.send(message);
-		}
+            try {
+                    this.session.getBasicRemote().sendText(message);
+            } catch (IOException e) {
+                    e.printStackTrace();
+            }
 	}
 	
 	public String getChat(){
