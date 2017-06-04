@@ -57,21 +57,21 @@ We add non-reactive technologies to also compare paradigms and check the effecti
 
 Applications in the comparison:
 
-- **[Akka + PlayFramework](https://github.com/Maes95/TFG-WebChat/tree/v2.0/AkkaPlay-WebChat)**
-- **[Vertx with EventBus](https://github.com/Maes95/TFG-WebChat/tree/v2.0/Vertx-WebChat)**
-- **[Vertx without EventBus](https://github.com/Maes95/TFG-WebChat/tree/v2.0/VertxNoEventbus-WebChat)**
-- **[Node.js + Express](https://github.com/Maes95/TFG-WebChat/tree/v2.0/NodeJS-WebChat)**
-- **[Node.js + Express + Cluster](https://github.com/Maes95/TFG-WebChat/tree/v2.0/NodeJSCluster-WebChat)**
-- **[SpringBoot + Tomcat](https://github.com/Maes95/TFG-WebChat/tree/v2.0/SpringBoot-Tomcat-WebChat)**
-- **[SpringBoot + Jetty](https://github.com/Maes95/TFG-WebChat/tree/v2.0/SpringBoot-Jetty-WebChat)**
+- **[Akka + PlayFramework](https://github.com/Maes95/TFG-WebChat/tree/v2.1/AkkaPlay-WebChat)**
+- **[Vertx with EventBus](https://github.com/Maes95/TFG-WebChat/tree/v2.1/Vertx-WebChat)**
+- **[Vertx without EventBus](https://github.com/Maes95/TFG-WebChat/tree/v2.1/VertxNoEventbus-WebChat)**
+- **[Node.js + Express](https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJS-WebChat)**
+- **[Node.js + Express + Cluster](https://github.com/Maes95/TFG-WebChat/tree/v2.1/NodeJSCluster-WebChat)**
+- **[SpringBoot + Tomcat](https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Tomcat-WebChat)**
+- **[SpringBoot + Jetty](https://github.com/Maes95/TFG-WebChat/tree/v2.1/SpringBoot-Jetty-WebChat)**
 
 ## Implementation
 
-The source code of the applications used can be found in the following repository, which corresponds to the [second version of the project (v2.0)](https://github.com/Maes95/TFG-WebChat/tree/v2.0).
+The source code of the applications used can be found in the following repository, which corresponds to the [second version of the project (v2.0)](https://github.com/Maes95/TFG-WebChat/tree/v2.1).
 
 Although many technologies rely on external libraries to manage communications with WebSocket (such as SockJS or Socket.io), the basic implementation provided by each technology has been used.
 
-The client is developed in Java and uses together with the JUnit testing libraries and the native Vert.x testing libraries. This implementation can be found [here](https://github.com/Maes95/TFG-WebChat/tree/v2.0/WebChatTest).
+The client is developed in Java and uses together with the JUnit testing libraries and the native Vert.x testing libraries. This implementation can be found [here](https://github.com/Maes95/TFG-WebChat/tree/v2.1/WebChatTest).
 
 ## Comparative
 
