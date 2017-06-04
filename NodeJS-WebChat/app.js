@@ -23,8 +23,7 @@ wss.on('connection', (ws) => {
 		if(message['message']){
 			// Normal message (broadcast it)
 			wss.clients
-      .filter(  (client) => client.chat == ws.chat )
-      .forEach( (client) => client.send(data) );
+      .forEach( (client) => {if(client.chat == ws.chat) client.send(data)} );
 		}else{
 			// First message (first connection)
       if(users.has(message['name'])){

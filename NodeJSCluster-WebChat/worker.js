@@ -53,8 +53,7 @@ process.on('message', (data) => {
     case "message":
       // Broadcast message
       wss.clients
-      .filter( (client) => client.chat == data.chat )
-      .forEach( (client) => client.send(data.message) );
+      .forEach( (client) => {if(client.chat == data.chat) client.send(data.message)} );
       break;
     case "user.answer":
       // Master said us if user exists or not
