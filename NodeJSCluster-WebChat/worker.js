@@ -12,8 +12,6 @@ DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"User already exist\"}";
 
 const wss = new SocketServer({ server });
 
-var worker_id;
-
 // Dictionary where key is the user_name and the value is the WebSocket
 
 var users = new Map();
@@ -32,28 +30,25 @@ wss.on('connection', (ws) => {
         type: "new.user",
         name: message.name,
         chat: message.chat,
-        worker_id: worker_id,
         ws_id: ws._socket._handle.fd
       });
     }
   });
 
   ws.on('close', () => {
-    process.send({ type: "delete.user", name: ws['name']});
+    process.send({ type: "delete.user", name: ws['name'] });
   });
 
 });
 
 process.on('message', (data) => {
   switch (data.type) {
-    case "init":
-      // Worker id
-      worker_id = data.id;
-      break;
     case "message":
       // Broadcast message
-      wss.clients
-      .forEach( (client) => {if(client.chat == data.chat) client.send(data.message)} );
+      wss.clients.forEach( (client) => {
+        if(client.chat == data.chat)
+          client.send(data.message)
+      });
       break;
     case "user.answer":
       // Master said us if user exists or not
