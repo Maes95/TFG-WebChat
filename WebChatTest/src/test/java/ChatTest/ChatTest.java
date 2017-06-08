@@ -44,7 +44,8 @@ public final class ChatTest {
     
     
     // STATIC CONTEXT 
-
+    
+    private static TestResultsServer server;
     private static WebChatApp current_application = null;
     private static long total_avg_time = 0;
     private static Result currentResult;
@@ -57,7 +58,7 @@ public final class ChatTest {
         // Print header
         ChatTestUtils.printHeader();
         // Set up results server
-        TestResultsServer.setUp();
+        server = TestResultsServer.getInstance();
         // To create web chat applications
         webChatAppFactory = new WebChatAppFactory();
     }
@@ -148,7 +149,7 @@ public final class ChatTest {
         System.out.println(" Average cpu use: "+result.getValue("avgCpuUse"));
         System.out.println(" Average memory use: "+result.getValue("avgMemoryUse"));
         System.out.println(Colors.GREY_LINE);
-        TestResultsServer.sendResult(result);
+        server.send(currentResult);
         total_avg_time = 0;
         context.assertTrue(true);
     }

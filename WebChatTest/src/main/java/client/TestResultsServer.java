@@ -3,7 +3,6 @@ package client;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class TestResultsServer extends AbstractVerticle {
 
-    public static TestResultsServer currentServer;
+    private static TestResultsServer currentServer;
 
     @Override
     public void start() throws Exception {
@@ -47,15 +46,11 @@ public class TestResultsServer extends AbstractVerticle {
       vertx.createHttpServer().requestHandler(router::accept).listen(8080);
     }
 
-    public void send(JsonObject result){
-        vertx.eventBus().publish("new.result", result);
+    public void send(Result result){
+        vertx.eventBus().publish("new.result", result.toJson());
     }
 
-    public static void sendResult(JsonObject result){
-        currentServer.send(result);
-    }
-
-    public static void setUp() {
+    public static TestResultsServer getInstance() {
       if(currentServer == null){
           currentServer = new TestResultsServer();
           Vertx.vertx().deployVerticle(currentServer, (AsyncResult<String> res) -> {
@@ -66,11 +61,14 @@ public class TestResultsServer extends AbstractVerticle {
                     } catch (URISyntaxException | IOException ex) {
                         Logger.getLogger(TestResultsServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }else{
+                    System.out.println("Open http://localhost:8080/ in your browser");
                 }
             }else{
                 System.err.println("Can't run results server");
             }
           });
       }
+      return currentServer;
     }
 }
