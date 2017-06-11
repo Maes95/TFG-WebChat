@@ -86,7 +86,9 @@ public class ChatManager extends AbstractVerticle {
 
     //Remove the verticle and unregister the handler
     public void deleteUser (String chat_name, String name){
-        rooms.get(chat_name).remove(name);
+        Map<String, User> room = rooms.get(chat_name);
+        room.remove(name);
+        if(room.isEmpty()) rooms.remove(chat_name);
     }
 
 }
