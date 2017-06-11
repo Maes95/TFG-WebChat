@@ -1,8 +1,8 @@
 import io.apigee.trireme.node10.node.cluster
 
-name := """play-java"""
+name := """WebChat"""
 
-version := "1.0-SNAPSHOT"
+version := "1.0"
 
 //val akkaVersion = "2.3.9"
 val akkaVersion = "2.4-M2"
