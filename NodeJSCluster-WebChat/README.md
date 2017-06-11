@@ -13,3 +13,9 @@ This is a distributed WebChat with Node.js with cluster.
 cd TFG-WebChat/NodeJSCluster-WebChat
 npm install
 ```
+
+## Start application
+
+```sh
+$ node master.js
+```

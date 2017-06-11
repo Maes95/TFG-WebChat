@@ -13,3 +13,9 @@ This is a distributed WebChat with Node.js.
 cd TFG-WebChat/NodeJS-WebChat
 npm install
 ```
+
+## Start application
+
+```sh
+$ node app.js
+```

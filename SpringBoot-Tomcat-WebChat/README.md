@@ -13,3 +13,9 @@ This is a distributed WebChat with SpringBoot-Tomcat.
 $ cd TFG-WebChat/SpringBoot-Tomcat-WebChat
 $ mvn install
 ```
+
+## Start application
+
+```sh
+$ mvn spring-boot:run
+```

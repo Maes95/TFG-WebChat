@@ -13,3 +13,9 @@ This is a distributed WebChat with Vertx 3.
 $ cd TFG-WebChat/Vertx-WebChat
 $ mvn install
 ```
+
+## Start application
+
+```sh
+$ mvn exec:java
+```

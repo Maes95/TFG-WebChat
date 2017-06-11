@@ -13,3 +13,10 @@ This is a client for test WebChat applications.
 $ cd TFG-WebChat/WebChatTest
 $ mvn install
 ```
+
+# Run test client
+
+```sh
+$ cd WebChatTest
+$ mvn test
+```

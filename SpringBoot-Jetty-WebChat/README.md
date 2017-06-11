@@ -13,3 +13,9 @@ This is a distributed WebChat with SpringBoot-Jetty.
 $ cd TFG-WebChat/SpringBoot-Jetty-WebChat
 $ mvn install
 ```
+
+## Start application
+
+```sh
+$ mvn spring-boot:run
+```
