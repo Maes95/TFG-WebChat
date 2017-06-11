@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class ChatManager extends AbstractVerticle {
 
-    private final static int PORT = 5000;
+    private final static int PORT = 9000;
 
     private final static String DUPLICATE_MSG = "{\"type\":\"system\",\"message\":\"Ya existe un usuario con ese nombre\"}";
 
@@ -40,12 +40,12 @@ public class ChatManager extends AbstractVerticle {
 
                     JsonObject message = data.toJsonObject();
 
-                    if (!message.containsKey("message")){ 
+                    if (!message.containsKey("message")){
                         // Is a connect message
                         if (!users.containsKey(message.getString("name"))){
                             // Create new user
                             newUser(message, ws);
-                        }else{ 
+                        }else{
                             // User already exist
                             ws.writeFinalTextFrame(DUPLICATE_MSG);
                             ws.close();
@@ -63,7 +63,7 @@ public class ChatManager extends AbstractVerticle {
         .requestHandler((HttpServerRequest req) -> {
             if (req.uri().equals("/")) req.response().sendFile("webroot/index.html"); // Serve the html
         }).listen(PORT);
-        
+
         // Listen for disconected users event
         vertx.eventBus().consumer("delete.user", data -> {
             this.deleteUser(data.body().toString());

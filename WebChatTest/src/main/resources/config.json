@@ -1,54 +1,46 @@
 {
-    "apps" : [
+    "apps": [
         {
-            "name" : "NodeJS",
-            "globalDefinition": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.",
-            "specificDefinition": "This application runs in a single thread",
-            "commands" : "node app.js"
+            "name": "AkkaPlay",
+            "commands": "./target/universal/play-java-1.0-SNAPSHOT/bin/play-java"
         },
         {
-            "name" : "NodeJSCluster",
-            "globalDefinition": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.",
-            "specificDefinition": "A single instance of Node.js runs in a single thread. To take advantage of multi-core systems, this application use Node’s cluster library.",
-            "commands" : "node master.js"
+            "name": "NodeJS",
+            "commands": "node app.js"
         },
         {
-            "name" : "SpringBoot-Tomcat",
-            "globalDefinition": "Spring is a framework for application development and investment control container, open source for the Java platform. Spring Boot makes it easy to create Spring-powered, production-grade applications and services with minimum effort.",
-            "specificDefinition": "This application use Tomcat as server.",
-            "commands" : "mvn spring-boot:run"
+            "name": "NodeJSCluster",
+            "commands": "node master.js"
         },
         {
-            "name" : "SpringBoot-Jetty",
-            "globalDefinition": "Spring is a framework for application development and investment control container, open source for the Java platform. Spring Boot makes it easy to create Spring-powered, production-grade applications and services with minimum effort.",
-            "specificDefinition": "This application use Jetty as server.",
-            "commands" : "mvn spring-boot:run"
+            "name": "SpringBoot-Tomcat",
+            "commands": "mvn spring-boot:run"
         },
         {
-            "name" : "Vertx",
-            "globalDefinition": "Vert.x is event driven and non blocking framework which can handle a lot of concurrency using a small number of kernel threads. ",
-            "specificDefinition": "This application has been built with Vert.x eventbus",
-            "port": 5000,
-            "commands" : "mvn exec:java"
+            "name": "SpringBoot-Jetty",
+            "commands": "mvn spring-boot:run"
         },
         {
-            "name" : "VertxNoEventbus",
-            "globalDefinition": "Vert.x is event driven and non blocking framework which can handle a lot of concurrency using a small number of kernel threads. ",
-            "specificDefinition": "This application has been built without use the vertx event bus",
-            "commands" : "mvn exec:java"
+            "name": "Vertx",
+            "commands": "mvn exec:java"
         },
         {
-             "name" : "AkkaPlay",
-             "globalDefinition": "Akka is a toolkit and runtime for building highly concurrent, distributed, and resilient message-driven applications on the JVM",
-             "delay": 30000,
-             "commands" : "./target/universal/play-java-1.0-SNAPSHOT/bin/play-java "
-         }
-
+            "name": "VertxNoEventbus",
+            "commands": "mvn exec:java"
+        }
     ],
     "chats": [
         {
             "numChats": 1,
             "users": [10, 20, 30, 40, 50, 60]
+        },
+        {
+            "numChats": 2,
+            "users": [20, 25, 30, 35]
+        },
+        {
+            "numChats": 4,
+            "users": [10, 12, 15, 17]
         }
     ]
 }
