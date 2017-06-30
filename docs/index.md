@@ -98,7 +98,7 @@ The results obtained from the test are shown below
 
 	`No. of messages = (No. of users/room ^ 2) * number of rooms`
 
-- You can find the complete and disaggregated results of the comparative [here](http://tfg-dashboard.maes.gq/?view)
+- You can find the complete and disaggregated results of the comparative [here](https://maes95.github.io/TFG-Client/?view)
 
 ### Latency
 
