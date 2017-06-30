@@ -209,7 +209,7 @@ Node.js applications, following the correlation mentioned, makes much less use o
 	createChart("compare-memory-4", 'Memory in KBytes', "avgRam", 4);
 </script>
 
-Java applications, for low workloads, consume a similar memory, but when the workload increases (more than 1M messages sent with only 1 room), Vertx with Eventbus and Akka trigger their memory consumption.
+Java applications, for low workloads, consume a similar memory, but when the workload increases (more than 1M messages sent with only 1 room), Vertx with Eventbus triggers its memory consumption.
 
 The Vert.x application owes this excessive memory usage to its Eventbus, the same application without the use of this resource, has a constant memory usage, as do SpringBoot application. We can also see how the creation of actors by Akka also has repercussions on the use of memory.
 
