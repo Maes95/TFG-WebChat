@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Result, Message } from '../../models/result';
-import { KeysPipe } from '../../pipes/keys.pipe';
 import { VertEventBus } from '../../services/EventBus';
 import { ExportService } from '../../services/export.service';
 import { FakeResultsService } from '../../services/fakeResults.service';
+
+import { BaseChartDirective } from 'ng2-charts';
 
 declare var $:any;
 
@@ -11,14 +12,13 @@ declare var $:any;
     selector: 'dashboard',
     templateUrl: '../app/components/dashboard/dashboard.component.html',
     providers: [VertEventBus,ExportService, FakeResultsService],
-    pipes: [KeysPipe],
     styleUrls: ['./app/components/dashboard/dashboard.component.css']
 })
 export class DashboardComponent implements OnInit{
 
-  STATIC:boolean = true;
+  @ViewChildren( BaseChartDirective ) charts: QueryList<BaseChartDirective>;
 
-  datasetOverride:any[] = [];
+  STATIC:boolean = true;
 
   timeOptions: Object;
   cpuOptions: Object;
@@ -107,15 +107,10 @@ export class DashboardComponent implements OnInit{
 
     this.apps[result.app].results.push(result);
 
-    this.graphics[chatSizeName].dataTimes = this.graphics[chatSizeName].dataTimes.slice();
-    this.graphics[chatSizeName].dataCpuUse = this.graphics[chatSizeName].dataCpuUse.slice();
-    this.graphics[chatSizeName].dataMemoryUse = this.graphics[chatSizeName].dataMemoryUse.slice();
+    this.charts.forEach((chart) => chart.ngOnChanges({}) );
   }
 
   private newApp(app_name:string, globalDefinition:string, specificDefinition:string) {
-      this.datasetOverride.push({
-          lineTension: 0
-      });
       this.apps[app_name] = {
           name: app_name,
           globalDefinition: globalDefinition,

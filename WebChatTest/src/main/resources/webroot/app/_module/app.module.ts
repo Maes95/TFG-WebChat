@@ -8,6 +8,7 @@ import { ChartsModule } from 'ng2-charts';
 import { AppComponent }  from '../app/app.component';
 
 import { DashboardComponent } from '../components/dashboard/dashboard.component';
+import { KeysPipe } from '../pipes/keys.pipe';
 
 import { routing }        from '../_routing/app.routing';
 
@@ -20,7 +21,8 @@ import { routing }        from '../_routing/app.routing';
   ],
   declarations: [
     AppComponent,
-    DashboardComponent
+    DashboardComponent,
+    KeysPipe
   ],
   bootstrap: [ AppComponent ]
 })

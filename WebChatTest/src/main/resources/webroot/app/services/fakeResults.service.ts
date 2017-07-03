@@ -13,7 +13,7 @@ export class FakeResultsService {
       if(i == RESULTS.length){
         clearInterval(interval);
       };
-    }, 500);
+    }, 1500);
   }
 }
 
