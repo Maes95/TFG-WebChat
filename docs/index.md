@@ -174,7 +174,17 @@ We can denote the correlation with the response times. Technologies that show be
 
 In the case of Vert.x, the Eventbus not only harms the response time, also makes much greater use of the CPU.
 
-Node.js applications, following the correlation mentioned, makes much less use of this resource. In the case of simple application, this is limited to a single processor, reaching in the comparative almost 100% use of it. On the other hand, the application that uses the cluster library, which uses multiple processors, distribute better the workload, making a more efficient use of resources.
+Node.js application (without cluster), following the correlation mentioned, makes much less use of this resource, it is limited to a single processor, reaching in the comparative almost 100% use of it. On the other hand, the application that uses the cluster library, which uses multiple processors, distribute better the workload, making a more efficient use of resources*.
+
+The low CPU usage of the cluster application shown in the graph is because it corresponds only to the process that contains the master (unlike the other technologies that use threads to take advantage of the cores of the machine, NodeJS with cluster makes use Multiple processes, one for each worker).
+
+Since our test application contemplate a single process to measure, the metrics corresponding to the CPU usage have been taken manually for the most representative case (60 users, one chat room and a total of 1.8 million sent and received messages):
+
+| Worker 1 | Worker 2 | Worker 3 | Worker 4 | Worker 5 | Worker 6 | Worker 7 | Worker 8 |
+|---|---|---|---|---|---|---|---|
+|  69,7%   |  57,0%   |  50,7%   |  44,4%   |  44,4%   |  44,4%   |  38,0%   |  38,0%  |
+
+so for this particular case, the total CPU usage is 417.9% (counting the master process), being above all technologies, with the exception of Akka.
 
 
 ### Memory usage
@@ -213,7 +223,15 @@ Java applications, for low workloads, consume a similar memory, but when the wor
 
 The Vert.x application owes this excessive memory usage to its Eventbus, the same application without the use of this resource, has a constant memory usage, as do SpringBoot application. We can also see how the creation of actors by Akka also has repercussions on the use of memory.
 
-On the other hand, we can see that the applications that use this resource are Node.js, which would be the best if we care this metric.
+On the other hand, we can observe that the application that less use of this resource is the one of Node.js, which would be the optimal one if we attend to this metric
+
+As with CPU usage, in the NodeJS application with cluster the memory shown corresponds only to the master process. The results of memory usage (in KBytes) for each worker in the most representative case (again, 60 users in a single chat room) were:
+
+| Worker 1 | Worker 2 | Worker 3 | Worker 4 | Worker 5 | Worker 6 | Worker 7 | Worker 8 |
+|---|---|---|---|---|---|---|---|
+|  40552   |  64576  |  58368   |  57296   |  64700   |  64656   |  62820   |  44148  |
+
+As we can see, the memory used by worker processes is significantly lower than the master process (238,611 KBytes). The total memory used by the application amounts to 695,727 KBytes, being above Spring and Vert.x applications without EventBus, but continuing below Vert.x and Akka.
 
 #### Sumary of comparison
 
