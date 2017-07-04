@@ -1,5 +1,10 @@
 {
     "apps" : [
+       {
+            "name" : "AkkaPlay",
+            "globalDefinition": "Akka is a toolkit and runtime for building highly concurrent, distributed, and resilient message-driven applications on the JVM",
+            "commands" : "./target/universal/webchat-1.0/bin/webchat"
+        },
         {
             "name" : "NodeJS",
             "globalDefinition": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.",
