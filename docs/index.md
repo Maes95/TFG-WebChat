@@ -11,7 +11,7 @@ We have a multitude of technologies to address the development of this type of a
 
 To carry out the comparative, we will create a chat application for each technology that must meet certain requirements, which can be found [here](https://github.com/Maes95/TFG-WebChat/wiki#what-are-the-requirements-for-an-application-to-be-tested).
 
-> The functionating of this chat is simple, the client connects with a username (which proves to be unique) and the name of a chat room to which it is attached. In this way, the user who connects to the chat room can send and receive messages from other users connected to the same chat.
+> The functioning of this chat is simple, the client connects with a username (which proves to be unique) and the name of a chat room to which it is attached. In this way, the user who connects to the chat room can send and receive messages from other users connected to the same chat.
 
 Following these requirements, we will use a common client that tests each of the applications for metrics such as response times and resource usage.
 
@@ -219,7 +219,7 @@ so for this particular case, the total CPU usage is 417.9% (counting the master 
 	createChart("compare-memory-4", 'Memory in KBytes', "avgRam", 4);
 </script>
 
-Java applications, for low workloads, consume a similar memory, but when the workload increases (more than 1M messages sent with only 1 room), Vertx with Eventbus triggers its memory consumption.
+Java applications, for small workloads, consume a similar amount of memory, but when the workload increases (more than 1M messages sent with only 1 room), Vertx with Eventbus' memory consumption skyrockets.
 
 The Vert.x application owes this excessive memory usage to its Eventbus, the same application without the use of this resource, has a constant memory usage, as do SpringBoot application. We can also see how the creation of actors by Akka also has repercussions on the use of memory.
 
@@ -231,7 +231,7 @@ As with CPU usage, in the NodeJS application with cluster the memory shown corre
 |---|---|---|---|---|---|---|---|
 |  40552   |  64576  |  58368   |  57296   |  64700   |  64656   |  62820   |  44148  |
 
-As we can see, the memory used by worker processes is significantly lower than the master process (238,611 KBytes). The total memory used by the application amounts to 695,727 KBytes, being above Spring and Vert.x applications without EventBus, but continuing below Vert.x and Akka.
+As we can see, the memory used by the worker processes is significantly lower than the master process (238,611 KBytes). The total memory used by the application amounts to 695,727 KBytes, being above Spring and Vert.x applications without EventBus, but still below Vert.x and Akka.
 
 #### Sumary of comparison
 
@@ -250,19 +250,19 @@ To finish the comparison, let's take a look at all the metrics at once in one of
 At the time of developing, we must also consider the time and/or difficulty that can lead us, in this case, to create a reactive system.
 
 Akka and Vert.x applications have extensive libraries that entails an initial learning curve that is much higher than the other technologies shown, introducing the model of actors in order to solve problems of concurrency.
-In the case of Akka, in addition, it is added the difficulty of embedding our application in the framework Play to obtain a Webscoket server.
+In the case of Akka, in addition, it is added the difficulty of embedding our application in the framework Play to obtain a Websocket server.
 
-On the other hand, SpringBoot applications are much simpler and faster to build through to its investment of control, although it leaves the user's hands solve possible concurrency problems.
+On the other hand, SpringBoot applications are much simpler and faster to build thanks to its inversion of control, although it leaves to the user the responsability to solve possible concurrency problems.
 
-Finally, build reactive applications in Node.js is trivial, given the reactive nature of the language itself, being able to write all the functionality in very few lines in a clear and concise way. However, when you add the cluster library, the flow of the application can be complicated.
+Finally, building reactive applications in Node.js is trivial, given the reactive nature of the language itself, and one is able to write all the functionality using a few lines of code in a clear and concise way. However, when you add the cluster library, the flow of the application can become convoluted.
 
 ## Conclusions
 
-After studying the different metrics, we can state the following solutions to the problem of reactive applications:
+After studying the different metrics, we can conlude the following statements about the problem of reactive applications:
 
-* If we are looking for a reliable application **against large workloads** and do not make excessive use of the resources of the machine on which it runs, the optimal technology would be **SpringBoot**, specifically using as Tomcat server.
+* If we are looking for a reliable application **against large workloads** and we do not make excessive use of the resources of the machine on which it runs, the optimal technology would be **SpringBoot**, specifically using Tomcat server.
 
-* If we are looking for a lightweight application that makes a **minimal use of the resources of the machine** that will not have large workloads, our best option would be **Node.js** (adding the cluster library if necessary to optimize the service it provides).
+* If we are looking for a lightweight application that makes a **minimal use of the resources of the machine** and that will not have large workloads, our best option would be **Node.js** (adding the cluster library if necessary to optimize the service it provides).
 
 ## Contributing
 
