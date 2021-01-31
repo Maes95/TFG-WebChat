@@ -30,7 +30,7 @@ These technologies, which follow the [Reactive Manifesto](http://www.reactiveman
 
 - **Message Driven:** Reactive Systems rely on asynchronous message-passing to establish a boundary between components that ensures loose coupling, isolation and location transparency.  Communication is non-blocking.
 
-![Reactive Manifesto](https://lh3.googleusercontent.com/-YjSNNBJvh5Y/WSTEL5O5BHI/AAAAAAAAA64/qFzWMtKLjEE7Xa_zEiXyP70mkbSlZ6qngCLcB/s0/Untitled+Diagram.png "ReactiveManifest.png")
+![Reactive Manifesto](https://www.reactivemanifesto.org/images/reactive-traits.svg"ReactiveManifest.png")
 
 The reactive technologies selected were:
 
@@ -43,7 +43,7 @@ The reactive technologies selected were:
 
 **[Vertx](http://vertx.io/)**: Java framework to create reactive applications. It provides a server to launch the application and WebSockets. One of its main (and questioned, as we will see later) resources is its EventBus, which is the one that gives it its reactive character. We will compare how it behaves using it or not.
 
-<img  class="logo" src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" width="200">
+<img  class="logo" src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg" width="200">
 
 **[Node.js](https://nodejs.org)**: Run-time environment for Javascript, based on an event-driven architecture. Node.js runs by default in a single thread, although it has libraries to take advantage of all the processors of the machine that uses it (like [cluster](https://nodejs.org/api/cluster.html)). We will contemplate both implementations making use of the [Express](http://expressjs.com) library to launch the server and [ws library](https://github.com/websockets/ws) to handle the connection using WebSocket.
 
@@ -51,7 +51,7 @@ The reactive technologies selected were:
 
 We add non-reactive technologies to also compare paradigms and check the effectiveness of reactive technologies versus those that are not.
 
-<img  class="logo spring-logo" src="http://rubenjgarcia.es/wp-content/uploads/2016/09/springboot.png" width="200">
+<img  class="logo spring-logo" src="https://www.fontana.com.ar/wp-content/uploads/2018/10/spring-boot-logo.png" width="200">
 
 **[SpringBoot](https://projects.spring.io/spring-boot/)**: Technology belonging to the [Spring](https://spring.io/) ecosystem (Java framework for application development). It can be used with different servers to launch the application, in this comparison we will use Tomcat and Jetty.
 
@@ -85,7 +85,7 @@ For this comparison we will consider 3 different metrics:
 
 - **Latency (response time)**: To measure the time it takes for messages to be received, the client sending, attached to the message body, the current time and an identifier. When the message arrives, it calculates the time it has taken (current time less the time that it brings in the body) and this is added to a variable, that when arriving all the messages is divided between the total number of messages, obtaining the average time (in milliseconds) that a message takes to transmit.
 
-<img  id="latency-diagram" src="https://lh3.googleusercontent.com/Z2isjzBwNsI8dW9l9RWaZhODZbrGyZBXL3P1zZIycnzLxNLvRRhD2a1GZ_e4ryzWDqC28KGA=s0">
+<img  id="latency-diagram" src="https://www.keycdn.com/img/support/what-is-latency-1.png">
 
 
 - **Resources: CPU use and Memory**: Each second, the client collects the data provided by the `top` command of the particular application being tested, obtaining the percentage of CPU usage and the amount of physical RAM used by the process.
