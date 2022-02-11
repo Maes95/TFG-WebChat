@@ -6,7 +6,7 @@
 
     <groupId>WebChatVertxMavenNoEventbus</groupId>
     <artifactId>WebChatVertxMavenMavenNoEventbus</artifactId>
-    <version>3.3.3</version>
+    <version>3.9.4</version>
 
     <dependencies>
 
